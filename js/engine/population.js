@@ -36,7 +36,7 @@ const PULL_WEIGHTS = {
  * @param {Object} adjacency - 인접 행렬
  * @returns {Object} dong (수정됨)
  */
-export function updatePopulation(dong, state, adjacency) {
+export function updatePopulation(dong, state, adjacency, policyEffects = {}) {
   const pop = dong.population;
   if (pop <= 0) return dong;
 
@@ -45,6 +45,16 @@ export function updatePopulation(dong, state, adjacency) {
 
   // (B) 전입/전출
   let pull = calcMigrationPull(dong, state, adjacency);
+
+  // 정책 효과: 인구 유입 보너스
+  const pe = getPolicyEffect(dong.id, policyEffects);
+  if (pe.population) {
+    for (const [age, bonus] of Object.entries(pe.population)) {
+      if (age === 'displacement') continue; // 강제이주는 별도 처리
+      // 직접 pull에 반영 (분기 스케일)
+      pull += bonus * 0.25;
+    }
+  }
 
   // 수용력 한계: 초기 인구 대비 과밀하면 유입 억제
   // _initPop은 simulation.js에서 첫 턴에 설정
@@ -94,6 +104,17 @@ export function updatePopulation(dong, state, adjacency) {
 
   // 총 인구 = 연령별 합산
   dong.population = Object.values(dong.populationByAge).reduce((s, v) => s + v, 0);
+
+  // 정책 효과: 강제이주 (재개발 등)
+  if (pe.population?.displacement && pe.population.displacement < 0) {
+    const displacePct = pe.population.displacement * 0.25; // 분기 스케일
+    const displaced = Math.round(dong.population * Math.abs(displacePct));
+    for (const age of Object.keys(dong.populationByAge)) {
+      const ratio = dong.populationByAge[age] / Math.max(1, dong.population);
+      dong.populationByAge[age] = Math.max(0, dong.populationByAge[age] - Math.round(displaced * ratio));
+    }
+    dong.population = Object.values(dong.populationByAge).reduce((s, v) => s + v, 0);
+  }
 
   // 세대 수: 인구 변화의 30%만 반영 (주택 공급은 느리게 변화)
   if (pop > 0) {
@@ -183,6 +204,21 @@ function calcMigrationPull(dong, state, adjacency) {
   }
 
   return clamp(pull, -0.03, 0.03);
+}
+
+function getPolicyEffect(dongId, policyEffects) {
+  const result = {};
+  const global = policyEffects.global || {};
+  const dongSpecific = policyEffects.byDong?.[dongId] || {};
+  for (const source of [global, dongSpecific]) {
+    for (const [cat, vals] of Object.entries(source)) {
+      if (!result[cat]) result[cat] = {};
+      for (const [key, val] of Object.entries(vals)) {
+        result[cat][key] = (result[cat][key] || 0) + val;
+      }
+    }
+  }
+  return result;
 }
 
 // === Helpers ===

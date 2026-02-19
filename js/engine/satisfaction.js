@@ -40,7 +40,7 @@ const SPILLOVER_RATE = 0.15;
  * @param {Object} budgetEffects - 카테고리별 예산 효과 계수
  * @returns {Object} dong (수정됨)
  */
-export function updateSatisfaction(dong, state, adjacency, budgetEffects = {}) {
+export function updateSatisfaction(dong, state, adjacency, budgetEffects = {}, policyEffects = {}) {
   const factors = dong.satisfactionFactors;
 
   // === 1. 자연 감쇠 ===
@@ -63,6 +63,17 @@ export function updateSatisfaction(dong, state, adjacency, budgetEffects = {}) {
     for (const [satComponent, weight] of Object.entries(mapping)) {
       if (factors[satComponent] !== undefined) {
         factors[satComponent] += delta * weight;
+      }
+    }
+  }
+
+  // === 2.5. 정책 직접 만족도 효과 ===
+  const pe = getPolicyEffect(dong.id, policyEffects);
+  if (pe.satisfaction) {
+    for (const [comp, val] of Object.entries(pe.satisfaction)) {
+      if (factors[comp] !== undefined) {
+        // 정책 효과는 분기당 적용 (절대값 × 0.25로 분기 스케일)
+        factors[comp] += val * 0.25;
       }
     }
   }
@@ -150,6 +161,21 @@ function calcWeightedSatisfaction(dong) {
   }
 
   return Math.round(totalWeightedSat / Math.max(1, totalPop));
+}
+
+function getPolicyEffect(dongId, policyEffects) {
+  const result = {};
+  const global = policyEffects.global || {};
+  const dongSpecific = policyEffects.byDong?.[dongId] || {};
+  for (const source of [global, dongSpecific]) {
+    for (const [cat, vals] of Object.entries(source)) {
+      if (!result[cat]) result[cat] = {};
+      for (const [key, val] of Object.entries(vals)) {
+        result[cat][key] = (result[cat][key] || 0) + val;
+      }
+    }
+  }
+  return result;
 }
 
 // === Helper ===

@@ -685,8 +685,8 @@ mapo_blocks.json에서 동 단위로 집계 + 수치 설계 초기값 적용.
 | mapo_blocks.json | data/game/ | ✅ 완료 | 96개 구획 데이터 |
 | numerical-design-v1.md | design/ | ✅ 완료 | 수치 설계 (수식, 계수) |
 | block-design-v0.3-verified.md | design/ | ✅ 완료 | 구획 설계 최종 |
-| mapo_init.json | data/game/ | ⬜ Buddy→Cody | Buddy가 데이터 합산, Cody가 게임 포맷으로 변환 |
-| policies.json | data/game/ | ⬜ Luca | 정책 카탈로그 24~32개 |
-| mapo_map.svg | assets/ | ⬜ Cody | 마포구 16개 동 SVG |
-| advisor_prompt.md | design/ | ⬜ Luca | AI 자문관 프롬프트 상세 |
-| events.json | data/game/ | ⬜ Luca | 이벤트 8종 상세 |
+| mapo_init.json | data/game/ | ✅ Cody | 동 단위 초기 상태 (Sprint 1 완료) |
+| policies.json | data/game/ | ✅ Luca | 정책 카탈로그 28개 (7카테고리 x 4) |
+| mapo_map.svg | assets/ | ✅ Cody | 마포구 16개 동 SVG |
+| advisor-prompt-v1.md | design/ | ✅ Luca | AI 자문관 프롬프트 상세 |
+| events.json | data/game/ | ✅ Luca | 이벤트 8종 상세 |

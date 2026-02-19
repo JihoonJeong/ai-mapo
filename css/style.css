@@ -524,7 +524,90 @@ body {
 
 .budget-over { color: var(--danger); }
 
-/* === POLICY CARDS === */
+/* === POLICY SYSTEM === */
+.policy-section-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.active-policies {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.active-policy-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  background: var(--accent-light);
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.active-policy-header {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+}
+
+.active-policy-name { font-weight: 600; }
+.active-policy-cost { color: var(--danger); font-size: 11px; }
+.active-policy-status { font-size: 10px; color: var(--text-muted); white-space: nowrap; }
+
+.active-policy-cancel {
+  font-size: 10px;
+  padding: 2px 6px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: white;
+  cursor: pointer;
+  color: var(--danger);
+  white-space: nowrap;
+}
+
+.active-policy-cancel:hover { background: var(--danger-light); }
+
+.policy-budget-info {
+  font-size: 11px;
+  color: var(--text-muted);
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 8px;
+}
+
+.policy-slot-info { font-weight: 600; color: var(--accent); }
+
+.policy-filter {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.policy-filter-btn {
+  font-size: 11px;
+  padding: 3px 8px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: none;
+  cursor: pointer;
+  color: var(--text-muted);
+}
+
+.policy-filter-btn.active {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
 .policy-grid {
   display: flex;
   flex-direction: column;
@@ -539,11 +622,16 @@ body {
   transition: border-color 0.15s, background 0.15s;
 }
 
-.policy-card:hover { border-color: var(--accent); }
+.policy-card:hover:not(.disabled) { border-color: var(--accent); }
 
 .policy-card.selected {
   border-color: var(--accent);
   background: var(--accent-light);
+}
+
+.policy-card.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .policy-card-header {
@@ -556,6 +644,14 @@ body {
 .policy-name { font-size: 13px; font-weight: 600; }
 .policy-cost { font-size: 12px; color: var(--danger); }
 .policy-desc { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
+
+.policy-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px;
+}
+
 .policy-tag {
   display: inline-block;
   font-size: 10px;
@@ -563,7 +659,16 @@ body {
   border-radius: 3px;
   background: var(--bg);
   color: var(--text-muted);
-  margin-top: 4px;
+}
+
+.policy-tag.tag-active {
+  background: var(--success-light);
+  color: var(--success);
+}
+
+.policy-tag.tag-incompat {
+  background: var(--danger-light);
+  color: var(--danger);
 }
 
 /* === EVENT DISPLAY === */
@@ -798,6 +903,47 @@ body {
   color: var(--text-muted);
 }
 
+/* === EVENT ENHANCEMENTS === */
+.event-affected {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.event-choice-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3px;
+}
+
+.event-choice-name { font-weight: 600; }
+.event-choice-cost { color: var(--danger); font-size: 11px; }
+.event-choice-desc { font-size: 11px; color: var(--text-muted); }
+
+.event-analysis {
+  margin-top: 10px;
+}
+
+.event-advisor-comment {
+  font-size: 12px;
+  color: var(--text);
+  background: var(--bg);
+  padding: 10px;
+  border-radius: 6px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.tab-btn.tab-alert {
+  animation: tab-pulse 0.5s ease 3;
+}
+
+@keyframes tab-pulse {
+  0%, 100% { background: transparent; }
+  50% { background: var(--warning-light); color: var(--warning); }
+}
+
 /* === NO EVENT PLACEHOLDER === */
 .no-event {
   display: flex;
@@ -807,6 +953,33 @@ body {
   color: var(--text-muted);
   font-size: 13px;
 }
+
+/* === API SETTINGS === */
+.api-setting-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.api-radio-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.api-radio-label:has(input:checked) {
+  border-color: var(--accent);
+  background: var(--accent-light);
+}
+
+.api-radio-label span { font-weight: 500; }
+.api-radio-label small { color: var(--text-muted); font-size: 11px; margin-left: auto; }
 
 /* === SCROLLBAR === */
 ::-webkit-scrollbar { width: 6px; }

@@ -4,10 +4,10 @@
 
 import { initMap, updateMapColors, updateGameState } from './map.js';
 import { initDashboard, updateDashboard } from './dashboard.js';
-import { initAdvisor, generateBriefing, addMessage } from './advisor.js';
+import { initAdvisor, generateBriefing, addMessage, updateAdvisorState } from './advisor.js';
 import { initBudget, getAllocation } from './budget.js';
-import { initPolicy, getSelectedPolicies } from './policy.js';
-import { initEvents, renderNoEvent, getEventChoice } from './event.js';
+import { initPolicy, getSelectedPolicies, updatePolicyState } from './policy.js';
+import { initEvents, renderNoEvent, renderEvent, getEventChoice, checkEventTriggers } from './event.js';
 import { showPledgeSelection, initPledgeBar, renderPledgeBar } from './pledge.js';
 import { tick } from './engine/simulation.js';
 
@@ -106,8 +106,8 @@ async function startGame() {
   initDashboard(gameState);
   initAdvisor(gameState);
   initBudget(gameState);
-  initPolicy(gameState);
-  initEvents(gameState);
+  await initPolicy(gameState);
+  await initEvents(gameState);
   initPledgeBar(gameState.meta.pledges, gameState);
 
   // Tab switching
@@ -144,14 +144,24 @@ function startTurn() {
   renderPledgeBar(gameState.meta.pledges, gameState);
 
   // 3. AI briefing
+  updateAdvisorState(gameState);
   if (gameState.meta.turn > 1) {
     generateBriefing(gameState);
   }
 
-  // 4. Reset events
-  renderNoEvent();
+  // 4. Update policy UI
+  updatePolicyState(gameState);
 
-  // 5. Move to player phase
+  // 5. Check event triggers
+  const event = checkEventTriggers(gameState);
+  if (event) {
+    renderEvent(event, gameState);
+    addMessage('advisor', `[긴급] ${event.name} 이벤트가 발생했습니다. 이벤트 탭에서 대응 방안을 선택하세요.`);
+  } else {
+    renderNoEvent();
+  }
+
+  // 6. Move to player phase
   currentPhase = PHASE.PLAYER_PHASE;
   updateTurnDisplay();
 }
@@ -161,11 +171,18 @@ function endTurn() {
   currentPhase = PHASE.TURN_END;
 
   // Collect player actions
+  const eventChoice = getEventChoice();
   lastTurnActions = {
     budget: getAllocation(),
     policies: getSelectedPolicies(),
-    eventChoice: getEventChoice(),
+    eventChoice: eventChoice,
   };
+
+  // Add event choice to active events for effect tracking
+  if (eventChoice) {
+    if (!gameState.activeEvents) gameState.activeEvents = [];
+    gameState.activeEvents.push(eventChoice);
+  }
 
   // Save history snapshot
   const totalPop = gameState.dongs.reduce((s, d) => s + d.population, 0);

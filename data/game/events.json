@@ -1,0 +1,475 @@
+{
+  "meta": {
+    "version": "1.0",
+    "date": "2026-02-20",
+    "author": "Luca",
+    "description": "MVP 이벤트 8종. 트리거 조건 + 선택지 3개 + 효과.",
+    "totalEvents": 8,
+    "designNotes": {
+      "triggerType": "periodic(정기), threshold(지표 임계), random(확률), turn(특정 턴)",
+      "choiceDesign": "A=적극 투자, B=균형 타협, C=소극/방관. 항상 트레이드오프.",
+      "cooldown": "같은 이벤트 재발생 방지 턴 수",
+      "oneShot": "true면 게임당 1회만 발생"
+    }
+  },
+  "events": [
+    {
+      "id": "evt_tourist_surge",
+      "name": "홍대 관광객 폭증",
+      "icon": "🎉",
+      "description": "외국 SNS에서 홍대거리가 바이럴되면서 이번 분기 관광객이 30% 급증했습니다. 서교·합정·연남동 상인들은 환영하지만, 주민들은 소음과 쓰레기에 시달리고 있습니다.",
+      "trigger": {
+        "type": "periodic",
+        "interval": 4,
+        "startTurn": 4
+      },
+      "probability": 0.7,
+      "cooldown": 4,
+      "oneShot": false,
+      "affectedDongs": ["seogyo", "hapjeong", "yeonnam"],
+      "choices": [
+        {
+          "id": "expand_festival",
+          "name": "축제 확대 개최",
+          "description": "기회를 살려 대규모 축제를 열어 경제 효과를 극대화합니다.",
+          "cost": 25,
+          "effects": {
+            "economy": { "livingPopBonus": 0.08 },
+            "finance": { "localTaxBonus": 0.01 },
+            "satisfaction": { "culture": 3, "housing": -4, "environment": -3 }
+          },
+          "duration": 2,
+          "advisorComment": "단기 경제 효과는 확실하지만, 주민 만족도 하락이 우려됩니다."
+        },
+        {
+          "id": "manage_tourist",
+          "name": "관광객 관리 강화",
+          "description": "관광 안내소 확충 + 쓰레기 수거 증가 + 야간 순찰 강화.",
+          "cost": 15,
+          "effects": {
+            "satisfaction": { "environment": 2, "housing": 1 },
+            "economy": { "livingPopBonus": 0.03 }
+          },
+          "duration": 2,
+          "advisorComment": "비용 대비 균형 잡힌 접근입니다. 주민과 상인 모두 수용 가능합니다."
+        },
+        {
+          "id": "status_quo",
+          "name": "현상 유지",
+          "description": "특별한 조치 없이 기존 체계로 대응합니다.",
+          "cost": 0,
+          "effects": {
+            "satisfaction": { "housing": -2, "environment": -2 },
+            "economy": { "livingPopBonus": 0.05 }
+          },
+          "duration": 2,
+          "advisorComment": "비용은 들지 않지만 주민 불만이 누적될 수 있습니다."
+        }
+      ]
+    },
+
+    {
+      "id": "evt_rent_spike",
+      "name": "연남동 임대료 폭등",
+      "icon": "📈",
+      "description": "연남동 상가 임대료가 전 분기 대비 15% 급등했습니다. 5년 이상 영업한 소상공인 3곳이 이번 달 폐업을 예고했고, SNS에서 '연남동의 죽음'이 화제입니다.",
+      "trigger": {
+        "type": "threshold",
+        "condition": {
+          "dong": "yeonnam",
+          "metric": "rentPressure",
+          "operator": ">",
+          "value": 0.05
+        }
+      },
+      "probability": 0.8,
+      "cooldown": 6,
+      "oneShot": false,
+      "affectedDongs": ["yeonnam", "mangwon1"],
+      "choices": [
+        {
+          "id": "rent_cap",
+          "name": "임대료 안정화 조례 추진",
+          "description": "상가 임대료 인상률 연 5% 상한 권고 + 위반 건물주 불이익.",
+          "cost": 10,
+          "effects": {
+            "economy": { "rentPressureDelta": -0.02, "newBizBonus": -0.003 },
+            "satisfaction": { "housing": 3, "economy": -1 }
+          },
+          "duration": 4,
+          "advisorComment": "임대료 안정 효과는 빠르지만, 신규 투자·건축 위축 가능성이 있습니다."
+        },
+        {
+          "id": "coexist_program",
+          "name": "상생 협약 프로그램",
+          "description": "건물주·임차인·구청 3자 협약. 임대료 동결 대신 세제 혜택.",
+          "cost": 20,
+          "effects": {
+            "economy": { "rentPressureDelta": -0.01, "commerceCharacterBonus": 2 },
+            "satisfaction": { "housing": 2, "economy": 1 }
+          },
+          "duration": 4,
+          "advisorComment": "시간은 걸리지만 건물주도 참여하는 지속 가능한 방안입니다."
+        },
+        {
+          "id": "market_logic",
+          "name": "시장 논리에 맡기기",
+          "description": "구청이 개입하지 않고 시장이 자체 조정되길 기다립니다.",
+          "cost": 0,
+          "effects": {
+            "economy": { "rentPressureDelta": 0.01, "commerceCharacterBonus": -3 },
+            "satisfaction": { "housing": -3 }
+          },
+          "duration": 4,
+          "advisorComment": "프랜차이즈가 빠르게 진입하고 상권 특색이 사라질 위험이 큽니다."
+        }
+      ]
+    },
+
+    {
+      "id": "evt_dmc_exodus",
+      "name": "DMC 기업 이탈 위기",
+      "icon": "🏢",
+      "description": "상암 DMC 입주 중견 IT기업 2곳이 판교 이전을 검토 중입니다. 높은 임대료와 출퇴근 불편이 이유입니다. 이탈 시 종사자 2,000명 감소 예상.",
+      "trigger": {
+        "type": "threshold",
+        "condition": {
+          "dong": "sangam",
+          "metric": "satisfaction",
+          "operator": "<",
+          "value": 50,
+          "consecutive": 3
+        }
+      },
+      "probability": 0.6,
+      "cooldown": 8,
+      "oneShot": false,
+      "affectedDongs": ["sangam"],
+      "choices": [
+        {
+          "id": "tax_incentive",
+          "name": "세제 혜택 + 임대료 지원",
+          "description": "2년간 지방세 감면 + DMC 임대료 30% 보조.",
+          "cost": 60,
+          "effects": {
+            "economy": { "workerGrowth": 0.01 },
+            "finance": { "localTaxBonus": -0.005 },
+            "satisfaction": { "economy": 3 }
+          },
+          "duration": 8,
+          "advisorComment": "세수가 단기 감소하지만, 기업 이탈을 막으면 장기적으로 더 큰 세수를 지킬 수 있습니다."
+        },
+        {
+          "id": "infra_invest",
+          "name": "출퇴근 인프라 투자",
+          "description": "DMC역 접근성 개선 + 셔틀버스 + 공유오피스.",
+          "cost": 40,
+          "effects": {
+            "satisfaction": { "transport": 4, "economy": 2 }
+          },
+          "duration": 6,
+          "advisorComment": "근본 원인(교통 불편)을 해결하므로 다른 기업 유치에도 도움됩니다."
+        },
+        {
+          "id": "let_go",
+          "name": "자연스러운 구조 조정",
+          "description": "기업 이탈을 막지 않고, 빈 공간에 스타트업 유치를 추진합니다.",
+          "cost": 0,
+          "effects": {
+            "economy": { "workerGrowth": -0.03, "newBizBonus": 0.005 },
+            "satisfaction": { "economy": -3 }
+          },
+          "duration": 4,
+          "advisorComment": "단기 충격이 크지만, 산업 구조가 다변화될 가능성도 있습니다."
+        }
+      ]
+    },
+
+    {
+      "id": "evt_newtown_demand",
+      "name": "아현뉴타운 2기 요구",
+      "icon": "🏗️",
+      "description": "아현뉴타운 1기 성공(래미안푸르지오 4,000세대)에 고무된 인근 주민들이 2기 재개발을 요구하고 있습니다. 구의회에 청원서가 접수됐습니다.",
+      "trigger": {
+        "type": "turn",
+        "minTurn": 16,
+        "additionalCondition": {
+          "dong": "ahyeon",
+          "metric": "population",
+          "operator": ">",
+          "value": 28000
+        }
+      },
+      "probability": 0.7,
+      "cooldown": 0,
+      "oneShot": true,
+      "affectedDongs": ["ahyeon", "gongdeok"],
+      "choices": [
+        {
+          "id": "full_proceed",
+          "name": "2기 재개발 추진",
+          "description": "아현동 남측 + 공덕동 일부를 2기 뉴타운으로 지정.",
+          "cost": 30,
+          "effects": {
+            "population": { "displacement": -0.03 },
+            "satisfaction": { "housing": -4 },
+            "delayed_completion": {
+              "triggerAfter": 12,
+              "population": { "midAge": 0.008 },
+              "satisfaction": { "housing": 8 },
+              "finance": { "localTaxBonus": 0.015 }
+            }
+          },
+          "duration": 12,
+          "advisorComment": "12턴(3년) 후 대규모 유입이 예상되지만, 그 사이 기존 주민 이탈과 갈등이 불가피합니다."
+        },
+        {
+          "id": "partial_proceed",
+          "name": "소규모 리모델링",
+          "description": "재개발 대신 기존 건물 리모델링 + 가로 정비.",
+          "cost": 40,
+          "effects": {
+            "satisfaction": { "housing": 3 },
+            "population": { "midAge": 0.002 }
+          },
+          "duration": 6,
+          "advisorComment": "갈등 없이 주거 환경을 개선할 수 있지만, 대규모 변화는 기대하기 어렵습니다."
+        },
+        {
+          "id": "hold",
+          "name": "보류",
+          "description": "현 시점에서는 재개발 추진이 시기상조라고 판단, 보류합니다.",
+          "cost": 0,
+          "effects": {
+            "satisfaction": { "housing": -1 }
+          },
+          "duration": 0,
+          "advisorComment": "주민 실망이 있겠지만, 재정 여건이 허락할 때 재추진할 수 있습니다."
+        }
+      ]
+    },
+
+    {
+      "id": "evt_market_vs_mart",
+      "name": "망원시장 vs 대형마트 갈등",
+      "icon": "🛒",
+      "description": "홈플러스 월드컵점의 새벽 배송 서비스가 시작되면서 망원시장 상인회가 반발하고 있습니다. '전통시장 보호 조례'를 요구하는 서명이 3,000명을 넘었습니다.",
+      "trigger": {
+        "type": "random",
+        "probabilityPerTurn": 0.15,
+        "minTurn": 3
+      },
+      "probability": 1.0,
+      "cooldown": 8,
+      "oneShot": false,
+      "affectedDongs": ["mangwon1", "hapjeong", "seongsan1"],
+      "choices": [
+        {
+          "id": "protect_market",
+          "name": "전통시장 보호 강화",
+          "description": "대형마트 영업시간 제한 확대 + 전통시장 배달 앱 지원.",
+          "cost": 20,
+          "effects": {
+            "economy": { "commerceCharacterBonus": 3, "newBizBonus": -0.002 },
+            "satisfaction": { "economy": 2 }
+          },
+          "duration": 4,
+          "advisorComment": "전통시장 보호 효과는 있지만, 소비자 불편과 유통 효율 저하가 있을 수 있습니다."
+        },
+        {
+          "id": "coexist_market",
+          "name": "공존 프로그램",
+          "description": "대형마트 내 전통시장 입점 코너 + 공동 배달 플랫폼.",
+          "cost": 15,
+          "effects": {
+            "economy": { "commerceCharacterBonus": 1 },
+            "satisfaction": { "economy": 1 }
+          },
+          "duration": 4,
+          "advisorComment": "양쪽 모두 수용 가능한 타협안이지만, 근본적 해결은 아닐 수 있습니다."
+        },
+        {
+          "id": "free_market",
+          "name": "시장 경쟁에 맡기기",
+          "description": "특별한 개입 없이 경쟁을 통한 자연 조정을 기다립니다.",
+          "cost": 0,
+          "effects": {
+            "economy": { "commerceCharacterBonus": -2 },
+            "satisfaction": { "economy": -2 }
+          },
+          "duration": 4,
+          "advisorComment": "비용은 없지만 전통시장 쇠퇴가 가속될 수 있습니다. 상권 특색도 줄어듭니다."
+        }
+      ]
+    },
+
+    {
+      "id": "evt_seongmisan_conflict",
+      "name": "성미산 개발 갈등",
+      "icon": "🌲",
+      "description": "성산2동 인구 증가로 주차장·학교 부족이 심각해지면서, 성미산 일부를 주차장으로 전환하자는 주장이 나왔습니다. 성미산 마을공동체는 강력 반발 중입니다.",
+      "trigger": {
+        "type": "threshold",
+        "condition": {
+          "dong": "seongsan2",
+          "metric": "population",
+          "operator": ">",
+          "value": 40000
+        }
+      },
+      "probability": 0.8,
+      "cooldown": 0,
+      "oneShot": true,
+      "affectedDongs": ["seongsan2", "mangwon2"],
+      "choices": [
+        {
+          "id": "preserve",
+          "name": "성미산 전면 보존",
+          "description": "성미산 개발 금지 선언. 대신 인근 부지에 공영주차장 건설.",
+          "cost": 35,
+          "effects": {
+            "satisfaction": { "environment": 5, "transport": -2 },
+            "economy": { "commerceCharacterBonus": 2 }
+          },
+          "duration": 0,
+          "advisorComment": "마을공동체의 지지를 받지만, 주차난 해결은 추가 투자가 필요합니다."
+        },
+        {
+          "id": "partial_develop",
+          "name": "가장자리 부분 개발",
+          "description": "성미산 외곽 5%만 지하주차장으로 전환. 지상부는 공원 유지.",
+          "cost": 50,
+          "effects": {
+            "satisfaction": { "transport": 3, "environment": -2 }
+          },
+          "duration": 6,
+          "advisorComment": "양쪽의 불만을 줄이는 타협안이지만, 어느 쪽도 완전히 만족하지 않을 수 있습니다."
+        },
+        {
+          "id": "resident_vote",
+          "name": "주민투표로 결정",
+          "description": "성산2동+망원2동 주민투표를 실시합니다. 결과에 따라 진행.",
+          "cost": 5,
+          "effects": {
+            "satisfaction": { "welfare": 2 }
+          },
+          "duration": 2,
+          "advisorComment": "민주적 절차지만, 결과에 관계없이 갈등이 지속될 수 있습니다. 결과는 랜덤합니다.",
+          "randomOutcome": {
+            "preserve": 0.6,
+            "develop": 0.4
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_forest_trail",
+      "name": "경의선숲길 확장 제안",
+      "icon": "🌿",
+      "description": "서울시에서 경의선숲길 2단계 확장 사업을 제안했습니다. 공덕~홍대 구간 폭 확장 + 상암까지 연결. 서울시가 70% 부담하지만 구비 30% 필요.",
+      "trigger": {
+        "type": "turn",
+        "minTurn": 20
+      },
+      "probability": 0.6,
+      "cooldown": 0,
+      "oneShot": true,
+      "affectedDongs": ["gongdeok", "daeheung", "seogyo", "hapjeong", "yeonnam", "seongsan1"],
+      "choices": [
+        {
+          "id": "full_expand",
+          "name": "전면 확장 참여",
+          "description": "구비 150억 투입. 상암까지 연결 + 폭 확장.",
+          "cost": 150,
+          "effects": {
+            "satisfaction": { "environment": 5, "transport": 3, "culture": 3 },
+            "economy": { "livingPopBonus": 0.04, "commerceCharacterBonus": 3 },
+            "population": { "youth": 0.003, "midAge": 0.002 }
+          },
+          "duration": 8,
+          "advisorComment": "대규모 투자지만 마포구 전체 브랜드 가치를 높이는 사업입니다. 서울시 매칭이라 기회비용이 적습니다."
+        },
+        {
+          "id": "maintain",
+          "name": "현행 유지 (사업 불참)",
+          "description": "추가 투자 없이 현재 숲길을 유지 관리합니다.",
+          "cost": 0,
+          "effects": {},
+          "duration": 0,
+          "advisorComment": "재정 부담은 없지만, 서울시 예산 기회를 놓치게 됩니다."
+        },
+        {
+          "id": "partial_repair",
+          "name": "기존 구간 보수만 참여",
+          "description": "구비 50억으로 기존 공덕~연남 구간 보수·시설 개선만.",
+          "cost": 50,
+          "effects": {
+            "satisfaction": { "environment": 2, "culture": 1 },
+            "economy": { "commerceCharacterBonus": 1 }
+          },
+          "duration": 4,
+          "advisorComment": "적은 비용으로 기존 인프라를 개선합니다. 상암 연결은 포기하게 됩니다."
+        }
+      ]
+    },
+
+    {
+      "id": "evt_aging_crisis",
+      "name": "고령화 복지 위기",
+      "icon": "👴",
+      "description": "도화·망원1·망원2동의 65세 이상 비율이 22%를 넘었습니다. 독거 어르신 무연고 사망 사건이 발생해 언론에 보도됐습니다. 구의회에서 대책을 요구합니다.",
+      "trigger": {
+        "type": "threshold",
+        "condition": {
+          "metric": "elderlyRatio",
+          "operator": ">",
+          "value": 0.22,
+          "minDongCount": 3
+        }
+      },
+      "probability": 0.9,
+      "cooldown": 8,
+      "oneShot": false,
+      "affectedDongs": ["dohwa", "mangwon1", "mangwon2"],
+      "choices": [
+        {
+          "id": "welfare_expand",
+          "name": "복지 대폭 확대",
+          "description": "돌봄 인력 200명 채용 + 독거 어르신 전수 조사 + AI 안부 확인.",
+          "cost": 50,
+          "effects": {
+            "satisfaction": { "welfare": 6 },
+            "population": { "elderly": 0.003 },
+            "finance": { "mandatorySpendDelta": 10 }
+          },
+          "duration": 0,
+          "advisorComment": "고령자 만족도가 크게 오르지만, 의무지출이 영구적으로 증가합니다."
+        },
+        {
+          "id": "intergenerational",
+          "name": "세대 통합 프로그램",
+          "description": "청년-어르신 동거 지원 + 세대 간 교류 프로그램 + 실버 카페.",
+          "cost": 25,
+          "effects": {
+            "satisfaction": { "welfare": 3, "culture": 1 },
+            "population": { "youth": 0.001, "elderly": 0.001 }
+          },
+          "duration": 6,
+          "advisorComment": "혁신적이지만 효과가 나타나기까지 시간이 걸리고, 참여율이 불확실합니다."
+        },
+        {
+          "id": "maintain_current",
+          "name": "현행 복지 수준 유지",
+          "description": "추가 예산 없이 기존 복지 시스템으로 대응합니다.",
+          "cost": 0,
+          "effects": {
+            "satisfaction": { "welfare": -3 }
+          },
+          "duration": 4,
+          "advisorComment": "언론 보도 후 무대응은 정치적 부담이 클 수 있습니다."
+        }
+      ]
+    }
+  ]
+}

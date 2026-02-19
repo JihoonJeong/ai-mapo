@@ -32,7 +32,7 @@ const SPILLOVER_RATES = {
  * @param {Object} budgetAlloc - 플레이어 예산 배분 (%)
  * @returns {Object} dong (수정됨)
  */
-export function updateEconomy(dong, state, adjacency, budgetAlloc = {}) {
+export function updateEconomy(dong, state, adjacency, budgetAlloc = {}, policyEffects = {}) {
   const biz = dong.businesses;
   if (biz <= 0) return dong;
 
@@ -43,10 +43,14 @@ export function updateEconomy(dong, state, adjacency, budgetAlloc = {}) {
   const econBudgetPct = budgetAlloc.economy || 15;
   const policyBonus = 1.0 + (econBudgetPct - 15) * 0.01; // 기본 15%에서 ±1%당 1% 보너스
 
+  // 정책 효과: 신규 창업률 보너스
+  const pe = getPolicyEffect(dong.id, policyEffects);
+  const newBizBonus = pe.economy?.newBizBonus || 0;
+
   // === 2. 신규 창업 (수요 변동은 완화 적용) ===
   // demand=1.0이면 기본 비율, !=1.0이면 차이의 50%만 반영
   const adjustedDemand = 1.0 + (demand - 1.0) * 0.5;
-  const newBiz = Math.round(biz * BASE_NEW_RATE * adjustedDemand * policyBonus);
+  const newBiz = Math.round(biz * (BASE_NEW_RATE + newBizBonus) * adjustedDemand * policyBonus);
 
   // === 3. 폐업 (자연 비율) ===
   const rentPressure = dong.rentPressure || 0;
@@ -68,8 +72,27 @@ export function updateEconomy(dong, state, adjacency, budgetAlloc = {}) {
   // === 6. 임대료 압력 업데이트 ===
   updateRentPressure(dong, adjacency, state);
 
+  // 정책 효과: 임대료 압력 직접 조정
+  const rentDelta = pe.economy?.rentPressureDelta || pe.economy_side?.rentPressureDelta || 0;
+  if (rentDelta !== 0) {
+    dong.rentPressure = Math.round(clamp(dong.rentPressure + rentDelta, 0, 0.02) * 10000) / 10000;
+  }
+
   // === 7. 상권특색 감소 (프랜차이즈화) ===
   updateCommerceCharacter(dong);
+
+  // 정책 효과: 상권특색 보너스
+  const charBonus = pe.economy?.commerceCharacterBonus || 0;
+  if (charBonus !== 0) {
+    dong.commerceCharacter = clamp(dong.commerceCharacter + charBonus * 0.25, 20, 100);
+    dong.commerceCharacter = Math.round(dong.commerceCharacter * 10) / 10;
+  }
+
+  // 정책 효과: 종사자 성장
+  const workerGrowth = pe.economy?.workerGrowth || 0;
+  if (workerGrowth > 0) {
+    dong.workers = Math.round(dong.workers * (1 + workerGrowth));
+  }
 
   return dong;
 }
@@ -158,6 +181,26 @@ function updateCommerceCharacter(dong) {
     dong.commerceCharacter = Math.min(80, dong.commerceCharacter + 0.2);
   }
   dong.commerceCharacter = Math.round(dong.commerceCharacter * 10) / 10;
+}
+
+/**
+ * 동에 적용되는 정책 효과 가져오기 (global + byDong 합산)
+ */
+function getPolicyEffect(dongId, policyEffects) {
+  const result = {};
+  const global = policyEffects.global || {};
+  const dongSpecific = policyEffects.byDong?.[dongId] || {};
+
+  // 글로벌과 동별 효과 병합
+  for (const source of [global, dongSpecific]) {
+    for (const [cat, vals] of Object.entries(source)) {
+      if (!result[cat]) result[cat] = {};
+      for (const [key, val] of Object.entries(vals)) {
+        result[cat][key] = (result[cat][key] || 0) + val;
+      }
+    }
+  }
+  return result;
 }
 
 // === Helpers ===

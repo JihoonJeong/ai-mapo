@@ -42,7 +42,7 @@ const OPTIMAL_PCT = {
  * @param {Object} budgetAlloc - 플레이어 예산 배분 (%)
  * @returns {Object} 업데이트된 finance 객체
  */
-export function updateFinance(state, budgetAlloc = {}) {
+export function updateFinance(state, budgetAlloc = {}, policyEffects = {}) {
   const finance = { ...state.finance };
   const totalPop = state.dongs.reduce((s, d) => s + d.population, 0);
   const totalBiz = state.dongs.reduce((s, d) => s + d.businesses, 0);
@@ -50,9 +50,13 @@ export function updateFinance(state, budgetAlloc = {}) {
 
   // === 1. 세입 계산 ===
 
-  // 지방세: 사업체/종사자 변동 반영 + 자연 감소 추세
+  // 정책 효과: 세수 보너스
+  const globalPE = policyEffects.global || {};
+  const localTaxBonus = globalPE.finance?.localTaxBonus || 0;
+
+  // 지방세: 사업체/종사자 변동 반영 + 자연 감소 추세 + 정책 보너스
   const bizGrowth = (totalBiz - BASE_BIZ) / BASE_BIZ;
-  const taxGrowth = (bizGrowth * 0.3 + TAX_DECLINE_RATE) * ACCEL_FINANCE;
+  const taxGrowth = (bizGrowth * 0.3 + TAX_DECLINE_RATE + localTaxBonus) * ACCEL_FINANCE;
   finance.revenue.localTax = Math.round(BASE_REVENUE.localTax * (1 + taxGrowth));
 
   // 조정교부금: 인구 비례
@@ -72,8 +76,15 @@ export function updateFinance(state, budgetAlloc = {}) {
   finance.totalBudget = totalRevenue;
 
   // === 2. 세출 구조 ===
-  finance.mandatorySpend = Math.round(totalRevenue * MANDATORY_RATIO);
+  const mandatoryDelta = globalPE.finance?.mandatorySpendDelta || 0;
+  finance.mandatorySpend = Math.round(totalRevenue * MANDATORY_RATIO) + mandatoryDelta;
   finance.freeBudget = totalRevenue - finance.mandatorySpend;
+
+  // 정책 비용 차감 (딜레이 중에도 예산 소요)
+  const policyCost = (state.activePolicies || [])
+    .reduce((s, ap) => s + ap.policy.cost, 0);
+  finance.policyCost = policyCost;
+  finance.freeBudget = Math.max(0, finance.freeBudget - policyCost);
 
   // 배분 비율 업데이트
   finance.allocation = { ...budgetAlloc };
