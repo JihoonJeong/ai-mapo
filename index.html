@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 마포구청장</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <!-- ===== HEADER ===== -->
+  <header id="game-header">
+    <div class="header-left">
+      <h1 class="game-title">AI 마포구청장</h1>
+      <span id="player-info" class="player-info"></span>
+    </div>
+    <div class="header-center">
+      <div id="turn-display" class="turn-display">
+        <span id="turn-label">턴 1/48</span>
+        <span id="turn-date">2026년 1분기</span>
+      </div>
+    </div>
+    <div class="header-right">
+      <div id="pledge-bar" class="pledge-bar"></div>
+    </div>
+  </header>
+
+  <!-- ===== MAIN GAME BOARD ===== -->
+  <main id="game-board">
+    <!-- Left Column: Map + Dashboard -->
+    <section id="map-panel" class="panel">
+      <div class="panel-header">
+        <h2>마포구</h2>
+        <select id="map-indicator" class="indicator-select">
+          <option value="satisfaction">만족도</option>
+          <option value="populationChange">인구변화율</option>
+          <option value="commerceVitality">상권활력</option>
+          <option value="rentPressure">임대료압력</option>
+        </select>
+      </div>
+      <div id="map-container" class="map-container"></div>
+      <div id="map-legend" class="map-legend"></div>
+    </section>
+
+    <section id="chat-panel" class="panel">
+      <div class="panel-header">
+        <h2>자문관</h2>
+        <div class="advisor-status">
+          <span class="status-dot"></span>
+          <span id="advisor-mode">Mock</span>
+        </div>
+      </div>
+      <div id="chat-messages" class="chat-messages"></div>
+      <div class="chat-input-area">
+        <div class="quick-buttons">
+          <button class="quick-btn" data-action="compare">동별 비교</button>
+          <button class="quick-btn" data-action="predict">정책 효과</button>
+          <button class="quick-btn" data-action="summary">이슈 요약</button>
+        </div>
+        <div class="chat-input-row">
+          <input type="text" id="chat-input" placeholder="자문관에게 질문하세요..." autocomplete="off">
+          <button id="chat-send" class="btn-send">전송</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="dashboard-panel" class="panel">
+      <div class="panel-header">
+        <h2>대시보드</h2>
+      </div>
+      <div id="dashboard-summary" class="dashboard-summary"></div>
+      <div id="dashboard-chart" class="dashboard-chart">
+        <canvas id="trend-chart"></canvas>
+      </div>
+      <div id="dashboard-ranking" class="dashboard-ranking"></div>
+    </section>
+
+    <section id="action-panel" class="panel">
+      <div class="panel-header">
+        <h2>액션</h2>
+      </div>
+      <div class="action-tabs">
+        <button class="tab-btn active" data-tab="budget">예산 배분</button>
+        <button class="tab-btn" data-tab="policy">정책 선택</button>
+        <button class="tab-btn" data-tab="event">이벤트</button>
+      </div>
+      <div id="tab-budget" class="tab-content active"></div>
+      <div id="tab-policy" class="tab-content"></div>
+      <div id="tab-event" class="tab-content"></div>
+      <div class="action-footer">
+        <button id="btn-end-turn" class="btn-end-turn">턴 종료</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== DONG DETAIL SLIDE PANEL ===== -->
+  <aside id="dong-detail" class="dong-detail hidden">
+    <button id="dong-detail-close" class="detail-close">&times;</button>
+    <div id="dong-detail-content"></div>
+  </aside>
+
+  <!-- ===== MODAL OVERLAY ===== -->
+  <div id="modal-overlay" class="modal-overlay">
+    <div id="modal-content" class="modal-content"></div>
+  </div>
+
+  <!-- ===== MAP TOOLTIP ===== -->
+  <div id="map-tooltip" class="map-tooltip hidden"></div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

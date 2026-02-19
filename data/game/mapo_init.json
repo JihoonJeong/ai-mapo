@@ -1,0 +1,827 @@
+{
+  "meta": {
+    "version": "1.0",
+    "generatedDate": "2026-02-19",
+    "sources": [
+      "mapo_population_basic.json (2026-01)",
+      "mapo_population_age.json (2026-01)",
+      "mapo_business.json (2020/2022)",
+      "mapo_living_population.json (2026-02)",
+      "mapo_subway.json (2024)",
+      "mapo_finance.json (2024-2026)",
+      "mapo_blocks.json (v0.3)"
+    ],
+    "totalPopulation": 357232,
+    "totalBusinesses": 55516,
+    "totalWorkers": 274678
+  },
+  "dongs": [
+    {
+      "id": "seongsan2",
+      "name": "성산2동",
+      "population": 38075,
+      "populationByAge": {
+        "child": 1636,
+        "teen": 2598,
+        "youth": 10550,
+        "midAge": 7972,
+        "senior": 8228,
+        "elderly": 7091
+      },
+      "households": 19133,
+      "businesses": 3456,
+      "workers": 13508,
+      "avgWorkersPerBiz": 3.9,
+      "commerceVitality": 28,
+      "rentPressure": 0,
+      "commerceCharacter": 80,
+      "livingPop": {
+        "weekdayDay": 28738,
+        "weekdayNight": 34630,
+        "weekendDay": 31590,
+        "weekendNight": 33627
+      },
+      "satisfaction": 55,
+      "satisfactionFactors": {
+        "economy": 49,
+        "transport": 55,
+        "housing": 55,
+        "safety": 60,
+        "culture": 53,
+        "welfare": 55
+      },
+      "transitScore": 2.7,
+      "blockSummary": {
+        "total": 7,
+        "zoningConflicts": 0
+      }
+    },
+    {
+      "id": "gongdeok",
+      "name": "공덕동",
+      "population": 35875,
+      "populationByAge": {
+        "child": 1663,
+        "teen": 2057,
+        "youth": 8931,
+        "midAge": 7821,
+        "senior": 8636,
+        "elderly": 6767
+      },
+      "households": 18304,
+      "businesses": 3972,
+      "workers": 25284,
+      "avgWorkersPerBiz": 6.4,
+      "commerceVitality": 31,
+      "rentPressure": 0,
+      "commerceCharacter": 80,
+      "livingPop": {
+        "weekdayDay": 32502,
+        "weekdayNight": 36701,
+        "weekendDay": 30919,
+        "weekendNight": 35154
+      },
+      "satisfaction": 62,
+      "satisfactionFactors": {
+        "economy": 54,
+        "transport": 77,
+        "housing": 55,
+        "safety": 60,
+        "culture": 53,
+        "welfare": 55
+      },
+      "transitScore": 13.3,
+      "blockSummary": {
+        "total": 7,
+        "zoningConflicts": 0
+      }
+    },
+    {
+      "id": "sangam",
+      "name": "상암동",
+      "population": 29099,
+      "populationByAge": {
+        "child": 1632,
+        "teen": 3359,
+        "youth": 6110,
+        "midAge": 6215,
+        "senior": 6897,
+        "elderly": 4886
+      },
+      "households": 12435,
+      "businesses": 4164,
+      "workers": 49107,
+      "avgWorkersPerBiz": 11.8,
+      "commerceVitality": 36,
+      "rentPressure": 0,
+      "commerceCharacter": 80,
+      "livingPop": {
+        "weekdayDay": 66072,
+        "weekdayNight": 41873,
+        "weekendDay": 43732,
+        "weekendNight": 39324
+      },
+      "satisfaction": 76,
+      "satisfactionFactors": {
+        "economy": 69,
+        "transport": 72,
+        "housing": 65,
+        "safety": 60,
+        "culture": 54,
+        "welfare": 55
+      },
+      "transitScore": 10.8,
+      "blockSummary": {
+        "total": 7,
+        "zoningConflicts": 0
+      }
+    },
+    {
+      "id": "ahyeon",
+      "name": "아현동",
+      "population": 28956,
+      "populationByAge": {
+        "child": 2738,
+        "teen": 2293,
+        "youth": 5625,
+        "midAge": 8264,
+        "senior": 5949,
+        "elderly": 4087
+      },
+      "households": 12269,
+      "businesses": 2489,
+      "workers": 12849,
+      "avgWorkersPerBiz": 5.2,
+      "commerceVitality": 28,
+      "rentPressure": 0,
+      "commerceCharacter": 80,
+      "livingPop": {
+        "weekdayDay": 30704,
+        "weekdayNight": 29636,
+        "weekendDay": 27118,
+        "weekendNight": 28417
+      },
+      "satisfaction": 60,
+      "satisfactionFactors": {
+        "economy": 50,
+        "transport": 53,
+        "housing": 65,
+        "safety": 60,
+        "culture": 53,
+        "welfare": 55
+      },
+      "transitScore": 1.4,
+      "blockSummary": {
+        "total": 6,
+        "zoningConflicts": 0
+      }
+    },
+    {
+      "id": "seogang",
+      "name": "서강동",
+      "population": 24250,
+      "populationByAge": {
+        "child": 1386,
+        "teen": 1663,
+        "youth": 6718,
+        "midAge": 5436,
+        "senior": 5200,
+        "elderly": 3847
+      },
+      "households": 12005,
+      "businesses": 2821,
+      "workers": 11017,
+      "avgWorkersPerBiz": 3.9,
+      "commerceVitality": 32,
+      "rentPressure": 0,
+      "commerceCharacter": 80,
+      "livingPop": {
+        "weekdayDay": 24386,
+        "weekdayNight": 26567,
+        "weekendDay": 24240,
+        "weekendNight": 26255
+      },
+      "satisfaction": 60,
+      "satisfactionFactors": {
+        "economy": 50,
+        "transport": 50,
+        "housing": 65,
+        "safety": 60,
+        "culture": 53,
+        "welfare": 55
+      },
+      "transitScore": 0,
+      "blockSummary": {
+        "total": 7,
+        "zoningConflicts": 2
+      }
+    },
+    {
+      "id": "seogyo",
+      "name": "서교동",
+      "population": 23477,
+      "populationByAge": {
+        "child": 579,
+        "teen": 963,
+        "youth": 8612,
+        "midAge": 5426,
+        "senior": 4318,
+        "elderly": 3579
+      },
+      "households": 14859,
+      "businesses": 13643,
+      "workers": 61995,
+      "avgWorkersPerBiz": 4.5,
+      "commerceVitality": 100,
+      "rentPressure": 0.5,
+      "commerceCharacter": 70,
+      "livingPop": {
+        "weekdayDay": 91034,
+        "weekdayNight": 50067,
+        "weekendDay": 90654,
+        "weekendNight": 54492
+      },
+      "satisfaction": 81,
+      "satisfactionFactors": {
+        "economy": 80,
+        "transport": 85,
+        "housing": 65,
+        "safety": 60,
+        "culture": 67,
+        "welfare": 55
+      },
+      "transitScore": 24.7,
+      "blockSummary": {
+        "total": 7,
+        "zoningConflicts": 1
+      }
+    },
+    {
+      "id": "sinsu",
+      "name": "신수동",
+      "population": 21905,
+      "populationByAge": {
+        "child": 1281,
+        "teen": 1744,
+        "youth": 4921,
+        "midAge": 5021,
+        "senior": 5154,
+        "elderly": 3784
+      },
+      "households": 9957,
+      "businesses": 2301,
+      "workers": 7410,
+      "avgWorkersPerBiz": 3.2,
+      "commerceVitality": 30,
+      "rentPressure": 0,
+      "commerceCharacter": 80,
+      "livingPop": {
+        "weekdayDay": 14345,
+        "weekdayNight": 16366,
+        "weekendDay": 15243,
+        "weekendNight": 15957
+      },
+      "satisfaction": 59,
+      "satisfactionFactors": {
+        "economy": 48,
+        "transport": 54,
+        "housing": 65,
+        "safety": 60,
+        "culture": 53,
+        "welfare": 55
+      },
+      "transitScore": 1.8,
+      "blockSummary": {
+        "total": 5,
+        "zoningConflicts": 0
+      }
+    },
+    {
+      "id": "yonggang",
+      "name": "용강동",
+      "population": 21083,
+      "populationByAge": {
+        "child": 1696,
+        "teen": 2238,
+        "youth": 3398,
+        "midAge": 5926,
+        "senior": 4463,
+        "elderly": 3362
+      },
+      "households": 9207,
+      "businesses": 4325,
+      "workers": 23976,
+      "avgWorkersPerBiz": 5.5,
+      "commerceVitality": 45,
+      "rentPressure": 0,
+      "commerceCharacter": 80,
+      "livingPop": {
+        "weekdayDay": 25771,
+        "weekdayNight": 23811,
+        "weekendDay": 20149,
+        "weekendNight": 23185
+      },
+      "satisfaction": 67,
+      "satisfactionFactors": {
+        "economy": 60,
+        "transport": 50,
+        "housing": 65,
+        "safety": 60,
+        "culture": 56,
+        "welfare": 55
+      },
+      "transitScore": 0,
+      "blockSummary": {
+        "total": 6,
+        "zoningConflicts": 0
+      }
+    },
+    {
+      "id": "dohwa",
+      "name": "도화동",
+      "population": 20225,
+      "populationByAge": {
+        "child": 1148,
+        "teen": 1397,
+        "youth": 4318,
+        "midAge": 4478,
+        "senior": 4743,
+        "elderly": 4141
+      },
+      "households": 9110,
+      "businesses": 3168,
+      "workers": 18589,
+      "avgWorkersPerBiz": 5.9,
+      "commerceVitality": 38,
+      "rentPressure": 0,
+      "commerceCharacter": 80,
+      "livingPop": {
+        "weekdayDay": 17937,
+        "weekdayNight": 14759,
+        "weekendDay": 17664,
+        "weekendNight": 14464
+      },
+      "satisfaction": 60,
+      "satisfactionFactors": {
+        "economy": 57,
+        "transport": 56,
+        "housing": 55,
+        "safety": 60,
+        "culture": 55,
+        "welfare": 45
+      },
+      "transitScore": 2.8,
+      "blockSummary": {
+        "total": 5,
+        "zoningConflicts": 0
+      }
+    },
+    {
+      "id": "mangwon1",
+      "name": "망원1동",
+      "population": 18426,
+      "populationByAge": {
+        "child": 584,
+        "teen": 922,
+        "youth": 4974,
+        "midAge": 4133,
+        "senior": 4052,
+        "elderly": 3761
+      },
+      "households": 9801,
+      "businesses": 2846,
+      "workers": 6955,
+      "avgWorkersPerBiz": 2.4,
+      "commerceVitality": 38,
+      "rentPressure": 0,
+      "commerceCharacter": 80,
+      "livingPop": {
+        "weekdayDay": 17311,
+        "weekdayNight": 21474,
+        "weekendDay": 21098,
+        "weekendNight": 21659
+      },
+      "satisfaction": 55,
+      "satisfactionFactors": {
+        "economy": 49,
+        "transport": 56,
+        "housing": 55,
+        "safety": 60,
+        "culture": 55,
+        "welfare": 45
+      },
+      "transitScore": 3.2,
+      "blockSummary": {
+        "total": 6,
+        "zoningConflicts": 1
+      }
+    },
+    {
+      "id": "seongsan1",
+      "name": "성산1동",
+      "population": 18301,
+      "populationByAge": {
+        "child": 564,
+        "teen": 1181,
+        "youth": 4759,
+        "midAge": 4217,
+        "senior": 4213,
+        "elderly": 3367
+      },
+      "households": 9337,
+      "businesses": 2696,
+      "workers": 12369,
+      "avgWorkersPerBiz": 4.6,
+      "commerceVitality": 37,
+      "rentPressure": 0,
+      "commerceCharacter": 80,
+      "livingPop": {
+        "weekdayDay": 19043,
+        "weekdayNight": 21397,
+        "weekendDay": 20089,
+        "weekendNight": 20968
+      },
+      "satisfaction": 57,
+      "satisfactionFactors": {
+        "economy": 53,
+        "transport": 52,
+        "housing": 55,
+        "safety": 60,
+        "culture": 54,
+        "welfare": 55
+      },
+      "transitScore": 1.2,
+      "blockSummary": {
+        "total": 6,
+        "zoningConflicts": 2
+      }
+    },
+    {
+      "id": "mangwon2",
+      "name": "망원2동",
+      "population": 17204,
+      "populationByAge": {
+        "child": 665,
+        "teen": 1258,
+        "youth": 3969,
+        "midAge": 3843,
+        "senior": 3999,
+        "elderly": 3470
+      },
+      "households": 8002,
+      "businesses": 2108,
+      "workers": 5214,
+      "avgWorkersPerBiz": 2.5,
+      "commerceVitality": 33,
+      "rentPressure": 0,
+      "commerceCharacter": 80,
+      "livingPop": {
+        "weekdayDay": 12819,
+        "weekdayNight": 15920,
+        "weekendDay": 15528,
+        "weekendNight": 16246
+      },
+      "satisfaction": 53,
+      "satisfactionFactors": {
+        "economy": 48,
+        "transport": 50,
+        "housing": 55,
+        "safety": 60,
+        "culture": 54,
+        "welfare": 45
+      },
+      "transitScore": 0,
+      "blockSummary": {
+        "total": 5,
+        "zoningConflicts": 0
+      }
+    },
+    {
+      "id": "yeomni",
+      "name": "염리동",
+      "population": 16780,
+      "populationByAge": {
+        "child": 1206,
+        "teen": 1826,
+        "youth": 3585,
+        "midAge": 4399,
+        "senior": 3443,
+        "elderly": 2321
+      },
+      "households": 7769,
+      "businesses": 1052,
+      "workers": 5306,
+      "avgWorkersPerBiz": 5,
+      "commerceVitality": 24,
+      "rentPressure": 0,
+      "commerceCharacter": 80,
+      "livingPop": {
+        "weekdayDay": 17303,
+        "weekdayNight": 19059,
+        "weekendDay": 15715,
+        "weekendNight": 18297
+      },
+      "satisfaction": 58,
+      "satisfactionFactors": {
+        "economy": 48,
+        "transport": 50,
+        "housing": 65,
+        "safety": 60,
+        "culture": 52,
+        "welfare": 55
+      },
+      "transitScore": 0,
+      "blockSummary": {
+        "total": 5,
+        "zoningConflicts": 0
+      }
+    },
+    {
+      "id": "hapjeong",
+      "name": "합정동",
+      "population": 15602,
+      "populationByAge": {
+        "child": 488,
+        "teen": 706,
+        "youth": 4633,
+        "midAge": 3819,
+        "senior": 3123,
+        "elderly": 2833
+      },
+      "households": 8765,
+      "businesses": 4331,
+      "workers": 13328,
+      "avgWorkersPerBiz": 3.1,
+      "commerceVitality": 56,
+      "rentPressure": 0.06,
+      "commerceCharacter": 80,
+      "livingPop": {
+        "weekdayDay": 20419,
+        "weekdayNight": 15741,
+        "weekendDay": 19634,
+        "weekendNight": 15356
+      },
+      "satisfaction": 63,
+      "satisfactionFactors": {
+        "economy": 56,
+        "transport": 74,
+        "housing": 55,
+        "safety": 60,
+        "culture": 58,
+        "welfare": 55
+      },
+      "transitScore": 12.2,
+      "blockSummary": {
+        "total": 6,
+        "zoningConflicts": 1
+      }
+    },
+    {
+      "id": "daeheung",
+      "name": "대흥동",
+      "population": 14212,
+      "populationByAge": {
+        "child": 486,
+        "teen": 875,
+        "youth": 5006,
+        "midAge": 2803,
+        "senior": 2940,
+        "elderly": 2102
+      },
+      "households": 8561,
+      "businesses": 2187,
+      "workers": 9867,
+      "avgWorkersPerBiz": 4.5,
+      "commerceVitality": 38,
+      "rentPressure": 0,
+      "commerceCharacter": 80,
+      "livingPop": {
+        "weekdayDay": 25906,
+        "weekdayNight": 19690,
+        "weekendDay": 22803,
+        "weekendNight": 18303
+      },
+      "satisfaction": 63,
+      "satisfactionFactors": {
+        "economy": 54,
+        "transport": 54,
+        "housing": 65,
+        "safety": 60,
+        "culture": 55,
+        "welfare": 55
+      },
+      "transitScore": 1.8,
+      "blockSummary": {
+        "total": 5,
+        "zoningConflicts": 0
+      }
+    },
+    {
+      "id": "yeonnam",
+      "name": "연남동",
+      "population": 13762,
+      "populationByAge": {
+        "child": 416,
+        "teen": 607,
+        "youth": 4312,
+        "midAge": 3169,
+        "senior": 2694,
+        "elderly": 2564
+      },
+      "households": 8095,
+      "businesses": 3135,
+      "workers": 8309,
+      "avgWorkersPerBiz": 2.7,
+      "commerceVitality": 48,
+      "rentPressure": 0,
+      "commerceCharacter": 80,
+      "livingPop": {
+        "weekdayDay": 16122,
+        "weekdayNight": 16473,
+        "weekendDay": 18692,
+        "weekendNight": 16620
+      },
+      "satisfaction": 56,
+      "satisfactionFactors": {
+        "economy": 52,
+        "transport": 50,
+        "housing": 55,
+        "safety": 60,
+        "culture": 57,
+        "welfare": 55
+      },
+      "transitScore": 0,
+      "blockSummary": {
+        "total": 6,
+        "zoningConflicts": 2
+      }
+    }
+  ],
+  "finance": {
+    "totalBudget": 2188,
+    "mandatorySpend": 1094,
+    "freeBudget": 1094,
+    "allocation": {
+      "economy": 15,
+      "transport": 15,
+      "culture": 10,
+      "environment": 10,
+      "education": 15,
+      "welfare": 20,
+      "renewal": 15
+    },
+    "revenue": {
+      "localTax": 613,
+      "grantFromCity": 700,
+      "subsidy": 750,
+      "otherIncome": 125
+    },
+    "fiscalIndependence": 28
+  },
+  "industryBreakdown": {
+    "agriculture_forestry_fishing": {
+      "code": "A",
+      "name": "농업 임업 및 어업",
+      "establishments": 6,
+      "workers": 13,
+      "estPct": 0,
+      "workerPct": 0
+    },
+    "manufacturing": {
+      "code": "C",
+      "name": "제조업",
+      "establishments": 1945,
+      "workers": 5412,
+      "estPct": 3.5,
+      "workerPct": 2
+    },
+    "electricity_gas": {
+      "code": "D",
+      "name": "전기 가스 증기 및 공기조절 공급업",
+      "establishments": 23,
+      "workers": 517,
+      "estPct": 0,
+      "workerPct": 0.2
+    },
+    "water_sewage": {
+      "code": "E",
+      "name": "수도 하수 및 폐기물 처리 원료 재생업",
+      "establishments": 50,
+      "workers": 430,
+      "estPct": 0.1,
+      "workerPct": 0.2
+    },
+    "construction": {
+      "code": "F",
+      "name": "건설업",
+      "establishments": 2897,
+      "workers": 18168,
+      "estPct": 5.2,
+      "workerPct": 6.6
+    },
+    "wholesale_retail": {
+      "code": "G",
+      "name": "도매 및 소매업",
+      "establishments": 12311,
+      "workers": 39517,
+      "estPct": 22.2,
+      "workerPct": 14.4
+    },
+    "transportation_storage": {
+      "code": "H",
+      "name": "운수 및 창고업",
+      "establishments": 4099,
+      "workers": 11588,
+      "estPct": 7.4,
+      "workerPct": 4.2
+    },
+    "accommodation_food": {
+      "code": "I",
+      "name": "숙박 및 음식점업",
+      "establishments": 9111,
+      "workers": 26776,
+      "estPct": 16.4,
+      "workerPct": 9.7
+    },
+    "information_communication": {
+      "code": "J",
+      "name": "정보통신업",
+      "establishments": 5367,
+      "workers": 52213,
+      "estPct": 9.7,
+      "workerPct": 19
+    },
+    "finance_insurance": {
+      "code": "K",
+      "name": "금융 및 보험업",
+      "establishments": 827,
+      "workers": 10480,
+      "estPct": 1.5,
+      "workerPct": 3.8
+    },
+    "real_estate": {
+      "code": "L",
+      "name": "부동산업",
+      "establishments": 3358,
+      "workers": 8314,
+      "estPct": 6,
+      "workerPct": 3
+    },
+    "professional_science_tech": {
+      "code": "M",
+      "name": "전문 과학 및 기술 서비스업",
+      "establishments": 4828,
+      "workers": 24986,
+      "estPct": 8.7,
+      "workerPct": 9.1
+    },
+    "business_support": {
+      "code": "N",
+      "name": "사업시설 관리 사업 지원 및 임대 서비스업",
+      "establishments": 1759,
+      "workers": 25747,
+      "estPct": 3.2,
+      "workerPct": 9.4
+    },
+    "public_admin": {
+      "code": "O",
+      "name": "공공행정 국방 및 사회보장 행정",
+      "establishments": 62,
+      "workers": 6458,
+      "estPct": 0.1,
+      "workerPct": 2.4
+    },
+    "education": {
+      "code": "P",
+      "name": "교육 서비스업",
+      "establishments": 2438,
+      "workers": 16376,
+      "estPct": 4.4,
+      "workerPct": 6
+    },
+    "health_social": {
+      "code": "Q",
+      "name": "보건업 및 사회복지 서비스업",
+      "establishments": 1347,
+      "workers": 13395,
+      "estPct": 2.4,
+      "workerPct": 4.9
+    },
+    "arts_sports_leisure": {
+      "code": "R",
+      "name": "예술 스포츠 및 여가관련 서비스업",
+      "establishments": 1421,
+      "workers": 4201,
+      "estPct": 2.6,
+      "workerPct": 1.5
+    },
+    "other_services": {
+      "code": "S",
+      "name": "협회 및 단체 수리 및 기타 개인서비스업",
+      "establishments": 3667,
+      "workers": 10087,
+      "estPct": 6.6,
+      "workerPct": 3.7
+    }
+  }
+}

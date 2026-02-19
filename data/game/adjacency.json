@@ -1,0 +1,128 @@
+{
+  "meta": {
+    "description": "마포구 16개 동 인접 행렬. 1.0=직접 인접, 0.3=2차 인접 (도보/생활권 공유)",
+    "source": "numerical-design-v1.md 5.1절 + 마포구 행정동 지도 기반",
+    "clusters": {
+      "hongdae_belt": ["seogyo", "hapjeong", "yeonnam", "mangwon1"],
+      "gongdeok_office": ["gongdeok", "dohwa", "ahyeon", "yonggang"],
+      "seongsan_sangam": ["seongsan1", "seongsan2", "sangam"],
+      "seogang_daeheung": ["seogang", "daeheung", "sinsu", "yeomni"]
+    }
+  },
+  "adjacency": {
+    "gongdeok": {
+      "dohwa": 1.0,
+      "ahyeon": 1.0,
+      "yonggang": 1.0,
+      "daeheung": 1.0,
+      "sinsu": 0.3,
+      "seogang": 0.3
+    },
+    "ahyeon": {
+      "gongdeok": 1.0,
+      "daeheung": 1.0,
+      "yeomni": 1.0,
+      "dohwa": 0.3,
+      "seogang": 0.3
+    },
+    "dohwa": {
+      "gongdeok": 1.0,
+      "yonggang": 1.0,
+      "sinsu": 0.3,
+      "ahyeon": 0.3
+    },
+    "yonggang": {
+      "gongdeok": 1.0,
+      "dohwa": 1.0,
+      "sinsu": 1.0,
+      "seogang": 0.3,
+      "daeheung": 0.3
+    },
+    "daeheung": {
+      "gongdeok": 1.0,
+      "ahyeon": 1.0,
+      "seogang": 1.0,
+      "sinsu": 1.0,
+      "yeomni": 0.3,
+      "seogyo": 0.3
+    },
+    "yeomni": {
+      "ahyeon": 1.0,
+      "daeheung": 0.3,
+      "sinsu": 0.3
+    },
+    "sinsu": {
+      "daeheung": 1.0,
+      "seogang": 1.0,
+      "yonggang": 1.0,
+      "gongdeok": 0.3,
+      "seogyo": 0.3
+    },
+    "seogang": {
+      "daeheung": 1.0,
+      "sinsu": 1.0,
+      "seogyo": 1.0,
+      "hapjeong": 0.3,
+      "gongdeok": 0.3,
+      "yonggang": 0.3
+    },
+    "seogyo": {
+      "hapjeong": 1.0,
+      "yeonnam": 1.0,
+      "seogang": 1.0,
+      "daeheung": 0.3,
+      "sinsu": 0.3,
+      "mangwon1": 0.3
+    },
+    "hapjeong": {
+      "seogyo": 1.0,
+      "yeonnam": 1.0,
+      "mangwon1": 1.0,
+      "seogang": 0.3,
+      "mangwon2": 0.3
+    },
+    "mangwon1": {
+      "hapjeong": 1.0,
+      "mangwon2": 1.0,
+      "yeonnam": 0.3,
+      "seogyo": 0.3,
+      "seongsan1": 0.3
+    },
+    "mangwon2": {
+      "mangwon1": 1.0,
+      "seongsan1": 1.0,
+      "hapjeong": 0.3,
+      "seongsan2": 0.3
+    },
+    "yeonnam": {
+      "seogyo": 1.0,
+      "hapjeong": 1.0,
+      "seongsan2": 1.0,
+      "mangwon1": 0.3,
+      "seongsan1": 0.3
+    },
+    "seongsan1": {
+      "seongsan2": 1.0,
+      "sangam": 1.0,
+      "mangwon2": 1.0,
+      "mangwon1": 0.3,
+      "yeonnam": 0.3
+    },
+    "seongsan2": {
+      "seongsan1": 1.0,
+      "sangam": 1.0,
+      "yeonnam": 1.0,
+      "mangwon2": 0.3
+    },
+    "sangam": {
+      "seongsan1": 1.0,
+      "seongsan2": 1.0
+    }
+  },
+  "spilloverRates": {
+    "rent": 0.3,
+    "tourism": 0.2,
+    "crime": 0.15,
+    "infrastructure": 0.4
+  }
+}
