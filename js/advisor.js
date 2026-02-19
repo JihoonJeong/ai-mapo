@@ -32,30 +32,62 @@ export function initAdvisor(state) {
 
 export function generateBriefing(state) {
   const turn = state.meta.turn;
-  const year = 2026 + Math.floor((turn - 1) / 4);
-  const quarter = ((turn - 1) % 4) + 1;
+  const year = state.meta.year;
+  const quarter = state.meta.quarter;
 
-  // Find notable changes
+  // Previous snapshot from history
+  const prev = state.history?.length > 0 ? state.history[state.history.length - 1] : null;
+
+  const totalPop = state.dongs.reduce((s, d) => s + d.population, 0);
+  const totalBiz = state.dongs.reduce((s, d) => s + d.businesses, 0);
+  const avgSat = Math.round(state.dongs.reduce((s, d) => s + d.satisfaction, 0) / state.dongs.length);
+
+  const popDelta = prev ? totalPop - prev.totalPopulation : 0;
+  const satDelta = prev ? avgSat - prev.avgSatisfaction : 0;
+
+  // Find notable dongs
   const sortedBySat = [...state.dongs].sort((a, b) => a.satisfaction - b.satisfaction);
   const lowestSat = sortedBySat[0];
   const highestSat = sortedBySat[sortedBySat.length - 1];
 
-  const avgSat = Math.round(state.dongs.reduce((s, d) => s + d.satisfaction, 0) / state.dongs.length);
+  let briefing = `${year}년 ${quarter}분기 브리핑 (턴 ${turn}/48)\n\n`;
 
-  let briefing = `📋 **${year}년 ${quarter}분기 브리핑** (턴 ${turn}/48)\n\n`;
-  briefing += `구청장님, 마포구 평균 만족도는 ${avgSat}점입니다.\n\n`;
-  briefing += `⚠️ **긴급**: ${lowestSat.name} 만족도가 ${lowestSat.satisfaction}으로 가장 낮습니다.`;
+  // Population change
+  if (popDelta !== 0) {
+    briefing += `인구 ${totalPop.toLocaleString()}명 (${popDelta >= 0 ? '+' : ''}${popDelta.toLocaleString()})\n`;
+  }
+  briefing += `만족도 평균 ${avgSat}점 (${satDelta >= 0 ? '+' : ''}${satDelta})\n`;
+  briefing += `재정자립도 ${state.finance.fiscalIndependence}%\n\n`;
 
+  // Low satisfaction warning
   if (lowestSat.satisfaction < 50) {
-    briefing += ` 주민 유출이 우려됩니다.`;
+    briefing += `[긴급] ${lowestSat.name} 만족도 ${lowestSat.satisfaction} — 주민 유출이 우려됩니다.\n`;
+  } else if (lowestSat.satisfaction < 60) {
+    briefing += `[주의] ${lowestSat.name} 만족도가 ${lowestSat.satisfaction}으로 가장 낮습니다.\n`;
   }
 
-  briefing += `\n\n✨ **기회**: ${highestSat.name}은 만족도 ${highestSat.satisfaction}으로 양호합니다.`;
+  // Best performing dong
+  briefing += `[양호] ${highestSat.name} 만족도 ${highestSat.satisfaction}\n`;
 
   // Rent pressure warning
-  const highRent = state.dongs.filter(d => d.rentPressure > 0.3);
+  const highRent = state.dongs.filter(d => d.rentPressure > 0.05);
   if (highRent.length > 0) {
-    briefing += `\n\n📊 임대료 압력이 높은 동: ${highRent.map(d => d.name).join(', ')}`;
+    briefing += `\n임대료 압력: ${highRent.map(d => `${d.name}(${(d.rentPressure * 100).toFixed(1)}%)`).join(', ')}`;
+  }
+
+  // Population change by dong (biggest changes)
+  if (prev?.dongs) {
+    const dongChanges = state.dongs.map(d => {
+      const prevDong = prev.dongs.find(pd => pd.id === d.id);
+      return { name: d.name, delta: prevDong ? d.population - prevDong.population : 0 };
+    }).filter(c => Math.abs(c.delta) > 100).sort((a, b) => b.delta - a.delta);
+
+    if (dongChanges.length > 0) {
+      const gains = dongChanges.filter(c => c.delta > 0).slice(0, 2);
+      const losses = dongChanges.filter(c => c.delta < 0).slice(-2);
+      if (gains.length) briefing += `\n인구 증가: ${gains.map(c => `${c.name}(+${c.delta})`).join(', ')}`;
+      if (losses.length) briefing += `\n인구 감소: ${losses.map(c => `${c.name}(${c.delta})`).join(', ')}`;
+    }
   }
 
   addMessage('advisor', briefing);

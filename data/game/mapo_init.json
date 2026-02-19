@@ -233,7 +233,7 @@
       "workers": 61995,
       "avgWorkersPerBiz": 4.5,
       "commerceVitality": 100,
-      "rentPressure": 0.5,
+      "rentPressure": 0.009,
       "commerceCharacter": 70,
       "livingPop": {
         "weekdayDay": 91034,
@@ -553,7 +553,7 @@
       "workers": 13328,
       "avgWorkersPerBiz": 3.1,
       "commerceVitality": 56,
-      "rentPressure": 0.06,
+      "rentPressure": 0,
       "commerceCharacter": 80,
       "livingPop": {
         "weekdayDay": 20419,

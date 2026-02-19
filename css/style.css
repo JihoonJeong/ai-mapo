@@ -405,8 +405,14 @@ body {
 .dashboard-ranking {
   padding: 8px 14px;
   overflow-y: auto;
-  max-height: 120px;
+  max-height: 280px;
+  min-height: 160px;
   flex-shrink: 0;
+}
+
+.dashboard-ranking canvas {
+  width: 100% !important;
+  max-height: 260px;
 }
 
 /* === ACTION PANEL === */

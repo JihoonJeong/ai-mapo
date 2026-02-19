@@ -134,8 +134,8 @@ for (const dongName of DONG_NAMES) {
   // Commerce vitality: normalize biz density to 0~100
   const commerceVitality = Math.round(Math.min(100, (bizDensity / maxBizDensity) * 85 + 15));
 
-  // Rent pressure: initial based on commerce vitality
-  const rentPressure = Math.round(Math.max(0, (commerceVitality - 50) * 0.01) * 100) / 100;
+  // Rent pressure: initial based on commerce vitality (threshold 70, low sensitivity)
+  const rentPressure = Math.round(Math.max(0, (commerceVitality - 70) * 0.0003) * 10000) / 10000;
 
   // Commerce character: default 80, seogyo gets 70 (already franchised)
   const commerceCharacter = dongId === 'seogyo' ? 70 : 80;

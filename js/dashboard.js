@@ -3,15 +3,18 @@
  */
 
 let trendChart = null;
+let rankChart = null;
 
 export function initDashboard(state) {
   renderSummary(state);
   initTrendChart(state);
+  initRankChart(state);
 }
 
 export function updateDashboard(state) {
   renderSummary(state);
   updateTrendChart(state);
+  updateRankChart(state);
 }
 
 function renderSummary(state) {
@@ -19,6 +22,7 @@ function renderSummary(state) {
   if (!container) return;
 
   const totalPop = state.dongs.reduce((s, d) => s + d.population, 0);
+  const totalBiz = state.dongs.reduce((s, d) => s + d.businesses, 0);
   const avgSat = Math.round(state.dongs.reduce((s, d) => s + d.satisfaction, 0) / state.dongs.length);
   const budget = state.finance.totalBudget;
   const fiscal = state.finance.fiscalIndependence;
@@ -27,6 +31,7 @@ function renderSummary(state) {
   const prev = state.history?.length > 0 ? state.history[state.history.length - 1] : null;
   const prevPop = prev?.totalPopulation || totalPop;
   const prevSat = prev?.avgSatisfaction || avgSat;
+  const prevFiscal = prev?.fiscalIndependence || fiscal;
 
   container.innerHTML = `
     <div class="summary-card">
@@ -37,14 +42,16 @@ function renderSummary(state) {
       </div>
     </div>
     <div class="summary-card">
-      <div class="summary-label">분기예산</div>
-      <div class="summary-value">${budget}억</div>
-      <div class="summary-delta delta-flat">자유 ${state.finance.freeBudget}억</div>
+      <div class="summary-label">사업체</div>
+      <div class="summary-value">${(totalBiz / 10000).toFixed(1)}만</div>
+      <div class="summary-delta delta-flat">종사자 ${(state.dongs.reduce((s, d) => s + d.workers, 0) / 10000).toFixed(1)}만</div>
     </div>
     <div class="summary-card">
       <div class="summary-label">재정자립도</div>
       <div class="summary-value">${fiscal}%</div>
-      <div class="summary-delta delta-flat">서울 평균 26%</div>
+      <div class="summary-delta ${fiscal >= prevFiscal ? 'delta-up' : 'delta-down'}">
+        ${fiscal >= prevFiscal ? '+' : ''}${fiscal - prevFiscal}%p
+      </div>
     </div>
     <div class="summary-card">
       <div class="summary-label">평균만족도</div>
@@ -56,6 +63,7 @@ function renderSummary(state) {
   `;
 }
 
+// === Trend Chart (시계열) ===
 function initTrendChart(state) {
   const canvas = document.getElementById('trend-chart');
   if (!canvas || typeof Chart === 'undefined') return;
@@ -76,6 +84,8 @@ function initTrendChart(state) {
           backgroundColor: '#dbeafe',
           tension: 0.3,
           yAxisID: 'y',
+          pointRadius: 3,
+          borderWidth: 2,
         },
         {
           label: '만족도',
@@ -84,6 +94,8 @@ function initTrendChart(state) {
           backgroundColor: '#dcfce7',
           tension: 0.3,
           yAxisID: 'y1',
+          pointRadius: 3,
+          borderWidth: 2,
         },
       ],
     },
@@ -120,15 +132,81 @@ function updateTrendChart(state) {
   const totalPop = state.dongs.reduce((s, d) => s + d.population, 0);
   const avgSat = Math.round(state.dongs.reduce((s, d) => s + d.satisfaction, 0) / state.dongs.length);
 
-  // Keep only last 8 data points visible
   trendChart.data.labels.push(`T${turn}`);
   trendChart.data.datasets[0].data.push(Math.round(totalPop / 10000 * 10) / 10);
   trendChart.data.datasets[1].data.push(avgSat);
 
-  if (trendChart.data.labels.length > 9) {
+  // Keep last 12 data points visible
+  if (trendChart.data.labels.length > 13) {
     trendChart.data.labels.shift();
     trendChart.data.datasets.forEach(ds => ds.data.shift());
   }
 
   trendChart.update();
+}
+
+// === Rank Chart (동별 만족도 순위 바 차트) ===
+function initRankChart(state) {
+  const canvas = document.getElementById('rank-chart');
+  if (!canvas || typeof Chart === 'undefined') return;
+
+  const sorted = [...state.dongs].sort((a, b) => b.satisfaction - a.satisfaction);
+  const labels = sorted.map(d => d.name);
+  const data = sorted.map(d => d.satisfaction);
+  const colors = data.map(v => {
+    if (v >= 70) return '#16a34a';
+    if (v >= 55) return '#2563eb';
+    if (v >= 40) return '#d97706';
+    return '#dc2626';
+  });
+
+  rankChart = new Chart(canvas, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: '만족도',
+        data,
+        backgroundColor: colors,
+        borderWidth: 0,
+        borderRadius: 3,
+      }],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      indexAxis: 'y',
+      plugins: {
+        legend: { display: false },
+      },
+      scales: {
+        x: {
+          min: 0,
+          max: 100,
+          ticks: { font: { size: 10 } },
+          grid: { color: 'rgba(0,0,0,0.05)' },
+        },
+        y: {
+          ticks: { font: { size: 10 } },
+          grid: { display: false },
+        },
+      },
+    },
+  });
+}
+
+function updateRankChart(state) {
+  if (!rankChart) return;
+
+  const sorted = [...state.dongs].sort((a, b) => b.satisfaction - a.satisfaction);
+  rankChart.data.labels = sorted.map(d => d.name);
+  rankChart.data.datasets[0].data = sorted.map(d => d.satisfaction);
+  rankChart.data.datasets[0].backgroundColor = sorted.map(d => {
+    if (d.satisfaction >= 70) return '#16a34a';
+    if (d.satisfaction >= 55) return '#2563eb';
+    if (d.satisfaction >= 40) return '#d97706';
+    return '#dc2626';
+  });
+
+  rankChart.update();
 }
