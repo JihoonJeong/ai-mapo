@@ -1,0 +1,188 @@
+{
+  "metadata": {
+    "source": "행정안전부 주민등록 인구통계 (via KOSIS Open API, superkts.com, mapo.go.kr)",
+    "reference_date": "2026-01-31",
+    "collected_date": "2026-02-19",
+    "notes": "총인구/성별은 2026년 1월 KOSIS Open API 확정 데이터. 세대수는 서울시 기본통계(KOSIS DT_201004_O020003) 2023년 확정 데이터 기반, 2026-01 인구에 세대당인구비율 적용하여 산출.",
+    "sources": {
+      "total_population": "superkts.com/population/search?s=서울특별시+마포구 (2026-01 행정안전부 데이터)",
+      "mapo_gu_overview": "mapo.go.kr 구정현황 (인구 364,638명, 180,084세대, 남 171,043명)",
+      "ahyeon_dong_detail": "dokdokinfo.kr (2025-10-31 기준)",
+      "dohwa_dong_detail": "mapo.go.kr/site/dohwa/content/dong0201",
+      "gender_all_districts": "KOSIS Open API DT_1B04005N (2026-01 확정)",
+      "households_all_districts": "KOSIS Open API orgId=201 DT_201004_O020003 (2023 확정)"
+    }
+  },
+  "district_total": {
+    "name": "마포구",
+    "total_population": 357232,
+    "male_population": 165786,
+    "female_population": 191446,
+    "households": 177727,
+    "persons_per_household": 2.01,
+    "note": "총인구 357,232명 (2026-01). 성별은 KOSIS Open API 확정. 세대수는 2023 서울시통계 세대당인구(2.01명) 비율 적용.",
+    "households_source": "2023 KOSIS 확정 세대당인구 2.01명 적용 (2023 실제: 181,090세대)"
+  },
+  "districts": {
+    "공덕동": {
+      "total_population": 35875,
+      "male_population": 16648,
+      "female_population": 19227,
+      "households": 18304,
+      "persons_per_household": 1.96,
+      "gender_breakdown_estimated": false,
+      "households_estimated": false,
+      "note": "성별은 KOSIS 확정. 세대수는 2023 서울시통계 세대당인구(1.96명) 비율 적용."
+    },
+    "아현동": {
+      "total_population": 28956,
+      "male_population": 13379,
+      "female_population": 15577,
+      "households": 12269,
+      "persons_per_household": 2.36,
+      "gender_breakdown_estimated": false,
+      "households_estimated": false,
+      "note": "성별은 KOSIS 확정. 세대수는 2023 서울시통계 세대당인구(2.36명) 비율 적용."
+    },
+    "도화동": {
+      "total_population": 20225,
+      "male_population": 9563,
+      "female_population": 10662,
+      "households": 9110,
+      "persons_per_household": 2.22,
+      "gender_breakdown_estimated": false,
+      "households_estimated": false,
+      "note": "성별은 KOSIS 확정. 세대수는 2023 서울시통계 세대당인구(2.22명) 비율 적용."
+    },
+    "용강동": {
+      "total_population": 21083,
+      "male_population": 9819,
+      "female_population": 11264,
+      "households": 9207,
+      "persons_per_household": 2.29,
+      "gender_breakdown_estimated": false,
+      "households_estimated": false,
+      "note": "성별은 KOSIS 확정. 세대수는 2023 서울시통계 세대당인구(2.29명) 비율 적용."
+    },
+    "대흥동": {
+      "total_population": 14212,
+      "male_population": 6773,
+      "female_population": 7439,
+      "households": 8561,
+      "persons_per_household": 1.66,
+      "gender_breakdown_estimated": false,
+      "households_estimated": false,
+      "note": "성별은 KOSIS 확정. 세대수는 2023 서울시통계 세대당인구(1.66명) 비율 적용."
+    },
+    "염리동": {
+      "total_population": 16780,
+      "male_population": 7986,
+      "female_population": 8794,
+      "households": 7769,
+      "persons_per_household": 2.16,
+      "gender_breakdown_estimated": false,
+      "households_estimated": false,
+      "note": "성별은 KOSIS 확정. 세대수는 2023 서울시통계 세대당인구(2.16명) 비율 적용."
+    },
+    "신수동": {
+      "total_population": 21905,
+      "male_population": 10654,
+      "female_population": 11251,
+      "households": 9957,
+      "persons_per_household": 2.2,
+      "gender_breakdown_estimated": false,
+      "households_estimated": false,
+      "note": "성별은 KOSIS 확정. 세대수는 2023 서울시통계 세대당인구(2.2명) 비율 적용."
+    },
+    "서강동": {
+      "total_population": 24250,
+      "male_population": 11560,
+      "female_population": 12690,
+      "households": 12005,
+      "persons_per_household": 2.02,
+      "gender_breakdown_estimated": false,
+      "households_estimated": false,
+      "note": "성별은 KOSIS 확정. 세대수는 2023 서울시통계 세대당인구(2.02명) 비율 적용."
+    },
+    "서교동": {
+      "total_population": 23477,
+      "male_population": 10686,
+      "female_population": 12791,
+      "households": 14859,
+      "persons_per_household": 1.58,
+      "gender_breakdown_estimated": false,
+      "households_estimated": false,
+      "note": "성별은 KOSIS 확정. 세대수는 2023 서울시통계 세대당인구(1.58명) 비율 적용."
+    },
+    "합정동": {
+      "total_population": 15602,
+      "male_population": 7108,
+      "female_population": 8494,
+      "households": 8765,
+      "persons_per_household": 1.78,
+      "gender_breakdown_estimated": false,
+      "households_estimated": false,
+      "note": "성별은 KOSIS 확정. 세대수는 2023 서울시통계 세대당인구(1.78명) 비율 적용."
+    },
+    "망원1동": {
+      "total_population": 18426,
+      "male_population": 8518,
+      "female_population": 9908,
+      "households": 9801,
+      "persons_per_household": 1.88,
+      "gender_breakdown_estimated": false,
+      "households_estimated": false,
+      "note": "성별은 KOSIS 확정. 세대수는 2023 서울시통계 세대당인구(1.88명) 비율 적용."
+    },
+    "망원2동": {
+      "total_population": 17204,
+      "male_population": 7972,
+      "female_population": 9232,
+      "households": 8002,
+      "persons_per_household": 2.15,
+      "gender_breakdown_estimated": false,
+      "households_estimated": false,
+      "note": "성별은 KOSIS 확정. 세대수는 2023 서울시통계 세대당인구(2.15명) 비율 적용."
+    },
+    "연남동": {
+      "total_population": 13762,
+      "male_population": 6408,
+      "female_population": 7354,
+      "households": 8095,
+      "persons_per_household": 1.7,
+      "gender_breakdown_estimated": false,
+      "households_estimated": false,
+      "note": "성별은 KOSIS 확정. 세대수는 2023 서울시통계 세대당인구(1.7명) 비율 적용."
+    },
+    "성산1동": {
+      "total_population": 18301,
+      "male_population": 8365,
+      "female_population": 9936,
+      "households": 9337,
+      "persons_per_household": 1.96,
+      "gender_breakdown_estimated": false,
+      "households_estimated": false,
+      "note": "성별은 KOSIS 확정. 세대수는 2023 서울시통계 세대당인구(1.96명) 비율 적용."
+    },
+    "성산2동": {
+      "total_population": 38075,
+      "male_population": 16780,
+      "female_population": 21295,
+      "households": 19133,
+      "persons_per_household": 1.99,
+      "gender_breakdown_estimated": false,
+      "households_estimated": false,
+      "note": "성별은 KOSIS 확정. 세대수는 2023 서울시통계 세대당인구(1.99명) 비율 적용."
+    },
+    "상암동": {
+      "total_population": 29099,
+      "male_population": 13567,
+      "female_population": 15532,
+      "households": 12435,
+      "persons_per_household": 2.34,
+      "gender_breakdown_estimated": false,
+      "households_estimated": false,
+      "note": "성별은 KOSIS 확정. 세대수는 2023 서울시통계 세대당인구(2.34명) 비율 적용."
+    }
+  }
+}

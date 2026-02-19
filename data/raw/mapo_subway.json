@@ -1,0 +1,127 @@
+{
+  "metadata": {
+    "source": "서울교통공사 2024 수송통계, 서울 열린데이터광장(data.seoul.go.kr) OA-12914, 공공데이터포털(data.go.kr) 15044250, 나무위키 역별 문서",
+    "reference_date": "2024-01-01 ~ 2024-12-31",
+    "collected_date": "2026-02-19",
+    "notes": "일평균 승하차인원은 2024년 연간 기준. 승하차 합계(daily_avg_total)에서 boarding/alighting은 약 50:50 비율로 추정 분할. 환승역(공덕, 합정, 홍대입구, DMC)은 모든 노선 합산 총합 기준. 일부 역(마포구청, 월드컵경기장, 증산)은 2023년 데이터 기반 2024년 추정치. 정확한 승차/하차 분리 데이터는 data.seoul.go.kr에서 원본 CSV 다운로드 필요."
+  },
+  "stations": {
+    "공덕": {
+      "lines": ["5호선", "6호선", "경의중앙선", "공항철도"],
+      "district": "공덕동",
+      "daily_avg_boarding": 39225,
+      "daily_avg_alighting": 39225,
+      "daily_avg_total": 78450,
+      "data_year": 2024,
+      "notes": "4개 노선 환승역. 노선별 이용객: 6호선 > 5호선 > 경의중앙선 > 공항철도 순. 마포구 최대 교통 허브."
+    },
+    "마포": {
+      "lines": ["5호선"],
+      "district": "도화동",
+      "daily_avg_boarding": 14000,
+      "daily_avg_alighting": 14000,
+      "daily_avg_total": 28000,
+      "data_year": 2024,
+      "notes": "5호선 단독역. 2015년 3만명 돌파 후 2만명대 후반 유지. 마포대교 인근 업무/주거 혼합지역."
+    },
+    "애오개": {
+      "lines": ["5호선"],
+      "district": "아현동",
+      "daily_avg_boarding": 7200,
+      "daily_avg_alighting": 7200,
+      "daily_avg_total": 14400,
+      "data_year": 2024,
+      "notes": "5호선 단독역. 아현뉴타운 재개발 완료 후 이용객 회복세. 마포래미안푸르지오(4000세대) 인근."
+    },
+    "대흥": {
+      "lines": ["5호선"],
+      "district": "대흥동",
+      "daily_avg_boarding": 9155,
+      "daily_avg_alighting": 9155,
+      "daily_avg_total": 18310,
+      "data_year": 2024,
+      "notes": "5호선 단독역. 서강대학교 인근. 대흥동 학원가 위치."
+    },
+    "광흥창": {
+      "lines": ["6호선"],
+      "district": "신수동",
+      "daily_avg_boarding": 8762,
+      "daily_avg_alighting": 8762,
+      "daily_avg_total": 17524,
+      "data_year": 2024,
+      "notes": "6호선 단독역. 서강대학교 정문 최근접역. 용강동/신수동 주거지역 이용."
+    },
+    "상수": {
+      "lines": ["6호선"],
+      "district": "서교동",
+      "daily_avg_boarding": 10850,
+      "daily_avg_alighting": 10850,
+      "daily_avg_total": 21699,
+      "data_year": 2024,
+      "notes": "6호선 단독역. 상수동 카페거리, 서교동 예술문화지구 인접. 홍대 상권 확장 수혜."
+    },
+    "합정": {
+      "lines": ["2호선", "6호선"],
+      "district": "합정동",
+      "daily_avg_boarding": 47009,
+      "daily_avg_alighting": 47009,
+      "daily_avg_total": 94017,
+      "data_year": 2024,
+      "notes": "2호선+6호선 환승역. 6호선 내 이용객 1위. 합정동 상권, 출판문화단지 인접."
+    },
+    "홍대입구": {
+      "lines": ["2호선", "경의중앙선", "공항철도"],
+      "district": "서교동",
+      "daily_avg_boarding": 75185,
+      "daily_avg_alighting": 75185,
+      "daily_avg_total": 150369,
+      "data_year": 2024,
+      "notes": "3개 노선 환승역. 2024년 서울 지하철 전체 2위(1~8호선 기준). 홍대 상권 중심. 서울교통공사 발표 기준(2호선). 경의중앙선/공항철도 포함 시 더 많음."
+    },
+    "망원": {
+      "lines": ["6호선"],
+      "district": "망원1동",
+      "daily_avg_boarding": 15969,
+      "daily_avg_alighting": 15969,
+      "daily_avg_total": 31937,
+      "data_year": 2024,
+      "notes": "6호선 단독역. 6호선 비환승역 중 1위. 망원시장, 망리단길 상권. 주거+상업 혼합."
+    },
+    "마포구청": {
+      "lines": ["6호선"],
+      "district": "성산2동",
+      "daily_avg_boarding": 13250,
+      "daily_avg_alighting": 13250,
+      "daily_avg_total": 26500,
+      "data_year": 2024,
+      "notes": "6호선 단독역. 6호선 내 이용객 상위권(6위). 마포구청, 성산동 주거지역 이용. 2010년대 25000~26000명 수준에서 소폭 증가 추정."
+    },
+    "월드컵경기장": {
+      "lines": ["6호선"],
+      "district": "성산1동",
+      "daily_avg_boarding": 5900,
+      "daily_avg_alighting": 5900,
+      "daily_avg_total": 11800,
+      "data_year": 2024,
+      "notes": "6호선 단독역. 서울월드컵경기장 인근. 경기/행사일 수요 급증, 평일 수요 적음. 2022년 10,979명에서 소폭 증가 추정."
+    },
+    "디지털미디어시티": {
+      "lines": ["6호선", "경의중앙선", "공항철도"],
+      "district": "상암동",
+      "daily_avg_boarding": 29373,
+      "daily_avg_alighting": 29373,
+      "daily_avg_total": 58746,
+      "data_year": 2024,
+      "notes": "3개 노선 환승역. 노선별 이용객: 6호선 > 공항철도 > 경의중앙선 순. DMC 업무단지(MBC, CJ, YTN 등) 출퇴근 수요."
+    },
+    "증산": {
+      "lines": ["6호선"],
+      "district": "상암동",
+      "daily_avg_boarding": 9750,
+      "daily_avg_alighting": 9750,
+      "daily_avg_total": 19500,
+      "data_year": 2024,
+      "notes": "6호선 단독역. 은평구/마포구 경계. 2023년 19,041명 기반 2024년 추정. 상암동 주거지역 이용. 은평구 경계역이나 마포구 상암동 소재."
+    }
+  }
+}

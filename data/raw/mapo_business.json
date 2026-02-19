@@ -1,0 +1,609 @@
+{
+  "metadata": {
+    "source": "KOSIS Open API (서울특별시 기본통계, 전국사업체조사)",
+    "tables": {
+      "industry_by_district": {
+        "orgId": "201",
+        "tblId": "DT_201004_O040002",
+        "name": "사업체현황(산업대분류별 총괄)(2006년 이후)",
+        "reference_year": 2022
+      },
+      "dong_by_size": {
+        "orgId": "201",
+        "tblId": "DT_201004_O040003_2015",
+        "name": "사업체현황(종사자규모별/동별)(2015년 이후)",
+        "reference_year": 2020,
+        "note": "동별 데이터는 2020년이 최신 (2022-08-25 업데이트)"
+      }
+    },
+    "collected_date": "2026-02-19",
+    "notes": "산업대분류별 데이터는 2022년 기준, 동별 데이터는 2020년 기준. 연도 차이로 총계가 다를 수 있음."
+  },
+  "district_total": {
+    "name": "마포구",
+    "reference_year_industry": 2022,
+    "reference_year_dong": 2020,
+    "total_establishments": 55516,
+    "total_workers": 274678,
+    "workers_per_establishment": 4.9,
+    "top5_industries_by_establishments": [
+      {
+        "industry": "도매 및 소매업",
+        "establishments": 12311,
+        "pct": 22.2
+      },
+      {
+        "industry": "숙박 및 음식점업",
+        "establishments": 9111,
+        "pct": 16.4
+      },
+      {
+        "industry": "정보통신업",
+        "establishments": 5367,
+        "pct": 9.7
+      },
+      {
+        "industry": "전문 과학 및 기술 서비스업",
+        "establishments": 4828,
+        "pct": 8.7
+      },
+      {
+        "industry": "운수 및 창고업",
+        "establishments": 4099,
+        "pct": 7.4
+      }
+    ],
+    "top5_industries_by_workers": [
+      {
+        "industry": "정보통신업",
+        "workers": 52213,
+        "pct": 19.0
+      },
+      {
+        "industry": "도매 및 소매업",
+        "workers": 39517,
+        "pct": 14.4
+      },
+      {
+        "industry": "숙박 및 음식점업",
+        "workers": 26776,
+        "pct": 9.7
+      },
+      {
+        "industry": "사업시설 관리 사업 지원 및 임대 서비스업",
+        "workers": 25747,
+        "pct": 9.4
+      },
+      {
+        "industry": "전문 과학 및 기술 서비스업",
+        "workers": 24986,
+        "pct": 9.1
+      }
+    ],
+    "characteristics": {
+      "summary": "IT·미디어 산업 특화 자치구. 정보통신업 종사자 비율(19.0%)이 서울 평균을 크게 상회. 홍대·상암 DMC를 중심으로 문화콘텐츠·미디어·스타트업 생태계 형성.",
+      "strengths": [
+        "정보통신업 종사자 52,213명 (마포구 최대 산업, 19.0%)",
+        "전문·과학·기술 서비스업 24,986명 (9.1%)",
+        "홍대 상권 + 상암 DMC 이중 산업축",
+        "청년 창업·문화콘텐츠 집적지"
+      ],
+      "game_note": "마포구 경제의 핵심은 IT·미디어·문화산업 삼각축. 서교동(홍대)은 소규모 다업종, 상암동은 대기업·미디어 집적."
+    }
+  },
+  "industry_breakdown": {
+    "agriculture_forestry_fishing": {
+      "ksic_code": "A",
+      "name_kr": "농업 임업 및 어업",
+      "establishments": 6,
+      "workers": 13,
+      "establishment_pct": 0.0,
+      "worker_pct": 0.0
+    },
+    "mining": {
+      "ksic_code": "B",
+      "name_kr": "광업",
+      "establishments": 0,
+      "workers": 0,
+      "establishment_pct": 0.0,
+      "worker_pct": 0.0
+    },
+    "manufacturing": {
+      "ksic_code": "C",
+      "name_kr": "제조업",
+      "establishments": 1945,
+      "workers": 5412,
+      "establishment_pct": 3.5,
+      "worker_pct": 2.0
+    },
+    "electricity_gas": {
+      "ksic_code": "D",
+      "name_kr": "전기 가스 증기 및 공기조절 공급업",
+      "establishments": 23,
+      "workers": 517,
+      "establishment_pct": 0.0,
+      "worker_pct": 0.2
+    },
+    "water_sewage": {
+      "ksic_code": "E",
+      "name_kr": "수도 하수 및 폐기물 처리 원료 재생업",
+      "establishments": 50,
+      "workers": 430,
+      "establishment_pct": 0.1,
+      "worker_pct": 0.2
+    },
+    "construction": {
+      "ksic_code": "F",
+      "name_kr": "건설업",
+      "establishments": 2897,
+      "workers": 18168,
+      "establishment_pct": 5.2,
+      "worker_pct": 6.6
+    },
+    "wholesale_retail": {
+      "ksic_code": "G",
+      "name_kr": "도매 및 소매업",
+      "establishments": 12311,
+      "workers": 39517,
+      "establishment_pct": 22.2,
+      "worker_pct": 14.4
+    },
+    "transportation_storage": {
+      "ksic_code": "H",
+      "name_kr": "운수 및 창고업",
+      "establishments": 4099,
+      "workers": 11588,
+      "establishment_pct": 7.4,
+      "worker_pct": 4.2
+    },
+    "accommodation_food": {
+      "ksic_code": "I",
+      "name_kr": "숙박 및 음식점업",
+      "establishments": 9111,
+      "workers": 26776,
+      "establishment_pct": 16.4,
+      "worker_pct": 9.7
+    },
+    "information_communication": {
+      "ksic_code": "J",
+      "name_kr": "정보통신업",
+      "establishments": 5367,
+      "workers": 52213,
+      "establishment_pct": 9.7,
+      "worker_pct": 19.0
+    },
+    "finance_insurance": {
+      "ksic_code": "K",
+      "name_kr": "금융 및 보험업",
+      "establishments": 827,
+      "workers": 10480,
+      "establishment_pct": 1.5,
+      "worker_pct": 3.8
+    },
+    "real_estate": {
+      "ksic_code": "L",
+      "name_kr": "부동산업",
+      "establishments": 3358,
+      "workers": 8314,
+      "establishment_pct": 6.0,
+      "worker_pct": 3.0
+    },
+    "professional_science_tech": {
+      "ksic_code": "M",
+      "name_kr": "전문 과학 및 기술 서비스업",
+      "establishments": 4828,
+      "workers": 24986,
+      "establishment_pct": 8.7,
+      "worker_pct": 9.1
+    },
+    "business_support": {
+      "ksic_code": "N",
+      "name_kr": "사업시설 관리 사업 지원 및 임대 서비스업",
+      "establishments": 1759,
+      "workers": 25747,
+      "establishment_pct": 3.2,
+      "worker_pct": 9.4
+    },
+    "public_admin": {
+      "ksic_code": "O",
+      "name_kr": "공공행정 국방 및 사회보장 행정",
+      "establishments": 62,
+      "workers": 6458,
+      "establishment_pct": 0.1,
+      "worker_pct": 2.4
+    },
+    "education": {
+      "ksic_code": "P",
+      "name_kr": "교육 서비스업",
+      "establishments": 2438,
+      "workers": 16376,
+      "establishment_pct": 4.4,
+      "worker_pct": 6.0
+    },
+    "health_social": {
+      "ksic_code": "Q",
+      "name_kr": "보건업 및 사회복지 서비스업",
+      "establishments": 1347,
+      "workers": 13395,
+      "establishment_pct": 2.4,
+      "worker_pct": 4.9
+    },
+    "arts_sports_leisure": {
+      "ksic_code": "R",
+      "name_kr": "예술 스포츠 및 여가관련 서비스업",
+      "establishments": 1421,
+      "workers": 4201,
+      "establishment_pct": 2.6,
+      "worker_pct": 1.5
+    },
+    "other_services": {
+      "ksic_code": "S",
+      "name_kr": "협회 및 단체 수리 및 기타 개인서비스업",
+      "establishments": 3667,
+      "workers": 10087,
+      "establishment_pct": 6.6,
+      "worker_pct": 3.7
+    }
+  },
+  "districts": {
+    "용강동": {
+      "reference_year": 2020,
+      "total_establishments": 4325,
+      "total_workers": 23976,
+      "workers_per_establishment": 5.5,
+      "female_ceo_count": 1298,
+      "female_ceo_pct": 30.0,
+      "male_workers": 13964,
+      "female_workers": 10012,
+      "character": "업무·상업 중심",
+      "features": [
+        "마포대로 대형 오피스",
+        "대흥역·공덕역 사이",
+        "업무시설 밀집",
+        "높은 종사자 대비 사업체수"
+      ],
+      "game_tags": [
+        "business_hub",
+        "office_district",
+        "high_density"
+      ]
+    },
+    "대흥동": {
+      "reference_year": 2020,
+      "total_establishments": 2187,
+      "total_workers": 9867,
+      "workers_per_establishment": 4.5,
+      "female_ceo_count": 829,
+      "female_ceo_pct": 37.9,
+      "male_workers": 4841,
+      "female_workers": 5026,
+      "character": "대학가·상권",
+      "features": [
+        "서강대학교 인접",
+        "대흥역 상권",
+        "소규모 음식점·카페",
+        "주거·상업 혼합"
+      ],
+      "game_tags": [
+        "university_adjacent",
+        "commercial",
+        "mixed_use"
+      ]
+    },
+    "염리동": {
+      "reference_year": 2020,
+      "total_establishments": 1052,
+      "total_workers": 5306,
+      "workers_per_establishment": 5.0,
+      "female_ceo_count": 394,
+      "female_ceo_pct": 37.5,
+      "male_workers": 2813,
+      "female_workers": 2493,
+      "character": "주거 중심 소규모",
+      "features": [
+        "소금길 마을",
+        "저층 주거지",
+        "주민센터 커뮤니티",
+        "소규모 근린상업"
+      ],
+      "game_tags": [
+        "residential",
+        "community",
+        "small_scale"
+      ]
+    },
+    "신수동": {
+      "reference_year": 2020,
+      "total_establishments": 2301,
+      "total_workers": 7410,
+      "workers_per_establishment": 3.2,
+      "female_ceo_count": 786,
+      "female_ceo_pct": 34.2,
+      "male_workers": 4247,
+      "female_workers": 3163,
+      "character": "주거·근린상업",
+      "features": [
+        "경의선숲길 인접",
+        "소규모 상점가",
+        "주거 밀집",
+        "도보 생활권"
+      ],
+      "game_tags": [
+        "residential",
+        "neighborhood_commercial",
+        "walkable"
+      ]
+    },
+    "서교동": {
+      "reference_year": 2020,
+      "total_establishments": 13643,
+      "total_workers": 61995,
+      "workers_per_establishment": 4.5,
+      "female_ceo_count": 4629,
+      "female_ceo_pct": 33.9,
+      "male_workers": 31980,
+      "female_workers": 30015,
+      "character": "홍대·문화산업 핵심",
+      "features": [
+        "홍대입구역 상권 (마포구 최대)",
+        "클럽·라이브공연장",
+        "IT·스타트업·디자인 기업",
+        "관광 유동인구 최다"
+      ],
+      "game_tags": [
+        "entertainment",
+        "startup_hub",
+        "tourism",
+        "cultural_industry"
+      ]
+    },
+    "합정동": {
+      "reference_year": 2020,
+      "total_establishments": 4331,
+      "total_workers": 13328,
+      "workers_per_establishment": 3.1,
+      "female_ceo_count": 1475,
+      "female_ceo_pct": 34.1,
+      "male_workers": 7409,
+      "female_workers": 5919,
+      "character": "미디어·카페문화",
+      "features": [
+        "합정역 상권",
+        "MBC 상암 이전 후 미디어 기업",
+        "카페·베이커리 거리",
+        "한강공원 접근"
+      ],
+      "game_tags": [
+        "media",
+        "cafe_culture",
+        "waterfront",
+        "commercial"
+      ]
+    },
+    "망원1동": {
+      "reference_year": 2020,
+      "total_establishments": 2846,
+      "total_workers": 6955,
+      "workers_per_establishment": 2.4,
+      "female_ceo_count": 1045,
+      "female_ceo_pct": 36.7,
+      "male_workers": 3950,
+      "female_workers": 3005,
+      "character": "로컬브랜드·주거",
+      "features": [
+        "망원시장",
+        "망리단길",
+        "소규모 독립 매장",
+        "젊은 층 유입"
+      ],
+      "game_tags": [
+        "local_brand",
+        "traditional_market",
+        "trendy",
+        "residential"
+      ]
+    },
+    "망원2동": {
+      "reference_year": 2020,
+      "total_establishments": 2108,
+      "total_workers": 5214,
+      "workers_per_establishment": 2.5,
+      "female_ceo_count": 836,
+      "female_ceo_pct": 39.7,
+      "male_workers": 2754,
+      "female_workers": 2460,
+      "character": "주거 중심·한강접근",
+      "features": [
+        "한강공원 접근성",
+        "주거 밀집 지역",
+        "소규모 상가",
+        "생활 인프라"
+      ],
+      "game_tags": [
+        "residential",
+        "waterfront",
+        "neighborhood"
+      ]
+    },
+    "연남동": {
+      "reference_year": 2020,
+      "total_establishments": 3135,
+      "total_workers": 8309,
+      "workers_per_establishment": 2.7,
+      "female_ceo_count": 1231,
+      "female_ceo_pct": 39.3,
+      "male_workers": 4351,
+      "female_workers": 3958,
+      "character": "트렌디·경의선숲길",
+      "features": [
+        "연트럴파크(경의선숲길)",
+        "다국적 음식점",
+        "젊은 창업자 밀집",
+        "관광 명소"
+      ],
+      "game_tags": [
+        "trendy",
+        "tourism",
+        "food_culture",
+        "startup"
+      ]
+    },
+    "성산1동": {
+      "reference_year": 2020,
+      "total_establishments": 2696,
+      "total_workers": 12369,
+      "workers_per_establishment": 4.6,
+      "female_ceo_count": 857,
+      "female_ceo_pct": 31.8,
+      "male_workers": 8081,
+      "female_workers": 4288,
+      "character": "주거·중소기업",
+      "features": [
+        "월드컵경기장 인접",
+        "중소 제조·유통업",
+        "성산시장",
+        "주거 단지"
+      ],
+      "game_tags": [
+        "residential",
+        "sme",
+        "traditional_market",
+        "sports"
+      ]
+    },
+    "성산2동": {
+      "reference_year": 2020,
+      "total_establishments": 3456,
+      "total_workers": 13508,
+      "workers_per_establishment": 3.9,
+      "female_ceo_count": 1152,
+      "female_ceo_pct": 33.3,
+      "male_workers": 6964,
+      "female_workers": 6544,
+      "character": "대단지·교육",
+      "features": [
+        "대규모 아파트 단지",
+        "학교 밀집",
+        "성산대교 연결",
+        "인구 최다 (마포구)"
+      ],
+      "game_tags": [
+        "residential",
+        "education",
+        "large_apartment",
+        "family"
+      ]
+    },
+    "상암동": {
+      "reference_year": 2020,
+      "total_establishments": 4164,
+      "total_workers": 49107,
+      "workers_per_establishment": 11.8,
+      "female_ceo_count": 1341,
+      "female_ceo_pct": 32.2,
+      "male_workers": 28791,
+      "female_workers": 20316,
+      "character": "디지털미디어시티",
+      "features": [
+        "DMC (디지털미디어시티)",
+        "방송사 (MBC, SBS, CJ ENM)",
+        "IT·미디어 기업 집적",
+        "월드컵공원"
+      ],
+      "game_tags": [
+        "dmc",
+        "media_industry",
+        "it_hub",
+        "park"
+      ]
+    },
+    "도화동": {
+      "reference_year": 2020,
+      "total_establishments": 3168,
+      "total_workers": 18589,
+      "workers_per_establishment": 5.9,
+      "female_ceo_count": 1073,
+      "female_ceo_pct": 33.9,
+      "male_workers": 10512,
+      "female_workers": 8077,
+      "character": "주거·경공업 혼합",
+      "features": [
+        "소규모 제조업체",
+        "주거지 재개발 진행",
+        "마포구청 인접",
+        "도화공원"
+      ],
+      "game_tags": [
+        "mixed_use",
+        "light_industry",
+        "redevelopment"
+      ]
+    },
+    "서강동": {
+      "reference_year": 2020,
+      "total_establishments": 2821,
+      "total_workers": 11017,
+      "workers_per_establishment": 3.9,
+      "female_ceo_count": 1020,
+      "female_ceo_pct": 36.2,
+      "male_workers": 5743,
+      "female_workers": 5274,
+      "character": "대학가·문화",
+      "features": [
+        "서강대학교",
+        "신촌 상권 일부",
+        "교육·문화 시설",
+        "학생 유동 인구"
+      ],
+      "game_tags": [
+        "university",
+        "cultural",
+        "education"
+      ]
+    },
+    "공덕동": {
+      "reference_year": 2020,
+      "total_establishments": 3972,
+      "total_workers": 25284,
+      "workers_per_establishment": 6.4,
+      "female_ceo_count": 1381,
+      "female_ceo_pct": 34.8,
+      "male_workers": 11697,
+      "female_workers": 13587,
+      "character": "교통허브·업무지구",
+      "features": [
+        "공덕역 4개 노선 환승",
+        "마포대로 업무지구",
+        "대형 오피스 밀집",
+        "아파트 단지 병존"
+      ],
+      "game_tags": [
+        "business_hub",
+        "transport_hub",
+        "mixed_use"
+      ]
+    },
+    "아현동": {
+      "reference_year": 2020,
+      "total_establishments": 2489,
+      "total_workers": 12849,
+      "workers_per_establishment": 5.2,
+      "female_ceo_count": 885,
+      "female_ceo_pct": 35.6,
+      "male_workers": 7119,
+      "female_workers": 5730,
+      "character": "재개발·주거전환",
+      "features": [
+        "아현뉴타운 재개발 완료",
+        "대규모 아파트 단지",
+        "이대역 상권",
+        "고지대 주거지"
+      ],
+      "game_tags": [
+        "residential",
+        "redevelopment",
+        "university_adjacent"
+      ]
+    }
+  }
+}
