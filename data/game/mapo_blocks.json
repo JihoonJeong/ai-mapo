@@ -1,0 +1,1269 @@
+{
+  "meta": {
+    "version": "0.3",
+    "date": "2026-02-19",
+    "author": "Luca",
+    "description": "마포구 96개 구획 데이터. v0.1 초안 + v0.2 용도지역 보정 + v0.3 검증 완료.",
+    "totalBlocks": 96,
+    "totalDongs": 16
+  },
+  "typeDefinitions": {
+    "RES_VILLA": "빌라·다세대 저밀도 주거",
+    "RES_MIX": "주거 혼합 (빌라+상가+다세대)",
+    "RES_APT": "아파트 단지 (대단지 주거)",
+    "COM_MAIN": "주요 상업 (역세권 대로변, 법적 상업지역)",
+    "COM_LOCAL": "근린 상업 (골목상권, 카페거리)",
+    "COM_MARKET": "전통시장·상점가",
+    "BIZ_OFFICE": "업무시설·오피스",
+    "BIZ_MEDIA": "미디어·방송 (DMC)",
+    "TRANSIT": "교통 허브 (환승역, 대형역)",
+    "CULTURE": "문화·스포츠 시설",
+    "PARK": "공원·녹지",
+    "EDU": "교육 (대학, 학교 권역)",
+    "CIVIC": "행정·공공기관",
+    "INFRA": "인프라 (환경, 유틸리티)"
+  },
+  "dongs": [
+    {
+      "id": "gongdeok",
+      "name": "공덕동",
+      "population": 35875,
+      "households": 18304,
+      "character": "교통허브·업무·재개발",
+      "zoningProfile": { "residential": 94, "commercial": 6, "green": 0, "semiResidential": 8 },
+      "blocks": [
+        {
+          "id": "gongdeok_B1",
+          "name": "공덕역 환승허브",
+          "type": "TRANSIT",
+          "zoning": "일반상업+준주거",
+          "zoningConflict": false,
+          "slotCapacity": 3,
+          "facilities": ["공덕역(5·6·경의중앙·공항철도)"],
+          "traits": ["역세권", "환승허브", "유동인구_상"],
+          "weight": { "residentPop": 0.05, "livingPop": 0.30, "economy": 0.20, "satisfaction": 0.10 }
+        },
+        {
+          "id": "gongdeok_B2",
+          "name": "마포대로 업무지구",
+          "type": "BIZ_OFFICE",
+          "zoning": "일반상업+준주거",
+          "zoningConflict": false,
+          "slotCapacity": 3,
+          "facilities": ["S-OIL본사", "효성그룹본사", "서울서부지방법원", "한겨레신문사", "이마트 마포점"],
+          "traits": ["업무지구", "대기업", "공공기관", "대형마트"],
+          "weight": { "residentPop": 0.03, "livingPop": 0.25, "economy": 0.35, "satisfaction": 0.05 }
+        },
+        {
+          "id": "gongdeok_B3",
+          "name": "공덕시장 일대",
+          "type": "COM_MARKET",
+          "zoning": "준주거",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": ["공덕시장", "공덕순대타운", "족발골목"],
+          "traits": ["전통시장", "먹자골목", "젠트리피케이션_위험"],
+          "weight": { "residentPop": 0.10, "livingPop": 0.15, "economy": 0.15, "satisfaction": 0.15 }
+        },
+        {
+          "id": "gongdeok_B4",
+          "name": "신공덕 주거단지",
+          "type": "RES_APT",
+          "zoning": "제3종일반주거",
+          "zoningConflict": false,
+          "slotCapacity": 3,
+          "facilities": ["삼성래미안1~3차(1658세대)", "공덕자이(1164세대)"],
+          "traits": ["재개발완료", "신축아파트", "고소득"],
+          "weight": { "residentPop": 0.35, "livingPop": 0.10, "economy": 0.08, "satisfaction": 0.25 }
+        },
+        {
+          "id": "gongdeok_B5",
+          "name": "공덕 북측 주거",
+          "type": "RES_VILLA",
+          "zoning": "제2종일반주거(7층이하)",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": ["소의초등학교", "공덕초등학교"],
+          "traits": ["구주거지", "학교권"],
+          "weight": { "residentPop": 0.25, "livingPop": 0.05, "economy": 0.05, "satisfaction": 0.15 }
+        },
+        {
+          "id": "gongdeok_B6",
+          "name": "경의선숲길 공덕",
+          "type": "PARK",
+          "zoning": "자연녹지+준주거",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": ["경의선숲길(공덕~대흥 구간)"],
+          "traits": ["공원", "신흥상권", "산책로"],
+          "weight": { "residentPop": 0.02, "livingPop": 0.10, "economy": 0.10, "satisfaction": 0.15 }
+        },
+        {
+          "id": "gongdeok_B7",
+          "name": "마포대교·한강변",
+          "type": "RES_MIX",
+          "zoning": "제2종일반주거",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": ["마포대교 접근"],
+          "traits": ["한강접근", "교통요충"],
+          "weight": { "residentPop": 0.20, "livingPop": 0.05, "economy": 0.07, "satisfaction": 0.15 }
+        }
+      ]
+    },
+    {
+      "id": "ahyeon",
+      "name": "아현동",
+      "population": 28956,
+      "households": 12269,
+      "character": "뉴타운·고급주거",
+      "zoningProfile": { "residential": 96, "commercial": 4, "green": 0, "semiResidential": 16 },
+      "blocks": [
+        {
+          "id": "ahyeon_B1",
+          "name": "아현뉴타운 대단지",
+          "type": "RES_APT",
+          "zoning": "제3종일반주거+준주거",
+          "zoningConflict": false,
+          "slotCapacity": 3,
+          "facilities": ["마포래미안푸르지오(4000세대)", "마포롯데캐슬"],
+          "traits": ["뉴타운", "대단지", "고급주거", "고소득"],
+          "weight": { "residentPop": 0.35, "livingPop": 0.15, "economy": 0.10, "satisfaction": 0.30 }
+        },
+        {
+          "id": "ahyeon_B2",
+          "name": "애오개역·아현시장",
+          "type": "TRANSIT",
+          "zoning": "일반상업+준주거",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": ["애오개역(5호선)", "아현시장"],
+          "traits": ["역세권", "전통시장"],
+          "weight": { "residentPop": 0.05, "livingPop": 0.20, "economy": 0.15, "satisfaction": 0.10 }
+        },
+        {
+          "id": "ahyeon_B3",
+          "name": "마포로 대로변",
+          "type": "COM_LOCAL",
+          "zoning": "준주거+일반상업",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": ["LG마포빌딩"],
+          "traits": ["대로변상업", "오피스"],
+          "weight": { "residentPop": 0.05, "livingPop": 0.15, "economy": 0.30, "satisfaction": 0.05 }
+        },
+        {
+          "id": "ahyeon_B4",
+          "name": "아현동 구주택가",
+          "type": "RES_VILLA",
+          "zoning": "제2종일반주거(7층이하)",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": ["아현초등학교", "아현중학교"],
+          "traits": ["구주거지", "학교권", "저밀도"],
+          "weight": { "residentPop": 0.30, "livingPop": 0.05, "economy": 0.05, "satisfaction": 0.20 }
+        },
+        {
+          "id": "ahyeon_B5",
+          "name": "충정로 경계",
+          "type": "RES_MIX",
+          "zoning": "제2종일반주거+준주거",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": ["마포경찰서", "신용보증재단"],
+          "traits": ["공공기관", "서대문구_경계"],
+          "weight": { "residentPop": 0.15, "livingPop": 0.10, "economy": 0.10, "satisfaction": 0.10 }
+        },
+        {
+          "id": "ahyeon_B6",
+          "name": "이대역 방면",
+          "type": "RES_MIX",
+          "zoning": "준주거",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": ["마포그랑자이(1248세대)"],
+          "traits": ["신축아파트", "이대역_인접"],
+          "weight": { "residentPop": 0.10, "livingPop": 0.35, "economy": 0.30, "satisfaction": 0.25 }
+        }
+      ]
+    },
+    {
+      "id": "dohwa",
+      "name": "도화동",
+      "population": 20225,
+      "households": 9110,
+      "character": "마포역·주거·고령",
+      "zoningProfile": { "residential": 86, "commercial": 13, "green": 1, "semiResidential": 5 },
+      "blocks": [
+        {
+          "id": "dohwa_B1",
+          "name": "마포역 주변",
+          "type": "TRANSIT",
+          "zoning": "일반상업+준주거",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": ["마포역(5호선)"],
+          "traits": ["역세권", "교통요충"],
+          "weight": { "residentPop": 0.05, "livingPop": 0.25, "economy": 0.25, "satisfaction": 0.10 }
+        },
+        {
+          "id": "dohwa_B2",
+          "name": "마포대로변 업무",
+          "type": "BIZ_OFFICE",
+          "zoning": "일반상업",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": [],
+          "traits": ["대로변", "오피스"],
+          "weight": { "residentPop": 0.03, "livingPop": 0.20, "economy": 0.35, "satisfaction": 0.05 }
+        },
+        {
+          "id": "dohwa_B3",
+          "name": "도화 주택가",
+          "type": "RES_VILLA",
+          "zoning": "제2종일반주거(7층이하)",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": ["도화초등학교"],
+          "traits": ["구주거지", "서민주거", "고령화"],
+          "weight": { "residentPop": 0.45, "livingPop": 0.10, "economy": 0.08, "satisfaction": 0.25 }
+        },
+        {
+          "id": "dohwa_B4",
+          "name": "한강변·마포나루",
+          "type": "PARK",
+          "zoning": "자연녹지",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": ["마포나루공원"],
+          "traits": ["한강접근", "수변공간"],
+          "weight": { "residentPop": 0.02, "livingPop": 0.10, "economy": 0.02, "satisfaction": 0.30 }
+        },
+        {
+          "id": "dohwa_B5",
+          "name": "용강동 경계 주거",
+          "type": "RES_MIX",
+          "zoning": "제2종일반주거",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": [],
+          "traits": ["주거", "용강동_인접"],
+          "weight": { "residentPop": 0.45, "livingPop": 0.35, "economy": 0.30, "satisfaction": 0.30 }
+        }
+      ]
+    },
+    {
+      "id": "yonggang",
+      "name": "용강동",
+      "population": 21083,
+      "households": 9207,
+      "character": "마포구 최고 상업비율·가족주거",
+      "zoningProfile": { "residential": 82, "commercial": 17, "green": 1, "semiResidential": 2 },
+      "blocks": [
+        {
+          "id": "yonggang_B1",
+          "name": "백범로 상업축",
+          "type": "COM_MAIN",
+          "zoning": "일반상업",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": [],
+          "traits": ["대로변상업", "마포구_최고상업비율"],
+          "weight": { "residentPop": 0.03, "livingPop": 0.25, "economy": 0.30, "satisfaction": 0.05 }
+        },
+        {
+          "id": "yonggang_B2",
+          "name": "용강동 아파트단지",
+          "type": "RES_APT",
+          "zoning": "제3종일반주거",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": [],
+          "traits": ["가족주거", "단지"],
+          "weight": { "residentPop": 0.30, "livingPop": 0.10, "economy": 0.08, "satisfaction": 0.25 }
+        },
+        {
+          "id": "yonggang_B3",
+          "name": "용강동 주택가",
+          "type": "RES_VILLA",
+          "zoning": "제2종일반주거(7층이하)",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": ["용강초등학교"],
+          "traits": ["빌라밀집", "서민주거"],
+          "weight": { "residentPop": 0.35, "livingPop": 0.10, "economy": 0.07, "satisfaction": 0.20 }
+        },
+        {
+          "id": "yonggang_B4",
+          "name": "용강동상점가",
+          "type": "COM_MARKET",
+          "zoning": "일반상업",
+          "zoningConflict": false,
+          "slotCapacity": 1,
+          "facilities": ["용강동상점가(문화관광형시장, 9.2억 투입)"],
+          "traits": ["전통시장", "토정이지함_콘셉트", "야시장", "문화관광형"],
+          "weight": { "residentPop": 0.02, "livingPop": 0.15, "economy": 0.20, "satisfaction": 0.15 }
+        },
+        {
+          "id": "yonggang_B5",
+          "name": "신수동 경계",
+          "type": "RES_MIX",
+          "zoning": "제1종일반주거",
+          "zoningConflict": false,
+          "slotCapacity": 1,
+          "facilities": [],
+          "traits": ["주거", "신수동_인접"],
+          "weight": { "residentPop": 0.20, "livingPop": 0.05, "economy": 0.05, "satisfaction": 0.10 }
+        },
+        {
+          "id": "yonggang_B6",
+          "name": "한강변·마포나루길",
+          "type": "RES_MIX",
+          "zoning": "제2종일반주거",
+          "zoningConflict": false,
+          "slotCapacity": 1,
+          "facilities": ["마포나루길"],
+          "traits": ["한강변", "수변"],
+          "weight": { "residentPop": 0.10, "livingPop": 0.35, "economy": 0.30, "satisfaction": 0.25 }
+        }
+      ]
+    },
+    {
+      "id": "daeheung",
+      "name": "대흥동",
+      "population": 14212,
+      "households": 8561,
+      "character": "대학가·학원·청년·외국인",
+      "zoningProfile": { "residential": 84, "commercial": 15, "green": 1, "semiResidential": 8 },
+      "blocks": [
+        {
+          "id": "daeheung_B1",
+          "name": "대흥역 학원가",
+          "type": "COM_LOCAL",
+          "zoning": "일반상업",
+          "zoningConflict": false,
+          "slotCapacity": 3,
+          "facilities": ["대흥역(6호선)", "학원밀집"],
+          "traits": ["역세권", "학원가", "유동인구"],
+          "weight": { "residentPop": 0.05, "livingPop": 0.30, "economy": 0.30, "satisfaction": 0.10 }
+        },
+        {
+          "id": "daeheung_B2",
+          "name": "서강대 후문·마포아트센터",
+          "type": "EDU",
+          "zoning": "제1종일반주거",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": ["서강대학교(후문측)", "마포아트센터"],
+          "traits": ["대학가", "문화시설"],
+          "weight": { "residentPop": 0.05, "livingPop": 0.15, "economy": 0.15, "satisfaction": 0.15 }
+        },
+        {
+          "id": "daeheung_B3",
+          "name": "경의선숲길 대흥",
+          "type": "PARK",
+          "zoning": "자연녹지+준주거",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": ["경의선숲길(대흥 구간)"],
+          "traits": ["공원", "산책상권"],
+          "weight": { "residentPop": 0.02, "livingPop": 0.15, "economy": 0.10, "satisfaction": 0.20 }
+        },
+        {
+          "id": "daeheung_B4",
+          "name": "노고산 주거",
+          "type": "RES_MIX",
+          "zoning": "제2종일반주거(7층이하)",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": ["숭문중학교", "숭문고등학교"],
+          "traits": ["주거", "학교권", "외국인거주"],
+          "weight": { "residentPop": 0.38, "livingPop": 0.10, "economy": 0.10, "satisfaction": 0.25 }
+        },
+        {
+          "id": "daeheung_B5",
+          "name": "이대역 주변",
+          "type": "COM_LOCAL",
+          "zoning": "일반상업+준주거",
+          "zoningConflict": false,
+          "slotCapacity": 3,
+          "facilities": ["이대역(2호선)", "마포그랑자이(1248세대)"],
+          "traits": ["역세권", "신축아파트", "이대상권"],
+          "weight": { "residentPop": 0.50, "livingPop": 0.30, "economy": 0.35, "satisfaction": 0.30 }
+        }
+      ]
+    },
+    {
+      "id": "yeomni",
+      "name": "염리동",
+      "population": 16780,
+      "households": 7769,
+      "character": "순수주거·도시재생·가족",
+      "zoningProfile": { "residential": 97, "commercial": 1, "green": 2, "semiResidential": 10 },
+      "blocks": [
+        {
+          "id": "yeomni_B1",
+          "name": "염리동 주택가",
+          "type": "RES_VILLA",
+          "zoning": "제2종일반주거(7층이하)",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": ["염리초등학교"],
+          "traits": ["주택밀집", "학군"],
+          "weight": { "residentPop": 0.35, "livingPop": 0.10, "economy": 0.08, "satisfaction": 0.25 }
+        },
+        {
+          "id": "yeomni_B2",
+          "name": "염리 소금길",
+          "type": "CULTURE",
+          "zoning": "제2종일반주거(7층이하)",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": ["소금길(벽화마을)", "커뮤니티공간"],
+          "traits": ["마을만들기", "도시재생", "주민자치"],
+          "weight": { "residentPop": 0.15, "livingPop": 0.15, "economy": 0.10, "satisfaction": 0.20 }
+        },
+        {
+          "id": "yeomni_B3",
+          "name": "대흥로변 상업",
+          "type": "COM_LOCAL",
+          "zoning": "준주거+일반상업",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": [],
+          "traits": ["근린상업"],
+          "weight": { "residentPop": 0.05, "livingPop": 0.20, "economy": 0.25, "satisfaction": 0.05 }
+        },
+        {
+          "id": "yeomni_B4",
+          "name": "남측 주거",
+          "type": "RES_MIX",
+          "zoning": "제2종일반주거",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": ["숭의여자대학교", "소금나루도서관"],
+          "traits": ["주거", "용강동_인접"],
+          "weight": { "residentPop": 0.25, "livingPop": 0.10, "economy": 0.07, "satisfaction": 0.20 }
+        },
+        {
+          "id": "yeomni_B5",
+          "name": "서울여고 일대",
+          "type": "RES_VILLA",
+          "zoning": "제1종일반주거",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": ["서울여자고등학교"],
+          "traits": ["주거", "학교권", "저밀도"],
+          "weight": { "residentPop": 0.20, "livingPop": 0.45, "economy": 0.50, "satisfaction": 0.30 }
+        }
+      ]
+    },
+    {
+      "id": "sinsu",
+      "name": "신수동",
+      "population": 21905,
+      "households": 9957,
+      "character": "순수주거·서강대·한강변",
+      "zoningProfile": { "residential": 98, "commercial": 0, "green": 2, "semiResidential": 2 },
+      "blocks": [
+        {
+          "id": "sinsu_B1",
+          "name": "광흥창역 주변",
+          "type": "TRANSIT",
+          "zoning": "제2종일반주거+준주거",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": ["광흥창역(6호선)"],
+          "traits": ["역세권", "서강대_정문"],
+          "weight": { "residentPop": 0.05, "livingPop": 0.25, "economy": 0.20, "satisfaction": 0.10 }
+        },
+        {
+          "id": "sinsu_B2",
+          "name": "서강대 정문 일대",
+          "type": "EDU",
+          "zoning": "제1종일반주거",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": ["서강대학교(정문)", "서강도서관"],
+          "traits": ["대학가", "소규모상권"],
+          "weight": { "residentPop": 0.05, "livingPop": 0.20, "economy": 0.20, "satisfaction": 0.10 }
+        },
+        {
+          "id": "sinsu_B3",
+          "name": "신수동 주택가 북",
+          "type": "RES_VILLA",
+          "zoning": "제2종일반주거(7층이하)",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": [],
+          "traits": ["주거밀집", "조용함"],
+          "weight": { "residentPop": 0.35, "livingPop": 0.10, "economy": 0.08, "satisfaction": 0.25 }
+        },
+        {
+          "id": "sinsu_B4",
+          "name": "한강변·서강",
+          "type": "RES_MIX",
+          "zoning": "제2종일반주거",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": ["밤섬 조망"],
+          "traits": ["한강접근", "수변"],
+          "weight": { "residentPop": 0.30, "livingPop": 0.10, "economy": 0.07, "satisfaction": 0.25 }
+        },
+        {
+          "id": "sinsu_B5",
+          "name": "신수동 주택가 남",
+          "type": "RES_VILLA",
+          "zoning": "제1종일반주거",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": [],
+          "traits": ["저밀도주거", "조용함"],
+          "weight": { "residentPop": 0.25, "livingPop": 0.35, "economy": 0.45, "satisfaction": 0.30 }
+        }
+      ]
+    },
+    {
+      "id": "seogang",
+      "name": "서강동",
+      "population": 24250,
+      "households": 12005,
+      "character": "대학가·출판·녹지(노고산)",
+      "zoningProfile": { "residential": 73, "commercial": 0, "green": 27, "semiResidential": 1 },
+      "blocks": [
+        {
+          "id": "seogang_B1",
+          "name": "서강대 캠퍼스",
+          "type": "EDU",
+          "zoning": "제1종일반주거",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": ["서강대학교"],
+          "traits": ["대학", "캠퍼스"],
+          "weight": { "residentPop": 0.03, "livingPop": 0.15, "economy": 0.10, "satisfaction": 0.10 }
+        },
+        {
+          "id": "seogang_B2",
+          "name": "대흥로·학생상권",
+          "type": "COM_LOCAL",
+          "zoning": "제2종일반주거",
+          "zoningConflict": true,
+          "slotCapacity": 2,
+          "facilities": [],
+          "traits": ["주거지역_상업화", "학생상권"],
+          "weight": { "residentPop": 0.10, "livingPop": 0.20, "economy": 0.20, "satisfaction": 0.10 }
+        },
+        {
+          "id": "seogang_B3",
+          "name": "양화로 서강 구간",
+          "type": "BIZ_OFFICE",
+          "zoning": "제3종일반주거",
+          "zoningConflict": true,
+          "slotCapacity": 2,
+          "facilities": ["출판사 밀집"],
+          "traits": ["출판", "업무시설", "주거지역_업무화"],
+          "weight": { "residentPop": 0.05, "livingPop": 0.15, "economy": 0.25, "satisfaction": 0.05 }
+        },
+        {
+          "id": "seogang_B4",
+          "name": "서강동 주택가 북",
+          "type": "RES_VILLA",
+          "zoning": "제2종일반주거(7층이하)",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": [],
+          "traits": ["주거", "빌라밀집"],
+          "weight": { "residentPop": 0.25, "livingPop": 0.10, "economy": 0.07, "satisfaction": 0.15 }
+        },
+        {
+          "id": "seogang_B5",
+          "name": "서강동 주택가 남",
+          "type": "RES_VILLA",
+          "zoning": "제1종일반주거",
+          "zoningConflict": false,
+          "slotCapacity": 1,
+          "facilities": [],
+          "traits": ["저밀도주거"],
+          "weight": { "residentPop": 0.20, "livingPop": 0.05, "economy": 0.03, "satisfaction": 0.10 }
+        },
+        {
+          "id": "seogang_B6",
+          "name": "합정·서교 경계",
+          "type": "RES_MIX",
+          "zoning": "제2종일반주거",
+          "zoningConflict": false,
+          "slotCapacity": 1,
+          "facilities": [],
+          "traits": ["경계지역", "합정_연계"],
+          "weight": { "residentPop": 0.15, "livingPop": 0.10, "economy": 0.10, "satisfaction": 0.10 }
+        },
+        {
+          "id": "seogang_B7",
+          "name": "노고산·와우산 녹지",
+          "type": "PARK",
+          "zoning": "자연녹지",
+          "zoningConflict": false,
+          "slotCapacity": 1,
+          "facilities": ["노고산(서강대 뒷산)", "와우산"],
+          "traits": ["녹지", "도심산림", "주민휴식"],
+          "weight": { "residentPop": 0.22, "livingPop": 0.25, "economy": 0.25, "satisfaction": 0.40 }
+        }
+      ]
+    },
+    {
+      "id": "seogyo",
+      "name": "서교동",
+      "population": 23477,
+      "households": 14859,
+      "character": "홍대상권·관광핵심·1인가구",
+      "zoningProfile": { "residential": 91, "commercial": 8, "green": 1, "semiResidential": 13 },
+      "blocks": [
+        {
+          "id": "seogyo_B1",
+          "name": "홍대입구역 광장",
+          "type": "COM_MAIN",
+          "zoning": "일반상업+근린상업",
+          "zoningConflict": false,
+          "slotCapacity": 4,
+          "facilities": ["홍대입구역(2·경의중앙·공항철도)", "애플스토어", "무신사스탠다드"],
+          "traits": ["역세권", "유동인구_최고", "관광핵심", "분기매출3311억"],
+          "weight": { "residentPop": 0.02, "livingPop": 0.30, "economy": 0.30, "satisfaction": 0.05 }
+        },
+        {
+          "id": "seogyo_B2",
+          "name": "걷고싶은거리·연세로",
+          "type": "COM_LOCAL",
+          "zoning": "준주거",
+          "zoningConflict": false,
+          "slotCapacity": 3,
+          "facilities": ["어울마당로", "KT&G상상마당", "클럽거리"],
+          "traits": ["유흥", "클럽", "문화공간", "야간경제"],
+          "weight": { "residentPop": 0.03, "livingPop": 0.25, "economy": 0.25, "satisfaction": 0.05 }
+        },
+        {
+          "id": "seogyo_B3",
+          "name": "상수동 카페골목",
+          "type": "COM_LOCAL",
+          "zoning": "제2종일반주거(7층이하)",
+          "zoningConflict": true,
+          "slotCapacity": 3,
+          "facilities": [],
+          "traits": ["주거지역_상업화", "카페밀집", "힙플", "젠트리피케이션"],
+          "weight": { "residentPop": 0.10, "livingPop": 0.15, "economy": 0.15, "satisfaction": 0.10 }
+        },
+        {
+          "id": "seogyo_B4",
+          "name": "홍익대~와우산",
+          "type": "CULTURE",
+          "zoning": "제2종일반주거+제1종일반주거",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": ["홍익대학교", "와우공원"],
+          "traits": ["대학", "미술", "문화발원지"],
+          "weight": { "residentPop": 0.05, "livingPop": 0.10, "economy": 0.10, "satisfaction": 0.15 }
+        },
+        {
+          "id": "seogyo_B5",
+          "name": "동교동 주거",
+          "type": "RES_MIX",
+          "zoning": "제2종일반주거(7층이하)",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": ["김대중도서관"],
+          "traits": ["주거", "역사(김대중사저)"],
+          "weight": { "residentPop": 0.25, "livingPop": 0.05, "economy": 0.05, "satisfaction": 0.15 }
+        },
+        {
+          "id": "seogyo_B6",
+          "name": "서교동 주택가 내부",
+          "type": "RES_VILLA",
+          "zoning": "제2종일반주거(7층이하)",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": ["서교초등학교"],
+          "traits": ["주거", "소음민원", "관광피해"],
+          "weight": { "residentPop": 0.40, "livingPop": 0.05, "economy": 0.05, "satisfaction": 0.25 }
+        },
+        {
+          "id": "seogyo_B7",
+          "name": "경의선숲길 서교",
+          "type": "PARK",
+          "zoning": "자연녹지+준주거",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": ["경의선숲길(홍대입구 구간)", "연트럴파크 남단"],
+          "traits": ["공원", "카페", "산책"],
+          "weight": { "residentPop": 0.15, "livingPop": 0.10, "economy": 0.10, "satisfaction": 0.25 }
+        }
+      ]
+    },
+    {
+      "id": "hapjeong",
+      "name": "합정동",
+      "population": 15602,
+      "households": 8765,
+      "character": "확장상권·미디어·한강둔치",
+      "zoningProfile": { "residential": 48, "commercial": 2, "green": 49, "semiResidential": 3 },
+      "blocks": [
+        {
+          "id": "hapjeong_B1",
+          "name": "합정역 상권",
+          "type": "COM_LOCAL",
+          "zoning": "일반상업+준주거",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": ["합정역(2+6호선)", "홈플러스 합정점(메세나폴리스)"],
+          "traits": ["역세권", "환승", "핫플", "대형마트", "상생갈등_사례"],
+          "weight": { "residentPop": 0.05, "livingPop": 0.30, "economy": 0.30, "satisfaction": 0.10 }
+        },
+        {
+          "id": "hapjeong_B2",
+          "name": "양화로·출판단지",
+          "type": "BIZ_OFFICE",
+          "zoning": "준주거+제3종일반주거",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": ["출판사 밀집", "독립서점"],
+          "traits": ["출판문화", "미디어"],
+          "weight": { "residentPop": 0.05, "livingPop": 0.15, "economy": 0.25, "satisfaction": 0.05 }
+        },
+        {
+          "id": "hapjeong_B3",
+          "name": "합정동 카페골목",
+          "type": "COM_LOCAL",
+          "zoning": "제2종일반주거(7층이하)",
+          "zoningConflict": true,
+          "slotCapacity": 2,
+          "facilities": [],
+          "traits": ["주거지역_상업화", "골목상권", "마포감성"],
+          "weight": { "residentPop": 0.10, "livingPop": 0.15, "economy": 0.15, "satisfaction": 0.10 }
+        },
+        {
+          "id": "hapjeong_B4",
+          "name": "한강둔치·절두산",
+          "type": "PARK",
+          "zoning": "자연녹지",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": ["망원한강공원(동측)", "절두산순교성지", "양화대교"],
+          "traits": ["한강공원", "역사", "여가", "면적_49%"],
+          "weight": { "residentPop": 0.00, "livingPop": 0.10, "economy": 0.02, "satisfaction": 0.30 }
+        },
+        {
+          "id": "hapjeong_B5",
+          "name": "합정동 주택가",
+          "type": "RES_VILLA",
+          "zoning": "제2종일반주거(7층이하)",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": [],
+          "traits": ["주거", "젠트리피케이션_진행"],
+          "weight": { "residentPop": 0.55, "livingPop": 0.15, "economy": 0.13, "satisfaction": 0.20 }
+        },
+        {
+          "id": "hapjeong_B6",
+          "name": "망원동 경계",
+          "type": "RES_MIX",
+          "zoning": "제2종일반주거",
+          "zoningConflict": false,
+          "slotCapacity": 1,
+          "facilities": [],
+          "traits": ["경계지역", "망원동_연계"],
+          "weight": { "residentPop": 0.25, "livingPop": 0.15, "economy": 0.15, "satisfaction": 0.25 }
+        }
+      ]
+    },
+    {
+      "id": "mangwon1",
+      "name": "망원1동",
+      "population": 18426,
+      "households": 9801,
+      "character": "전통시장·로컬상권·한강공원",
+      "zoningProfile": { "residential": 51, "commercial": 0, "green": 49, "semiResidential": 0 },
+      "blocks": [
+        {
+          "id": "mangwon1_B1",
+          "name": "망원역 주변",
+          "type": "TRANSIT",
+          "zoning": "제2종일반주거(7층이하)",
+          "zoningConflict": false,
+          "slotCapacity": 3,
+          "facilities": ["망원역(6호선, 비환승역 승하차 1위)"],
+          "traits": ["역세권", "로컬상권", "맛집거리"],
+          "weight": { "residentPop": 0.05, "livingPop": 0.25, "economy": 0.20, "satisfaction": 0.10 }
+        },
+        {
+          "id": "mangwon1_B2",
+          "name": "망원시장",
+          "type": "COM_MARKET",
+          "zoning": "제2종일반주거(7층이하)",
+          "zoningConflict": true,
+          "slotCapacity": 3,
+          "facilities": ["망원시장(전통시장)", "망리단길"],
+          "traits": ["주거지역_상업화", "전통시장", "관광명소", "SNS핫플"],
+          "weight": { "residentPop": 0.05, "livingPop": 0.25, "economy": 0.30, "satisfaction": 0.10 }
+        },
+        {
+          "id": "mangwon1_B3",
+          "name": "망원동 주택가",
+          "type": "RES_VILLA",
+          "zoning": "제2종일반주거(7층이하)",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": [],
+          "traits": ["주거", "고령화"],
+          "weight": { "residentPop": 0.35, "livingPop": 0.10, "economy": 0.08, "satisfaction": 0.15 }
+        },
+        {
+          "id": "mangwon1_B4",
+          "name": "포은로 일대",
+          "type": "RES_MIX",
+          "zoning": "제2종일반주거(7층이하)",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": [],
+          "traits": ["주거혼합", "조용함"],
+          "weight": { "residentPop": 0.25, "livingPop": 0.05, "economy": 0.07, "satisfaction": 0.15 }
+        },
+        {
+          "id": "mangwon1_B5",
+          "name": "망원한강공원",
+          "type": "PARK",
+          "zoning": "자연녹지",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": ["망원한강공원"],
+          "traits": ["한강공원", "여가", "피크닉", "면적_49%"],
+          "weight": { "residentPop": 0.00, "livingPop": 0.15, "economy": 0.05, "satisfaction": 0.30 }
+        },
+        {
+          "id": "mangwon1_B6",
+          "name": "합정 경계",
+          "type": "RES_MIX",
+          "zoning": "제2종일반주거",
+          "zoningConflict": false,
+          "slotCapacity": 1,
+          "facilities": [],
+          "traits": ["경계지역", "합정_연계", "상업화_전파위험"],
+          "weight": { "residentPop": 0.30, "livingPop": 0.20, "economy": 0.30, "satisfaction": 0.20 }
+        }
+      ]
+    },
+    {
+      "id": "mangwon2",
+      "name": "망원2동",
+      "population": 17204,
+      "households": 8002,
+      "character": "주거·한강·고령화·마을공동체",
+      "zoningProfile": { "residential": 86, "commercial": 0, "green": 14, "semiResidential": 0 },
+      "blocks": [
+        {
+          "id": "mangwon2_B1",
+          "name": "망원2동 주택가",
+          "type": "RES_VILLA",
+          "zoning": "제2종일반주거(7층이하)",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": [],
+          "traits": ["서민주거", "고령화"],
+          "weight": { "residentPop": 0.35, "livingPop": 0.10, "economy": 0.10, "satisfaction": 0.25 }
+        },
+        {
+          "id": "mangwon2_B2",
+          "name": "월드컵로변",
+          "type": "RES_MIX",
+          "zoning": "제2종일반주거",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": [],
+          "traits": ["대로변", "교통축"],
+          "weight": { "residentPop": 0.15, "livingPop": 0.20, "economy": 0.20, "satisfaction": 0.10 }
+        },
+        {
+          "id": "mangwon2_B3",
+          "name": "성미산 주변",
+          "type": "RES_MIX",
+          "zoning": "제2종일반주거",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": ["성미산(마을공동체 상징)", "성미산학교"],
+          "traits": ["마을공동체", "생태", "주민자치"],
+          "weight": { "residentPop": 0.20, "livingPop": 0.15, "economy": 0.10, "satisfaction": 0.25 }
+        },
+        {
+          "id": "mangwon2_B4",
+          "name": "한강변 서측",
+          "type": "PARK",
+          "zoning": "자연녹지",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": [],
+          "traits": ["한강", "수변", "여가"],
+          "weight": { "residentPop": 0.00, "livingPop": 0.10, "economy": 0.05, "satisfaction": 0.25 }
+        },
+        {
+          "id": "mangwon2_B5",
+          "name": "망원동 서측",
+          "type": "RES_VILLA",
+          "zoning": "제2종일반주거(7층이하)",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": [],
+          "traits": ["근린상업", "주거"],
+          "weight": { "residentPop": 0.30, "livingPop": 0.45, "economy": 0.55, "satisfaction": 0.15 }
+        }
+      ]
+    },
+    {
+      "id": "yeonnam",
+      "name": "연남동",
+      "population": 13762,
+      "households": 8095,
+      "character": "젠트리피케이션 쇼케이스·관광·1인가구",
+      "zoningProfile": { "residential": 96, "commercial": 0, "green": 4, "semiResidential": 0 },
+      "blocks": [
+        {
+          "id": "yeonnam_B1",
+          "name": "경의선숲길 남단",
+          "type": "COM_LOCAL",
+          "zoning": "제2종일반주거(7층이하)",
+          "zoningConflict": true,
+          "slotCapacity": 3,
+          "facilities": ["경의선숲길(연남 구간)", "연트럴파크"],
+          "traits": ["주거지역_상업화", "젠트리피케이션", "관광", "핫플"],
+          "weight": { "residentPop": 0.02, "livingPop": 0.30, "economy": 0.30, "satisfaction": 0.10 }
+        },
+        {
+          "id": "yeonnam_B2",
+          "name": "연남동 맛집거리",
+          "type": "COM_LOCAL",
+          "zoning": "제2종일반주거(7층이하)",
+          "zoningConflict": true,
+          "slotCapacity": 3,
+          "facilities": ["다국적 음식점"],
+          "traits": ["주거지역_상업화", "젠트리피케이션_극심", "다문화", "임대료급등"],
+          "weight": { "residentPop": 0.05, "livingPop": 0.25, "economy": 0.25, "satisfaction": 0.05 }
+        },
+        {
+          "id": "yeonnam_B3",
+          "name": "연남동 주택가 남",
+          "type": "RES_VILLA",
+          "zoning": "제2종일반주거(7층이하)",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": [],
+          "traits": ["젠트리_침투_중", "임대료_상승_중"],
+          "weight": { "residentPop": 0.30, "livingPop": 0.10, "economy": 0.10, "satisfaction": 0.20 }
+        },
+        {
+          "id": "yeonnam_B4",
+          "name": "연남동 주택가 북",
+          "type": "RES_VILLA",
+          "zoning": "제2종일반주거(7층이하)",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": [],
+          "traits": ["젠트리_대기", "아직_조용"],
+          "weight": { "residentPop": 0.35, "livingPop": 0.05, "economy": 0.05, "satisfaction": 0.25 }
+        },
+        {
+          "id": "yeonnam_B5",
+          "name": "경의선숲길 북단",
+          "type": "PARK",
+          "zoning": "자연녹지",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": ["경의선숲길(북쪽 구간)"],
+          "traits": ["공원", "산책로"],
+          "weight": { "residentPop": 0.03, "livingPop": 0.10, "economy": 0.05, "satisfaction": 0.25 }
+        },
+        {
+          "id": "yeonnam_B6",
+          "name": "성산동 경계",
+          "type": "RES_MIX",
+          "zoning": "제2종일반주거",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": [],
+          "traits": ["경계지역", "성산동_연계"],
+          "weight": { "residentPop": 0.25, "livingPop": 0.20, "economy": 0.25, "satisfaction": 0.15 }
+        }
+      ]
+    },
+    {
+      "id": "seongsan1",
+      "name": "성산1동",
+      "population": 18301,
+      "households": 9337,
+      "character": "월드컵경기장·100%주거(법적)",
+      "zoningProfile": { "residential": 100, "commercial": 0, "green": 0, "semiResidential": 0 },
+      "blocks": [
+        {
+          "id": "seongsan1_B1",
+          "name": "월드컵경기장",
+          "type": "CULTURE",
+          "zoning": "제2종일반주거(7층이하)",
+          "zoningConflict": true,
+          "slotCapacity": 3,
+          "facilities": ["서울월드컵경기장", "월드컵경기장역(6호선)"],
+          "traits": ["주거지역_상업화", "경기장", "이벤트"],
+          "weight": { "residentPop": 0.02, "livingPop": 0.20, "economy": 0.20, "satisfaction": 0.15 }
+        },
+        {
+          "id": "seongsan1_B2",
+          "name": "성산 주거단지",
+          "type": "RES_APT",
+          "zoning": "제2종일반주거(7층이하)",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": ["성산시영아파트"],
+          "traits": ["아파트밀집", "주거중심"],
+          "weight": { "residentPop": 0.35, "livingPop": 0.10, "economy": 0.08, "satisfaction": 0.25 }
+        },
+        {
+          "id": "seongsan1_B3",
+          "name": "월드컵시장",
+          "type": "COM_MARKET",
+          "zoning": "제2종일반주거(7층이하)",
+          "zoningConflict": true,
+          "slotCapacity": 2,
+          "facilities": ["월드컵시장(전통시장)"],
+          "traits": ["주거지역_상업화", "전통시장", "로컬"],
+          "weight": { "residentPop": 0.05, "livingPop": 0.15, "economy": 0.20, "satisfaction": 0.10 }
+        },
+        {
+          "id": "seongsan1_B4",
+          "name": "성미산로 일대",
+          "type": "RES_MIX",
+          "zoning": "제2종일반주거(7층이하)",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": [],
+          "traits": ["마을공동체", "성미산_연계"],
+          "weight": { "residentPop": 0.25, "livingPop": 0.10, "economy": 0.07, "satisfaction": 0.15 }
+        },
+        {
+          "id": "seongsan1_B5",
+          "name": "성산로 대로변",
+          "type": "RES_MIX",
+          "zoning": "제2종일반주거(7층이하)",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": [],
+          "traits": ["대로변", "근린상업"],
+          "weight": { "residentPop": 0.15, "livingPop": 0.15, "economy": 0.15, "satisfaction": 0.10 }
+        },
+        {
+          "id": "seongsan1_B6",
+          "name": "난지천공원",
+          "type": "PARK",
+          "zoning": "자연녹지",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": ["난지천공원"],
+          "traits": ["생태공원", "여가"],
+          "weight": { "residentPop": 0.18, "livingPop": 0.30, "economy": 0.30, "satisfaction": 0.25 }
+        }
+      ]
+    },
+    {
+      "id": "seongsan2",
+      "name": "성산2동",
+      "population": 38075,
+      "households": 19133,
+      "character": "구청소재·대단지주거·성미산",
+      "zoningProfile": { "residential": 67, "commercial": 3, "green": 30, "semiResidential": 13 },
+      "blocks": [
+        {
+          "id": "seongsan2_B1",
+          "name": "마포구청 일대",
+          "type": "CIVIC",
+          "zoning": "준주거",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": ["마포구청", "마포구의회"],
+          "traits": ["행정중심", "구청"],
+          "weight": { "residentPop": 0.03, "livingPop": 0.10, "economy": 0.10, "satisfaction": 0.05 }
+        },
+        {
+          "id": "seongsan2_B2",
+          "name": "마포구청역 상권",
+          "type": "COM_LOCAL",
+          "zoning": "준주거+유통상업",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": ["마포구청역(6호선)", "홈플러스 월드컵점"],
+          "traits": ["역세권", "대형마트", "유통"],
+          "weight": { "residentPop": 0.05, "livingPop": 0.20, "economy": 0.20, "satisfaction": 0.10 }
+        },
+        {
+          "id": "seongsan2_B3",
+          "name": "성산 대단지 A",
+          "type": "RES_APT",
+          "zoning": "제3종일반주거",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": [],
+          "traits": ["대단지", "가족주거"],
+          "weight": { "residentPop": 0.25, "livingPop": 0.10, "economy": 0.08, "satisfaction": 0.15 }
+        },
+        {
+          "id": "seongsan2_B4",
+          "name": "성산 대단지 B",
+          "type": "RES_APT",
+          "zoning": "제2종일반주거(7층이하)",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": [],
+          "traits": ["대단지", "저층아파트"],
+          "weight": { "residentPop": 0.20, "livingPop": 0.05, "economy": 0.05, "satisfaction": 0.10 }
+        },
+        {
+          "id": "seongsan2_B5",
+          "name": "성산 빌라지대",
+          "type": "RES_VILLA",
+          "zoning": "제2종일반주거",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": [],
+          "traits": ["빌라밀집"],
+          "weight": { "residentPop": 0.20, "livingPop": 0.05, "economy": 0.07, "satisfaction": 0.10 }
+        },
+        {
+          "id": "seongsan2_B6",
+          "name": "연남동 경계",
+          "type": "RES_MIX",
+          "zoning": "준주거",
+          "zoningConflict": false,
+          "slotCapacity": 1,
+          "facilities": [],
+          "traits": ["경계지역", "연남동_연계", "상업화_전파위험"],
+          "weight": { "residentPop": 0.12, "livingPop": 0.10, "economy": 0.10, "satisfaction": 0.10 }
+        },
+        {
+          "id": "seongsan2_B7",
+          "name": "성미산·문화비축기지",
+          "type": "PARK",
+          "zoning": "자연녹지",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": ["성미산", "문화비축기지", "마포중앙도서관", "성미산체육관"],
+          "traits": ["도심녹지", "마을공동체_상징", "문화시설"],
+          "weight": { "residentPop": 0.15, "livingPop": 0.40, "economy": 0.40, "satisfaction": 0.40 }
+        }
+      ]
+    },
+    {
+      "id": "sangam",
+      "name": "상암동",
+      "population": 29099,
+      "households": 12435,
+      "character": "DMC·미디어·월드컵공원(82%녹지)",
+      "zoningProfile": { "residential": 12, "commercial": 5, "green": 82, "semiResidential": 1 },
+      "blocks": [
+        {
+          "id": "sangam_B1",
+          "name": "DMC 미디어시티",
+          "type": "BIZ_MEDIA",
+          "zoning": "일반상업+중심상업",
+          "zoningConflict": false,
+          "slotCapacity": 3,
+          "facilities": ["MBC", "SBS프리즘타워", "CJ ENM", "YTN", "JTBC", "TBS"],
+          "traits": ["방송", "미디어", "대기업", "첨단산업"],
+          "weight": { "residentPop": 0.02, "livingPop": 0.25, "economy": 0.40, "satisfaction": 0.05 }
+        },
+        {
+          "id": "sangam_B2",
+          "name": "DMC역 상권",
+          "type": "COM_MAIN",
+          "zoning": "일반상업+준주거",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": ["DMC역(6·경의중앙·공항철도)", "KGIT센터", "누리꿈스퀘어"],
+          "traits": ["역세권", "환승", "IT기업1300개"],
+          "weight": { "residentPop": 0.03, "livingPop": 0.15, "economy": 0.15, "satisfaction": 0.05 }
+        },
+        {
+          "id": "sangam_B3",
+          "name": "월드컵공원 통합",
+          "type": "PARK",
+          "zoning": "자연녹지",
+          "zoningConflict": false,
+          "slotCapacity": 3,
+          "facilities": ["하늘공원", "노을공원", "평화의공원", "난지한강공원"],
+          "traits": ["대형공원", "생태", "관광", "면적_82%", "환경복원"],
+          "weight": { "residentPop": 0.00, "livingPop": 0.15, "economy": 0.05, "satisfaction": 0.40 }
+        },
+        {
+          "id": "sangam_B4",
+          "name": "상암 주거단지",
+          "type": "RES_APT",
+          "zoning": "제3종일반주거",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": ["상암월드컵파크(대단지)", "DMC래미안"],
+          "traits": ["신축아파트", "직주근접"],
+          "weight": { "residentPop": 0.50, "livingPop": 0.20, "economy": 0.12, "satisfaction": 0.20 }
+        },
+        {
+          "id": "sangam_B5",
+          "name": "월드컵경기장 일대",
+          "type": "CULTURE",
+          "zoning": "일반상업",
+          "zoningConflict": false,
+          "slotCapacity": 2,
+          "facilities": ["SOOP콜로세움(e스포츠)", "마포농수산물시장(월드컵로235, 인접)"],
+          "traits": ["e스포츠", "문화", "농수산물시장"],
+          "weight": { "residentPop": 0.02, "livingPop": 0.10, "economy": 0.15, "satisfaction": 0.10 }
+        },
+        {
+          "id": "sangam_B6",
+          "name": "증산역 주변",
+          "type": "RES_MIX",
+          "zoning": "제2종일반주거",
+          "zoningConflict": false,
+          "slotCapacity": 1,
+          "facilities": ["증산역(6호선)"],
+          "traits": ["역세권", "은평구_경계"],
+          "weight": { "residentPop": 0.35, "livingPop": 0.10, "economy": 0.08, "satisfaction": 0.15 }
+        },
+        {
+          "id": "sangam_B7",
+          "name": "난지도 환경시설",
+          "type": "INFRA",
+          "zoning": "자연녹지",
+          "zoningConflict": false,
+          "slotCapacity": 1,
+          "facilities": ["난지도 매립지"],
+          "traits": ["환경", "생태복원"],
+          "weight": { "residentPop": 0.08, "livingPop": 0.05, "economy": 0.05, "satisfaction": 0.05 }
+        }
+      ]
+    }
+  ],
+  "statistics": {
+    "totalBlocks": 96,
+    "byType": {
+      "RES_VILLA": 18,
+      "RES_MIX": 21,
+      "RES_APT": 7,
+      "COM_MAIN": 3,
+      "COM_LOCAL": 12,
+      "COM_MARKET": 4,
+      "BIZ_OFFICE": 4,
+      "BIZ_MEDIA": 1,
+      "TRANSIT": 5,
+      "CULTURE": 4,
+      "PARK": 12,
+      "EDU": 3,
+      "CIVIC": 1,
+      "INFRA": 1
+    },
+    "zoningConflictBlocks": [
+      "seogyo_B3", "hapjeong_B3", "yeonnam_B1", "yeonnam_B2",
+      "mangwon1_B2", "seongsan1_B1", "seongsan1_B3",
+      "seogang_B2", "seogang_B3"
+    ],
+    "zoningConflictCount": 9
+  }
+}

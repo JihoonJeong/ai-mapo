@@ -1,0 +1,238 @@
+{
+  "metadata": {
+    "source": "V-World 오픈API (국토교통부 공간정보 오픈플랫폼)",
+    "api_layer": "LT_C_SPBD (건축물)",
+    "reference_date": "2026-02-19 (API 조회 시점)",
+    "collected_date": "2026-02-19",
+    "notes": [
+      "V-World 건축물 레이어(LT_C_SPBD)에서 마포구 건물 수집",
+      "POINT(126.92, 37.56) 중심 반경 3500m 원형 범위 검색",
+      "건축물 용도(주거/상업/업무) 정보는 V-World에 미포함 - 층수 기반 분석만 가능",
+      "법정동 → 행정동 매핑 적용",
+      "망원1동/망원2동, 성산1동/성산2동 분리 불가 (법정동 단위)",
+      "건축물대장 API 연동 시 용도별 분류 보완 가능"
+    ],
+    "data_quality": "official_partial",
+    "limitation": "건축물 용도 분류 미포함 (층수/건물수만 제공)"
+  },
+  "district_total": {
+    "name": "마포구",
+    "total_buildings": 16225,
+    "total_buildings_including_duplicates": 24515,
+    "total_buildings_unique": 21658
+  },
+  "districts": {
+    "공덕동": {
+      "building_count": 452,
+      "avg_floors": 6.0,
+      "max_floors": 40,
+      "median_floors": 3,
+      "floor_distribution": {
+        "low_rise_1_2f": 212,
+        "mid_low_3_5f": 128,
+        "mid_rise_6_10f": 22,
+        "high_rise_11_20f": 64,
+        "tower_21f_plus": 26
+      }
+    },
+    "대흥동": {
+      "building_count": 1073,
+      "avg_floors": 3.3,
+      "max_floors": 25,
+      "median_floors": 2,
+      "floor_distribution": {
+        "low_rise_1_2f": 596,
+        "mid_low_3_5f": 382,
+        "mid_rise_6_10f": 52,
+        "high_rise_11_20f": 22,
+        "tower_21f_plus": 21
+      }
+    },
+    "도화동": {
+      "building_count": 491,
+      "avg_floors": 3.6,
+      "max_floors": 37,
+      "median_floors": 2,
+      "floor_distribution": {
+        "low_rise_1_2f": 280,
+        "mid_low_3_5f": 159,
+        "mid_rise_6_10f": 15,
+        "high_rise_11_20f": 30,
+        "tower_21f_plus": 7
+      }
+    },
+    "망원1동": {
+      "building_count": 2857,
+      "avg_floors": 3.4,
+      "max_floors": 18,
+      "median_floors": 3,
+      "floor_distribution": {
+        "low_rise_1_2f": 1090,
+        "mid_low_3_5f": 1591,
+        "mid_rise_6_10f": 138,
+        "high_rise_11_20f": 38,
+        "tower_21f_plus": 0
+      },
+      "note": "법정동 '망원동' 전체 (1동/2동 분리 불가)"
+    },
+    "망원2동": {
+      "building_count": 2857,
+      "avg_floors": 3.4,
+      "max_floors": 18,
+      "median_floors": 3,
+      "floor_distribution": {
+        "low_rise_1_2f": 1090,
+        "mid_low_3_5f": 1591,
+        "mid_rise_6_10f": 138,
+        "high_rise_11_20f": 38,
+        "tower_21f_plus": 0
+      },
+      "note": "법정동 '망원동' 전체 (1동/2동 분리 불가)"
+    },
+    "상암동": {
+      "building_count": 616,
+      "avg_floors": 4.7,
+      "max_floors": 33,
+      "median_floors": 3,
+      "floor_distribution": {
+        "low_rise_1_2f": 206,
+        "mid_low_3_5f": 304,
+        "mid_rise_6_10f": 44,
+        "high_rise_11_20f": 43,
+        "tower_21f_plus": 19
+      }
+    },
+    "서강동": {
+      "building_count": 1707,
+      "avg_floors": 3.5,
+      "max_floors": 25,
+      "median_floors": 2,
+      "floor_distribution": {
+        "low_rise_1_2f": 872,
+        "mid_low_3_5f": 647,
+        "mid_rise_6_10f": 120,
+        "high_rise_11_20f": 44,
+        "tower_21f_plus": 24
+      }
+    },
+    "서교동": {
+      "building_count": 3738,
+      "avg_floors": 3.8,
+      "max_floors": 39,
+      "median_floors": 4,
+      "floor_distribution": {
+        "low_rise_1_2f": 1176,
+        "mid_low_3_5f": 2091,
+        "mid_rise_6_10f": 429,
+        "high_rise_11_20f": 37,
+        "tower_21f_plus": 5
+      }
+    },
+    "성산1동": {
+      "building_count": 2576,
+      "avg_floors": 3.7,
+      "max_floors": 24,
+      "median_floors": 3,
+      "floor_distribution": {
+        "low_rise_1_2f": 988,
+        "mid_low_3_5f": 1301,
+        "mid_rise_6_10f": 187,
+        "high_rise_11_20f": 94,
+        "tower_21f_plus": 6
+      },
+      "note": "법정동 '성산동' 전체 (1동/2동 분리 불가)"
+    },
+    "성산2동": {
+      "building_count": 356,
+      "avg_floors": 4.6,
+      "max_floors": 25,
+      "median_floors": 2,
+      "floor_distribution": {
+        "low_rise_1_2f": 182,
+        "mid_low_3_5f": 123,
+        "mid_rise_6_10f": 13,
+        "high_rise_11_20f": 16,
+        "tower_21f_plus": 22
+      },
+      "note": "법정동 '중동+하중동+신정동'만 포함"
+    },
+    "신수동": {
+      "building_count": 1139,
+      "avg_floors": 3.8,
+      "max_floors": 35,
+      "median_floors": 3,
+      "floor_distribution": {
+        "low_rise_1_2f": 490,
+        "mid_low_3_5f": 535,
+        "mid_rise_6_10f": 61,
+        "high_rise_11_20f": 29,
+        "tower_21f_plus": 24
+      }
+    },
+    "아현동": {
+      "building_count": 527,
+      "avg_floors": 5.3,
+      "max_floors": 30,
+      "median_floors": 3,
+      "floor_distribution": {
+        "low_rise_1_2f": 255,
+        "mid_low_3_5f": 160,
+        "mid_rise_6_10f": 24,
+        "high_rise_11_20f": 55,
+        "tower_21f_plus": 33
+      }
+    },
+    "연남동": {
+      "building_count": 2029,
+      "avg_floors": 3.1,
+      "max_floors": 15,
+      "median_floors": 3,
+      "floor_distribution": {
+        "low_rise_1_2f": 890,
+        "mid_low_3_5f": 1073,
+        "mid_rise_6_10f": 60,
+        "high_rise_11_20f": 6,
+        "tower_21f_plus": 0
+      }
+    },
+    "염리동": {
+      "building_count": 976,
+      "avg_floors": 3.4,
+      "max_floors": 27,
+      "median_floors": 2,
+      "floor_distribution": {
+        "low_rise_1_2f": 546,
+        "mid_low_3_5f": 352,
+        "mid_rise_6_10f": 25,
+        "high_rise_11_20f": 33,
+        "tower_21f_plus": 20
+      }
+    },
+    "용강동": {
+      "building_count": 582,
+      "avg_floors": 5.2,
+      "max_floors": 35,
+      "median_floors": 4,
+      "floor_distribution": {
+        "low_rise_1_2f": 187,
+        "mid_low_3_5f": 282,
+        "mid_rise_6_10f": 43,
+        "high_rise_11_20f": 47,
+        "tower_21f_plus": 23
+      }
+    },
+    "합정동": {
+      "building_count": 2539,
+      "avg_floors": 3.5,
+      "max_floors": 37,
+      "median_floors": 3,
+      "floor_distribution": {
+        "low_rise_1_2f": 1022,
+        "mid_low_3_5f": 1309,
+        "mid_rise_6_10f": 172,
+        "high_rise_11_20f": 22,
+        "tower_21f_plus": 14
+      }
+    }
+  }
+}

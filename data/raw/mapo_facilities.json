@@ -1,0 +1,529 @@
+{
+  "metadata": {
+    "source": "마포구청(mapo.go.kr), 서울시 공원정보(parks.seoul.go.kr), 한강사업본부(hangang.seoul.go.kr), 마포구립도서관(mplib.mapo.go.kr), 마포문화재단(mfac.or.kr), 마포구시설관리공단(mfmc.or.kr), 상암DMC클러스터(dmcnf.org), 나무위키, 위키백과, 각 기관 공식사이트",
+    "collected_date": "2026-02-19",
+    "notes": "마포구 주요 시설 및 랜드마크 데이터. 6개 카테고리(지하철역, 전통시장, 공원/녹지, 문화시설, 업무지구/대형건물, 학교/대학). 기존 mapo_subway.json의 역 정보를 기반으로 시설 데이터 통합. 면적 등 수치는 공식 출처 기준이나 일부 추정치 포함."
+  },
+  "facilities": [
+    {
+      "name": "홍대입구역",
+      "type": "subway_station",
+      "category": "교통",
+      "dong": "서교동",
+      "lines": ["2호선", "경의중앙선", "공항철도"],
+      "notes": "마포구 최대 유동인구 역. 2024년 일평균 15만명. 홍대 상권 중심."
+    },
+    {
+      "name": "합정역",
+      "type": "subway_station",
+      "category": "교통",
+      "dong": "합정동",
+      "lines": ["2호선", "6호선"],
+      "notes": "2호선+6호선 환승역. 일평균 약 9.4만명. 합정동 상권, 출판문화단지 인접."
+    },
+    {
+      "name": "공덕역",
+      "type": "subway_station",
+      "category": "교통",
+      "dong": "공덕동",
+      "lines": ["5호선", "6호선", "경의중앙선", "공항철도"],
+      "notes": "4개 노선 환승역. 마포구 최대 교통 허브. 일평균 약 7.8만명."
+    },
+    {
+      "name": "디지털미디어시티역",
+      "type": "subway_station",
+      "category": "교통",
+      "dong": "상암동",
+      "lines": ["6호선", "경의중앙선", "공항철도"],
+      "notes": "3개 노선 환승역. DMC 업무단지 출퇴근 수요. 일평균 약 5.9만명."
+    },
+    {
+      "name": "망원역",
+      "type": "subway_station",
+      "category": "교통",
+      "dong": "망원1동",
+      "lines": ["6호선"],
+      "notes": "6호선 비환승역 중 1위. 일평균 약 3.2만명. 망원시장, 망리단길 인접."
+    },
+    {
+      "name": "마포역",
+      "type": "subway_station",
+      "category": "교통",
+      "dong": "도화동",
+      "lines": ["5호선"],
+      "notes": "5호선 단독역. 일평균 약 2.8만명. 마포대교 인근 업무/주거 혼합지역."
+    },
+    {
+      "name": "마포구청역",
+      "type": "subway_station",
+      "category": "교통",
+      "dong": "성산2동",
+      "lines": ["6호선"],
+      "notes": "6호선 단독역. 일평균 약 2.7만명. 마포구청 소재."
+    },
+    {
+      "name": "상수역",
+      "type": "subway_station",
+      "category": "교통",
+      "dong": "서교동",
+      "lines": ["6호선"],
+      "notes": "6호선 단독역. 일평균 약 2.2만명. 상수동 카페거리, 홍대 상권 확장 수혜."
+    },
+    {
+      "name": "증산역",
+      "type": "subway_station",
+      "category": "교통",
+      "dong": "상암동",
+      "lines": ["6호선"],
+      "notes": "6호선 단독역. 일평균 약 2.0만명. 은평구/마포구 경계. 상암동 주거지역."
+    },
+    {
+      "name": "대흥역",
+      "type": "subway_station",
+      "category": "교통",
+      "dong": "대흥동",
+      "lines": ["6호선"],
+      "notes": "6호선 단독역. 일평균 약 1.8만명. 서강대학교 인근, 대흥동 학원가."
+    },
+    {
+      "name": "광흥창역",
+      "type": "subway_station",
+      "category": "교통",
+      "dong": "신수동",
+      "lines": ["6호선"],
+      "notes": "6호선 단독역. 일평균 약 1.8만명. 서강대 정문 최근접역."
+    },
+    {
+      "name": "애오개역",
+      "type": "subway_station",
+      "category": "교통",
+      "dong": "아현동",
+      "lines": ["5호선"],
+      "notes": "5호선 단독역. 일평균 약 1.4만명. 아현뉴타운 인근."
+    },
+    {
+      "name": "월드컵경기장역",
+      "type": "subway_station",
+      "category": "교통",
+      "dong": "성산1동",
+      "lines": ["6호선"],
+      "notes": "6호선 단독역. 일평균 약 1.2만명. 서울월드컵경기장 인근. 경기일 수요 급증."
+    },
+
+    {
+      "name": "망원시장",
+      "type": "traditional_market",
+      "category": "상업",
+      "dong": "망원1동",
+      "scale": "약 200개 점포",
+      "notes": "인정시장. MZ세대 핫플레이스, 관광명소화. 망리단길과 시너지. 마포구 대표 전통시장."
+    },
+    {
+      "name": "공덕시장",
+      "type": "traditional_market",
+      "category": "상업",
+      "dong": "공덕동",
+      "scale": "약 100개 점포",
+      "notes": "인정시장. 직장인과 외국인 관광객에게 한국 전통 먹거리 제공. 공덕역 인근."
+    },
+    {
+      "name": "마포농수산물시장",
+      "type": "traditional_market",
+      "category": "상업",
+      "dong": "마포동",
+      "scale": "약 300개 점포",
+      "notes": "서북권 최대 전통시장. 마포구시설관리공단 운영. 농산물·수산물·축산물 종합 도매/소매."
+    },
+    {
+      "name": "아현시장",
+      "type": "traditional_market",
+      "category": "상업",
+      "dong": "아현동",
+      "scale": "약 70개 점포",
+      "notes": "인정시장. 아현동 전통 재래시장. 아현뉴타운 인근 주민 이용."
+    },
+    {
+      "name": "월드컵시장",
+      "type": "traditional_market",
+      "category": "상업",
+      "dong": "성산1동",
+      "scale": "약 100개 점포",
+      "notes": "인정시장. 성산동·상암동 주민 이용. 월드컵경기장 인근."
+    },
+    {
+      "name": "용강동상점가",
+      "type": "traditional_market",
+      "category": "상업",
+      "dong": "용강동",
+      "scale": "상점가",
+      "notes": "인정상점가. 2025년 전통시장 활성화 장관 표창 수상."
+    },
+
+    {
+      "name": "월드컵공원",
+      "type": "park",
+      "category": "공원/녹지",
+      "dong": "상암동",
+      "area_sqm": 2284085,
+      "notes": "5개 테마공원(평화의공원, 하늘공원, 노을공원, 난지천공원, 난지한강공원) 통합. 난지도 쓰레기매립장 생태복원. 서울 최대 규모 공원 중 하나."
+    },
+    {
+      "name": "하늘공원",
+      "type": "park",
+      "category": "공원/녹지",
+      "dong": "상암동",
+      "area_sqm": 191736,
+      "notes": "월드컵공원 내 테마공원. 억새밭 명소. 해발 98m 정상. 서울 억새축제 개최지."
+    },
+    {
+      "name": "노을공원",
+      "type": "park",
+      "category": "공원/녹지",
+      "dong": "상암동",
+      "area_sqm": 340388,
+      "notes": "월드컵공원 내 테마공원. 서울 시내 석양 조망 명소. 캠핑장 운영."
+    },
+    {
+      "name": "평화의공원",
+      "type": "park",
+      "category": "공원/녹지",
+      "dong": "상암동",
+      "area_sqm": 446218,
+      "notes": "월드컵공원 내 테마공원. 월드컵경기장 앞. 평화의 광장, 연못, 잔디광장."
+    },
+    {
+      "name": "난지천공원",
+      "type": "park",
+      "category": "공원/녹지",
+      "dong": "상암동",
+      "area_sqm": 294133,
+      "notes": "월드컵공원 내 테마공원. 생태하천 복원. 자연학습장."
+    },
+    {
+      "name": "난지한강공원",
+      "type": "park",
+      "category": "공원/녹지",
+      "dong": "상암동",
+      "area_sqm": 495000,
+      "notes": "월드컵공원 내 한강 인접 공원. 캠핑장, 수영장, 물놀이장 운영."
+    },
+    {
+      "name": "망원한강공원",
+      "type": "park",
+      "category": "공원/녹지",
+      "dong": "망원1동",
+      "area_sqm": 422347,
+      "notes": "한강공원. 밤섬(279,281㎡) 미포함 면적. 수상레저(윈드서핑, 수상스키). 서울시 한강사업본부 관리."
+    },
+    {
+      "name": "선유도공원",
+      "type": "park",
+      "category": "공원/녹지",
+      "dong": "합정동",
+      "area_sqm": 110400,
+      "notes": "구 선유정수장을 재활용한 생태공원. 한강 위 섬 공원. 2002년 개원. 국내 최초 환경재생 생태공원."
+    },
+    {
+      "name": "경의선숲길",
+      "type": "park",
+      "category": "공원/녹지",
+      "dong": "연남동",
+      "area_sqm": 101668,
+      "notes": "총 6.3km 선형공원. 폭 10~60m. 옛 경의선 철도 부지 활용. 연남동 구간이 가장 유명(연트럴파크)."
+    },
+    {
+      "name": "문화비축기지",
+      "type": "park",
+      "category": "공원/녹지",
+      "dong": "성산2동",
+      "area_sqm": 140000,
+      "notes": "1970년대 석유비축기지를 2017년 문화공간으로 리모델링. 6개 탱크(T1~T6) 활용 전시/공연/커뮤니티 공간."
+    },
+    {
+      "name": "와우공원",
+      "type": "park",
+      "category": "공원/녹지",
+      "dong": "서교동",
+      "area_sqm": 33000,
+      "notes": "와우산(해발 74m) 일대 근린공원. 홍익대 인근. 주민 산책로."
+    },
+    {
+      "name": "성미산",
+      "type": "park",
+      "category": "공원/녹지",
+      "dong": "성산2동",
+      "area_sqm": 66000,
+      "notes": "해발 66m. 마포구 대표 주민 참여 녹지. 성미산마을 공동체 상징. 성미산 체육관 인접."
+    },
+
+    {
+      "name": "마포아트센터",
+      "type": "performance_hall",
+      "category": "문화시설",
+      "dong": "대흥동",
+      "notes": "마포문화재단 운영. 아트홀맥(733석 대극장), 플레이맥(소극장), 갤러리맥, 스포츠맥(수영장/헬스장) 보유. 복합문화예술공간."
+    },
+    {
+      "name": "마포중앙도서관",
+      "type": "library",
+      "category": "문화시설",
+      "dong": "성산2동",
+      "notes": "마포구 대표 구립도서관. 관내 구립도서관 통합 지원. 성산로 128 소재."
+    },
+    {
+      "name": "소금나루도서관",
+      "type": "library",
+      "category": "문화시설",
+      "dong": "염리동",
+      "notes": "마포구립도서관. 숭문길 72 소재. 염리동 지역 주민 문화공간."
+    },
+    {
+      "name": "마포구립서강도서관",
+      "type": "library",
+      "category": "문화시설",
+      "dong": "신수동",
+      "notes": "마포구립도서관. 독막로 165 소재. 서강대 인근."
+    },
+    {
+      "name": "하늘도서관",
+      "type": "library",
+      "category": "문화시설",
+      "dong": "상암동",
+      "notes": "마포구립도서관. 하늘공원 인근. 상암동 지역 서비스."
+    },
+    {
+      "name": "마포평생학습관",
+      "type": "library",
+      "category": "문화시설",
+      "dong": "도화동",
+      "notes": "서울시교육청 운영. 100여 개 평생학습 강좌, 수영장, 헬스장, 도서관 기능 통합."
+    },
+    {
+      "name": "마포평생학습관 아현분관",
+      "type": "library",
+      "category": "문화시설",
+      "dong": "아현동",
+      "notes": "서울시교육청 운영. 아현동 지역 도서관 및 평생학습 기능."
+    },
+    {
+      "name": "마포문화원",
+      "type": "cultural_center",
+      "category": "문화시설",
+      "dong": "도화동",
+      "notes": "지역 문화 보존 및 문화예술 프로그램 운영. 마포구 전통문화 행사 주관."
+    },
+    {
+      "name": "마포구민체육센터",
+      "type": "sports_facility",
+      "category": "문화시설",
+      "dong": "도화동",
+      "notes": "마포구 대표 공공체육시설. 수영장, 헬스장, 체육관 운영."
+    },
+    {
+      "name": "망원유수지체육시설",
+      "type": "sports_facility",
+      "category": "문화시설",
+      "dong": "망원1동",
+      "area_sqm": 54000,
+      "notes": "축구장 2면, 족구장 3면, 농구장 3면, 인라인연습장, 풋살장, 게이트볼장 등. 마포 어린이체육센터 포함."
+    },
+    {
+      "name": "성미산체육관",
+      "type": "sports_facility",
+      "category": "문화시설",
+      "dong": "성산2동",
+      "notes": "성미산 인근 공공 체육관. 배드민턴, 탁구 등 생활체육."
+    },
+    {
+      "name": "마포청소년수련관",
+      "type": "cultural_center",
+      "category": "문화시설",
+      "dong": "도화동",
+      "notes": "마포구시설관리공단 운영. 청소년 교육/문화/체육 프로그램."
+    },
+    {
+      "name": "서울월드컵경기장",
+      "type": "sports_facility",
+      "category": "문화시설",
+      "dong": "성산1동",
+      "notes": "66,806석 규모. 2002 FIFA 월드컵 개최지. FC서울 홈구장. 경기장 내 쇼핑몰(홈플러스, CGV 등) 입점."
+    },
+
+    {
+      "name": "상암 디지털미디어시티(DMC)",
+      "type": "business_district",
+      "category": "업무지구",
+      "dong": "상암동",
+      "notes": "600여 개 기업, 4만여 명 근로자. 방송·미디어·IT 산업 집적지. 국내 최대 미디어 클러스터."
+    },
+    {
+      "name": "MBC 상암사옥 (글로벌미디어센터)",
+      "type": "office_building",
+      "category": "업무지구",
+      "dong": "상암동",
+      "notes": "문화방송(MBC) 본사. DMC C1-C2블록. 방송 제작 및 본사 기능."
+    },
+    {
+      "name": "SBS 프리즘타워",
+      "type": "office_building",
+      "category": "업무지구",
+      "dong": "상암동",
+      "notes": "SBS 본사. DMC D1-1블록. SBS, SBS미디어넷 입주."
+    },
+    {
+      "name": "CJ ENM센터",
+      "type": "office_building",
+      "category": "업무지구",
+      "dong": "상암동",
+      "notes": "CJ ENM 본사. 2010년 완공. tvN, OCN, Mnet 등 CJ 미디어 계열사 통합."
+    },
+    {
+      "name": "YTN 사옥",
+      "type": "office_building",
+      "category": "업무지구",
+      "dong": "상암동",
+      "notes": "YTN(뉴스전문채널) 본사. DMC 내 위치."
+    },
+    {
+      "name": "JTBC 사옥",
+      "type": "office_building",
+      "category": "업무지구",
+      "dong": "상암동",
+      "notes": "중앙일보 계열 종합편성채널. 멀티콘텐츠센터(E2-1블록) 및 JTBC창조관(E2-2블록) 사용."
+    },
+    {
+      "name": "KBS 미디어센터",
+      "type": "office_building",
+      "category": "업무지구",
+      "dong": "상암동",
+      "notes": "KBS 미디어센터. 2007년 준공. DMC 내 위치. (KBS 본사는 여의도)"
+    },
+    {
+      "name": "누리꿈스퀘어",
+      "type": "office_building",
+      "category": "업무지구",
+      "dong": "상암동",
+      "notes": "DMC C5블록. 정보통신산업진흥원, 오마이뉴스, 스타트업 등 입주. IT/미디어 복합 업무시설."
+    },
+    {
+      "name": "상암 MBC월드",
+      "type": "office_building",
+      "category": "업무지구",
+      "dong": "상암동",
+      "notes": "MBC 부속 상업·문화 복합시설. MBC 드라마 공개홀 포함."
+    },
+    {
+      "name": "마포구청",
+      "type": "government_building",
+      "category": "업무지구",
+      "dong": "성산2동",
+      "notes": "마포구 행정 중심. 성산로 189 소재. 마포구청역(6호선) 인접."
+    },
+    {
+      "name": "공덕 업무지구",
+      "type": "business_district",
+      "category": "업무지구",
+      "dong": "공덕동",
+      "notes": "공덕역 4개 노선 환승 허브. 대형 오피스빌딩 밀집(삼성화재, 효성 등). 래미안·자이 고층 주상복합."
+    },
+    {
+      "name": "마포 업무지구",
+      "type": "business_district",
+      "category": "업무지구",
+      "dong": "도화동",
+      "notes": "마포대교 북단. 마포역 인근 오피스 밀집. 도화동·마포동 일대 업무/상업 혼합."
+    },
+    {
+      "name": "홍대 상권",
+      "type": "commercial_district",
+      "category": "업무지구",
+      "dong": "서교동",
+      "notes": "홍대입구역 중심. 서교동·연남동·상수동 일대. 서울 대표 문화·상업·유흥 상권. 클럽, 카페, 음식점, 독립상점 밀집."
+    },
+
+    {
+      "name": "홍익대학교",
+      "type": "university",
+      "category": "교육",
+      "dong": "서교동",
+      "notes": "서울캠퍼스. 와우산로 94. 미술/디자인 특성화 종합대학. 홍대 상권의 기원."
+    },
+    {
+      "name": "서강대학교",
+      "type": "university",
+      "category": "교육",
+      "dong": "신수동",
+      "notes": "백범로 35. 노고산동·대흥동·신수동 3개 동 걸쳐 위치. 사립 종합대학."
+    },
+    {
+      "name": "추계예술대학교",
+      "type": "university",
+      "category": "교육",
+      "dong": "망원2동",
+      "notes": "예술 특성화 대학. 마포구 월드컵로 10길 소재."
+    },
+    {
+      "name": "숭의여자대학교",
+      "type": "university",
+      "category": "교육",
+      "dong": "염리동",
+      "notes": "전문대학. 마포구 백범로 75 소재."
+    },
+    {
+      "name": "광성고등학교",
+      "type": "high_school",
+      "category": "교육",
+      "dong": "합정동",
+      "notes": "사립 고등학교. 마포구 소재."
+    },
+    {
+      "name": "서울여자고등학교",
+      "type": "high_school",
+      "category": "교육",
+      "dong": "염리동",
+      "notes": "공립 고등학교. 마포구 대표 여자고등학교."
+    },
+    {
+      "name": "숭문고등학교",
+      "type": "high_school",
+      "category": "교육",
+      "dong": "대흥동",
+      "notes": "사립 고등학교. 서강대 인근."
+    },
+    {
+      "name": "상암고등학교",
+      "type": "high_school",
+      "category": "교육",
+      "dong": "상암동",
+      "notes": "공립 고등학교. DMC 인근."
+    },
+    {
+      "name": "홍익대학교사범대학부속여자고등학교",
+      "type": "high_school",
+      "category": "교육",
+      "dong": "망원2동",
+      "notes": "사립 고등학교. 홍익대 부속학교."
+    },
+    {
+      "name": "서울디자인고등학교",
+      "type": "high_school",
+      "category": "교육",
+      "dong": "성산2동",
+      "notes": "특성화고등학교. 디자인 분야 특성화."
+    },
+    {
+      "name": "한세사이버보안고등학교",
+      "type": "high_school",
+      "category": "교육",
+      "dong": "합정동",
+      "notes": "특성화고등학교. 사이버보안 분야."
+    },
+    {
+      "name": "홍익디자인고등학교",
+      "type": "high_school",
+      "category": "교육",
+      "dong": "상암동",
+      "notes": "특성화고등학교. 디자인 분야."
+    }
+  ]
+}

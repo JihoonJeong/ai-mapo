@@ -1,0 +1,193 @@
+{
+  "metadata": {
+    "source": "국토교통부 개별공시지가 (data.go.kr 공시지가정보서비스)",
+    "reference_date": "2025-01-01",
+    "collected_date": "2026-02-19",
+    "unit": "원/㎡",
+    "notes": [
+      "2025년 1월 1일 기준 개별공시지가 공식 데이터",
+      "원본: 서울시 전체 892,841필지 중 마포구 40,487필지 추출",
+      "법정동(26개) → 행정동(16개) 매핑 적용",
+      "망원1동/망원2동: 법정동 '망원동'이 양쪽 행정동에 걸쳐 분리 불가 → 동일 데이터 공유",
+      "성산1동/성산2동: 법정동 '성산동'이 양쪽에 걸침 → 성산2동에는 중동+하중동+신정동+성산동 포함",
+      "평균은 필지별 공시지가 산술평균 (면적 가중평균 아님)"
+    ],
+    "data_quality": "official",
+    "legal_to_admin_dong_mapping": {
+      "아현동": "아현동",
+      "공덕동+신공덕동": "공덕동",
+      "도화동": "도화동",
+      "용강동+토정동+마포동+현석동": "용강동",
+      "대흥동": "대흥동",
+      "염리동": "염리동",
+      "신수동+구수동": "신수동",
+      "노고산동+창전동+당인동": "서강동",
+      "동교동+서교동": "서교동",
+      "합정동+상수동": "합정동",
+      "망원동": "망원1동+망원2동 (분리불가, 동일데이터)",
+      "연남동": "연남동",
+      "성산동": "성산1동 (성산2동과 중복 포함)",
+      "중동+하중동+신정동": "성산2동",
+      "상암동": "상암동"
+    }
+  },
+  "district_total": {
+    "name": "마포구",
+    "avg_land_price_per_sqm": 6399509,
+    "median_land_price_per_sqm": 5931000,
+    "max_land_price_per_sqm": 39110000,
+    "min_land_price_per_sqm": 289600,
+    "total_parcels": 40487
+  },
+  "districts": {
+    "공덕동": {
+      "avg_land_price_per_sqm": 6204059,
+      "median_land_price_per_sqm": 5749000,
+      "min_land_price_per_sqm": 1395000,
+      "max_land_price_per_sqm": 32080000,
+      "percentile_25": 4024000,
+      "percentile_75": 8189000,
+      "parcel_count": 4235
+    },
+    "대흥동": {
+      "avg_land_price_per_sqm": 6134071,
+      "median_land_price_per_sqm": 5146000,
+      "min_land_price_per_sqm": 1130000,
+      "max_land_price_per_sqm": 25430000,
+      "percentile_25": 3625000,
+      "percentile_75": 7630000,
+      "parcel_count": 1563
+    },
+    "도화동": {
+      "avg_land_price_per_sqm": 7570318,
+      "median_land_price_per_sqm": 6418000,
+      "min_land_price_per_sqm": 1320000,
+      "max_land_price_per_sqm": 27910000,
+      "percentile_25": 4550750,
+      "percentile_75": 8206750,
+      "parcel_count": 1392
+    },
+    "망원1동": {
+      "avg_land_price_per_sqm": 5778313,
+      "median_land_price_per_sqm": 6026000,
+      "min_land_price_per_sqm": 442500,
+      "max_land_price_per_sqm": 14080000,
+      "percentile_25": 4972000,
+      "percentile_75": 7162000,
+      "parcel_count": 3792,
+      "note": "법정동 '망원동' 전체 데이터 (망원2동과 동일, 행정동 분리 불가)"
+    },
+    "망원2동": {
+      "avg_land_price_per_sqm": 5778313,
+      "median_land_price_per_sqm": 6026000,
+      "min_land_price_per_sqm": 442500,
+      "max_land_price_per_sqm": 14080000,
+      "percentile_25": 4972000,
+      "percentile_75": 7162000,
+      "parcel_count": 3792,
+      "note": "법정동 '망원동' 전체 데이터 (망원1동과 동일, 행정동 분리 불가)",
+      "shared_with": "망원1동"
+    },
+    "상암동": {
+      "avg_land_price_per_sqm": 3197587,
+      "median_land_price_per_sqm": 1301000,
+      "min_land_price_per_sqm": 289600,
+      "max_land_price_per_sqm": 19110000,
+      "percentile_25": 442500,
+      "percentile_75": 6322500,
+      "parcel_count": 2689
+    },
+    "서강동": {
+      "avg_land_price_per_sqm": 7026736,
+      "median_land_price_per_sqm": 6061000,
+      "min_land_price_per_sqm": 442500,
+      "max_land_price_per_sqm": 33670000,
+      "percentile_25": 4132500,
+      "percentile_75": 8525000,
+      "parcel_count": 2762
+    },
+    "서교동": {
+      "avg_land_price_per_sqm": 10195117,
+      "median_land_price_per_sqm": 9318000,
+      "min_land_price_per_sqm": 1530000,
+      "max_land_price_per_sqm": 39110000,
+      "percentile_25": 6958000,
+      "percentile_75": 12730000,
+      "parcel_count": 4996
+    },
+    "성산1동": {
+      "avg_land_price_per_sqm": 4468474,
+      "median_land_price_per_sqm": 4851500,
+      "min_land_price_per_sqm": 295400,
+      "max_land_price_per_sqm": 13260000,
+      "percentile_25": 2390000,
+      "percentile_75": 5664750,
+      "parcel_count": 4320,
+      "note": "법정동 '성산동' 전체 포함 (성산2동의 성산동 부분과 중복)"
+    },
+    "성산2동": {
+      "avg_land_price_per_sqm": 4314477,
+      "median_land_price_per_sqm": 4701000,
+      "min_land_price_per_sqm": 295400,
+      "max_land_price_per_sqm": 13260000,
+      "percentile_25": 2390000,
+      "percentile_75": 5509000,
+      "parcel_count": 5185,
+      "note": "법정동 '중동+하중동+신정동' + 법정동 '성산동' 전체 포함"
+    },
+    "신수동": {
+      "avg_land_price_per_sqm": 5560011,
+      "median_land_price_per_sqm": 5256000,
+      "min_land_price_per_sqm": 1000000,
+      "max_land_price_per_sqm": 17270000,
+      "percentile_25": 3256000,
+      "percentile_75": 7043000,
+      "parcel_count": 2124
+    },
+    "아현동": {
+      "avg_land_price_per_sqm": 6990874,
+      "median_land_price_per_sqm": 8189000,
+      "min_land_price_per_sqm": 946400,
+      "max_land_price_per_sqm": 24620000,
+      "percentile_25": 3499250,
+      "percentile_75": 8258000,
+      "parcel_count": 2382
+    },
+    "연남동": {
+      "avg_land_price_per_sqm": 6764541,
+      "median_land_price_per_sqm": 6677000,
+      "min_land_price_per_sqm": 1364000,
+      "max_land_price_per_sqm": 16980000,
+      "percentile_25": 5500000,
+      "percentile_75": 8521000,
+      "parcel_count": 2587
+    },
+    "염리동": {
+      "avg_land_price_per_sqm": 6439640,
+      "median_land_price_per_sqm": 5999000,
+      "min_land_price_per_sqm": 1320000,
+      "max_land_price_per_sqm": 18540000,
+      "percentile_25": 4916000,
+      "percentile_75": 7623000,
+      "parcel_count": 1339
+    },
+    "용강동": {
+      "avg_land_price_per_sqm": 5517450,
+      "median_land_price_per_sqm": 4976000,
+      "min_land_price_per_sqm": 1532000,
+      "max_land_price_per_sqm": 26190000,
+      "percentile_25": 2304000,
+      "percentile_75": 6599000,
+      "parcel_count": 1319
+    },
+    "합정동": {
+      "avg_land_price_per_sqm": 6698838,
+      "median_land_price_per_sqm": 6559000,
+      "min_land_price_per_sqm": 442500,
+      "max_land_price_per_sqm": 29460000,
+      "percentile_25": 3057000,
+      "percentile_75": 8652250,
+      "parcel_count": 4122
+    }
+  }
+}
