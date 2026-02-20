@@ -160,3 +160,113 @@ function calcProgress(pledgeId, state) {
     default: return 0;
   }
 }
+
+/**
+ * 공약 달성 여부 판정 (progress >= 100)
+ */
+export function checkAchieved(pledgeId, state) {
+  return calcProgress(pledgeId, state) >= 100;
+}
+
+/**
+ * 최종 점수 계산 — numerical-design-v1.md §8.3
+ * 6개 KPI (70점 만점) + 공약 리스크-리워드 (최대 +60)
+ * @returns {{ total, grade, kpis: { label, score, max, detail }[], pledgeResults }}
+ */
+export function calcFinalScore(state) {
+  if (!initialState) return { total: 0, grade: 'F', kpis: [], pledgeResults: [] };
+
+  const initialPop = initialState.dongs.reduce((s, d) => s + d.population, 0);
+  const totalPop = state.dongs.reduce((s, d) => s + d.population, 0);
+  const popChangeRate = ((totalPop - initialPop) / initialPop) * 100;
+
+  const initialBiz = initialState.dongs.reduce((s, d) => s + d.businesses, 0);
+  const totalBiz = state.dongs.reduce((s, d) => s + d.businesses, 0);
+  const initialWorkers = initialState.dongs.reduce((s, d) => s + d.workers, 0);
+  const totalWorkers = state.dongs.reduce((s, d) => s + d.workers, 0);
+  const econGrowth = ((totalBiz - initialBiz) / initialBiz * 100 + (totalWorkers - initialWorkers) / initialWorkers * 100) / 2;
+
+  const initialTax = initialState.finance.revenue?.localTax || 613;
+  const currentTax = state.finance.revenue?.localTax || 613;
+  const taxChange = ((currentTax - initialTax) / initialTax) * 100;
+
+  const initialFiscal = initialState.finance.fiscalIndependence || 28;
+  const currentFiscal = state.finance.fiscalIndependence || 28;
+  const fiscalDelta = currentFiscal - initialFiscal;
+
+  const avgSat = state.dongs.reduce((s, d) => s + d.satisfaction, 0) / state.dongs.length;
+
+  const satValues = state.dongs.map(d => d.satisfaction);
+  const satMean = satValues.reduce((s, v) => s + v, 0) / satValues.length;
+  const satStdDev = Math.sqrt(satValues.reduce((s, v) => s + (v - satMean) ** 2, 0) / satValues.length);
+
+  // KPI scoring with linear interpolation
+  // Design doc thresholds are anchor points; we extend linearly to max
+  const kpis = [
+    {
+      id: 'population', label: '인구 변화', max: 15,
+      score: linearScore(popChangeRate, -2, 0, 5, [0, 3, 15], 15),
+      detail: `${popChangeRate >= 0 ? '+' : ''}${popChangeRate.toFixed(1)}%`,
+    },
+    {
+      id: 'economy', label: '경제 성장', max: 10,
+      score: linearScore(econGrowth, -3, 0, 5, [0, 5, 10], 10),
+      detail: `${econGrowth >= 0 ? '+' : ''}${econGrowth.toFixed(1)}%`,
+    },
+    {
+      id: 'tax', label: '세수 증감', max: 10,
+      score: linearScore(taxChange, -5, 0, 10, [0, 5, 10], 10),
+      detail: `${taxChange >= 0 ? '+' : ''}${taxChange.toFixed(1)}%`,
+    },
+    {
+      id: 'fiscal', label: '재정 건전성', max: 10,
+      score: linearScore(fiscalDelta, -3, 0, 3, [0, 5, 10], 10),
+      detail: `${fiscalDelta >= 0 ? '+' : ''}${fiscalDelta.toFixed(1)}%p`,
+    },
+    {
+      id: 'satisfaction', label: '주민 만족도', max: 15,
+      score: linearScore(avgSat, 50, 60, 70, [0, 8, 15], 15),
+      detail: `평균 ${avgSat.toFixed(0)}`,
+    },
+    {
+      id: 'balance', label: '균형 발전', max: 10,
+      score: satStdDev < 10 ? 10 : satStdDev < 15 ? 5 : satStdDev > 20 ? 0 : Math.round(5 * (20 - satStdDev) / 5),
+      detail: `σ = ${satStdDev.toFixed(1)}`,
+    },
+  ];
+
+  // Pledge risk-reward
+  const pledges = state.meta.pledges || [];
+  const pledgeResults = pledges.map(id => {
+    const pledge = PLEDGES.find(p => p.id === id);
+    const achieved = checkAchieved(id, state);
+    const progress = calcProgress(id, state);
+    return {
+      id, name: pledge?.name || id, achieved, progress: Math.round(progress),
+      score: achieved ? 15 : -20,
+    };
+  });
+
+  const kpiTotal = kpis.reduce((s, k) => s + k.score, 0);
+  const pledgeTotal = pledgeResults.reduce((s, p) => s + p.score, 0);
+  const total = kpiTotal + pledgeTotal;
+
+  const grade = total >= 100 ? 'S' : total >= 80 ? 'A' : total >= 60 ? 'B' : total >= 40 ? 'C' : total >= 20 ? 'D' : 'F';
+
+  return { total, grade, kpis, pledgeResults, kpiTotal, pledgeTotal };
+}
+
+/**
+ * Linear interpolation for scoring
+ * Given value, three thresholds (low, mid, high) and corresponding scores
+ */
+function linearScore(value, low, mid, high, scores, max) {
+  if (value <= low) return scores[0];
+  if (value >= high) return scores[2];
+  if (value <= mid) {
+    const t = (value - low) / (mid - low);
+    return Math.round(scores[0] + t * (scores[1] - scores[0]));
+  }
+  const t = (value - mid) / (high - mid);
+  return Math.min(max, Math.round(scores[1] + t * (scores[2] - scores[1])));
+}

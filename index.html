@@ -67,13 +67,19 @@
     <section id="dashboard-panel" class="panel">
       <div class="panel-header">
         <h2>대시보드</h2>
+        <div class="dash-tabs">
+          <button class="dash-tab active" data-dash="trend">추세</button>
+          <button class="dash-tab" data-dash="rank">동별 순위</button>
+        </div>
       </div>
       <div id="dashboard-summary" class="dashboard-summary"></div>
-      <div id="dashboard-chart" class="dashboard-chart">
-        <canvas id="trend-chart"></canvas>
-      </div>
-      <div id="dashboard-ranking" class="dashboard-ranking">
-        <canvas id="rank-chart"></canvas>
+      <div id="dashboard-chart" class="dashboard-chart-area">
+        <div id="dash-trend" class="dash-view active">
+          <canvas id="trend-chart"></canvas>
+        </div>
+        <div id="dash-rank" class="dash-view">
+          <canvas id="rank-chart"></canvas>
+        </div>
       </div>
     </section>
 

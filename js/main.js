@@ -8,7 +8,7 @@ import { initAdvisor, generateBriefing, addMessage, updateAdvisorState } from '.
 import { initBudget, getAllocation } from './budget.js';
 import { initPolicy, getSelectedPolicies, updatePolicyState } from './policy.js';
 import { initEvents, renderNoEvent, renderEvent, getEventChoice, checkEventTriggers } from './event.js';
-import { showPledgeSelection, initPledgeBar, renderPledgeBar } from './pledge.js';
+import { showPledgeSelection, initPledgeBar, renderPledgeBar, calcFinalScore } from './pledge.js';
 import { tick } from './engine/simulation.js';
 
 // === Game State ===
@@ -231,60 +231,117 @@ function showGameEnd() {
   const modal = document.getElementById('modal-overlay');
   const content = document.getElementById('modal-content');
 
-  const first = gameState.history[0];
-  const totalPop = gameState.dongs.reduce((s, d) => s + d.population, 0);
-  const initialPop = first?.totalPopulation || totalPop;
-  const avgSat = Math.round(gameState.dongs.reduce((s, d) => s + d.satisfaction, 0) / gameState.dongs.length);
-  const totalBiz = gameState.dongs.reduce((s, d) => s + d.businesses, 0);
-  const fiscal = gameState.finance.fiscalIndependence;
+  const result = calcFinalScore(gameState);
+  const gradeLabels = {
+    S: '재선 확정', A: '유능한 구청장', B: '무난한 임기',
+    C: '아쉬운 성과', D: '위기의 마포구', F: '주민소환',
+  };
 
-  // Count achieved pledges
-  const achieved = gameState.meta.pledges.filter(id => {
-    // Simplified check — Sprint 4 will have proper logic
-    return false; // Placeholder
-  }).length;
+  // KPI score bars
+  const kpiHtml = result.kpis.map(k => `
+    <div class="score-row">
+      <span class="score-row-label">${k.label}</span>
+      <div class="score-row-bar">
+        <div class="score-row-fill" style="width:${Math.max(0, k.score / k.max * 100)}%"></div>
+      </div>
+      <span class="score-row-value">${k.score}/${k.max}</span>
+    </div>
+  `).join('');
 
-  const grade = achieved >= 4 ? 'S' : achieved >= 3 ? 'A' : achieved >= 2 ? 'B' : achieved >= 1 ? 'C' : 'D';
-  const gradeLabels = { S: '재선 확정', A: '유능한 구청장', B: '무난한 임기', C: '아쉬운 성과', D: '위기의 마포구' };
+  // Pledge results
+  const pledgeHtml = result.pledgeResults.map(p => `
+    <div class="pledge-result-item ${p.achieved ? 'achieved' : 'failed'}">
+      <span>${p.achieved ? '✓' : '✗'} ${p.name}</span>
+      <span class="pledge-score">${p.score > 0 ? '+' : ''}${p.score}</span>
+    </div>
+  `).join('');
 
   content.innerHTML = `
     <div class="modal-title">마포구 4년 성적표</div>
     <div class="modal-subtitle">${gameState.meta.playerName} 구청장님의 임기가 끝났습니다</div>
 
     <div class="grade-display">
-      <div class="grade-letter">${grade}</div>
-      <div class="grade-label">${gradeLabels[grade]}</div>
+      <div class="grade-letter grade-${result.grade}">${result.grade}</div>
+      <div class="grade-label">${gradeLabels[result.grade]}</div>
     </div>
 
-    <div class="report-grid">
-      <div class="report-item">
-        <div class="report-label">인구</div>
-        <div class="report-value">${(totalPop / 10000).toFixed(1)}만</div>
-        <div class="report-delta ${totalPop >= initialPop ? 'delta-up' : 'delta-down'}">
-          ${totalPop >= initialPop ? '+' : ''}${(totalPop - initialPop).toLocaleString()}명
-        </div>
-      </div>
-      <div class="report-item">
-        <div class="report-label">사업체</div>
-        <div class="report-value">${totalBiz.toLocaleString()}</div>
-        <div class="report-delta delta-flat">개</div>
-      </div>
-      <div class="report-item">
-        <div class="report-label">만족도</div>
-        <div class="report-value">${avgSat}</div>
-        <div class="report-delta delta-flat">/ 100</div>
-      </div>
-      <div class="report-item">
-        <div class="report-label">재정자립도</div>
-        <div class="report-value">${fiscal}%</div>
-        <div class="report-delta delta-flat">목표 30%</div>
-      </div>
+    <div class="score-summary">
+      총점 <strong>${result.total}</strong>점
+      <span class="score-breakdown-label">(KPI ${result.kpiTotal} + 공약 ${result.pledgeTotal >= 0 ? '+' : ''}${result.pledgeTotal})</span>
+    </div>
+
+    <div class="report-section">
+      <div class="report-section-title">KPI 평가</div>
+      <div class="score-breakdown">${kpiHtml}</div>
+    </div>
+
+    ${result.pledgeResults.length > 0 ? `
+    <div class="report-section">
+      <div class="report-section-title">공약 달성</div>
+      <div class="pledge-results">${pledgeHtml}</div>
+    </div>` : ''}
+
+    <div class="report-section">
+      <div class="report-section-title">AI 자문관 리뷰</div>
+      <div class="ai-review" id="ai-review-content">리뷰 생성 중...</div>
     </div>
 
     <button class="modal-btn" onclick="location.reload()">다시 플레이</button>
   `;
 
   modal.classList.add('active');
+
+  // Generate AI review asynchronously
+  generateGameReview(gameState, result);
+}
+
+async function generateGameReview(state, result) {
+  const reviewEl = document.getElementById('ai-review-content');
+  if (!reviewEl) return;
+
+  try {
+    const { callAdvisorForReview } = await import('./advisor.js');
+
+    const pledgeText = result.pledgeResults.map(p =>
+      `${p.name}: ${p.achieved ? '달성' : '미달성'} (${p.progress}%)`
+    ).join(', ');
+    const kpiText = result.kpis.map(k => `${k.label}: ${k.score}/${k.max} (${k.detail})`).join(', ');
+
+    const prompt = `4년 임기가 끝났습니다. 성적표 요약:
+등급: ${result.grade} (${result.total}점)
+KPI: ${kpiText}
+공약: ${pledgeText}
+2~3문장으로 임기를 리뷰해주세요. 구체적인 지표를 언급하며 칭찬과 아쉬운 점을 균형있게.`;
+
+    const review = await callAdvisorForReview(prompt);
+    reviewEl.textContent = review || getDefaultReview(result);
+  } catch {
+    reviewEl.textContent = getDefaultReview(result);
+  }
+}
+
+function getDefaultReview(result) {
+  const gradeText = {
+    S: '탁월한 성과입니다! 모든 공약을 달성하시고 마포구를 크게 발전시키셨습니다.',
+    A: '훌륭한 임기였습니다. 대부분의 지표가 개선되었고 구민들의 신뢰를 얻었습니다.',
+    B: '무난한 임기를 보내셨습니다. 일부 분야에서 성과가 있었지만, 아쉬운 부분도 있습니다.',
+    C: '아쉬운 성과입니다. 몇 가지 과제가 미해결로 남았습니다.',
+    D: '어려운 임기였습니다. 구조적 문제에 대한 근본적인 대응이 필요했습니다.',
+    F: '마포구의 상황이 크게 악화되었습니다. 주민들의 불만이 높습니다.',
+  };
+
+  let review = gradeText[result.grade] || '';
+
+  // Add specific insights
+  const bestKpi = result.kpis.reduce((a, b) => (a.score / a.max) > (b.score / b.max) ? a : b);
+  const worstKpi = result.kpis.reduce((a, b) => (a.score / a.max) < (b.score / b.max) ? a : b);
+
+  review += ` ${bestKpi.label} 분야에서 가장 좋은 성과를 보이셨습니다.`;
+  if (worstKpi.id !== bestKpi.id) {
+    review += ` 반면 ${worstKpi.label}은 개선의 여지가 있습니다.`;
+  }
+
+  return review;
 }
 
 // === Boot ===

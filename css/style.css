@@ -427,28 +427,47 @@ body {
 .delta-down { color: var(--danger); }
 .delta-flat { color: var(--text-muted); }
 
-.dashboard-chart {
+.dash-tabs {
+  display: flex;
+  gap: 4px;
+}
+
+.dash-tab {
+  padding: 3px 10px;
+  font-size: 11px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.dash-tab.active {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
+.dashboard-chart-area {
   flex: 1;
-  padding: 0 14px;
   min-height: 0;
+  padding: 0 14px 8px;
+  position: relative;
 }
 
-.dashboard-chart canvas {
+.dash-view {
+  display: none;
+  width: 100%;
+  height: 100%;
+}
+
+.dash-view.active {
+  display: block;
+}
+
+.dash-view canvas {
   width: 100% !important;
-  max-height: 180px;
-}
-
-.dashboard-ranking {
-  padding: 8px 14px;
-  overflow-y: auto;
-  max-height: 280px;
-  min-height: 160px;
-  flex-shrink: 0;
-}
-
-.dashboard-ranking canvas {
-  width: 100% !important;
-  max-height: 260px;
+  height: 100% !important;
 }
 
 /* === ACTION PANEL === */
@@ -904,28 +923,10 @@ body {
 .modal-btn:hover { background: #1d4ed8; }
 .modal-btn:disabled { background: #94a3b8; cursor: not-allowed; }
 
-/* === GAME END REPORT === */
-.report-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 20px;
-}
-
-.report-item {
-  text-align: center;
-  padding: 12px;
-  background: var(--bg);
-  border-radius: 8px;
-}
-
-.report-label { font-size: 11px; color: var(--text-muted); }
-.report-value { font-size: 22px; font-weight: 700; margin: 4px 0; }
-.report-delta { font-size: 12px; }
-
+/* === GAME END REPORT (Enhanced) === */
 .grade-display {
   text-align: center;
-  margin: 20px 0;
+  margin: 16px 0 8px;
 }
 
 .grade-letter {
@@ -934,9 +935,128 @@ body {
   color: var(--accent);
 }
 
+.grade-letter.grade-S { color: #d4a017; }
+.grade-letter.grade-A { color: var(--accent); }
+.grade-letter.grade-B { color: var(--success); }
+.grade-letter.grade-C { color: var(--warning); }
+.grade-letter.grade-D { color: var(--danger); }
+.grade-letter.grade-F { color: #94a3b8; }
+
 .grade-label {
   font-size: 16px;
   color: var(--text-muted);
+}
+
+.score-summary {
+  text-align: center;
+  font-size: 18px;
+  margin-bottom: 16px;
+  color: var(--text);
+}
+
+.score-summary strong {
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.score-breakdown-label {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.report-section {
+  margin-bottom: 16px;
+}
+
+.report-section-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 8px;
+}
+
+.score-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.score-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.score-row-label {
+  width: 72px;
+  font-size: 12px;
+  color: var(--text);
+  flex-shrink: 0;
+}
+
+.score-row-bar {
+  flex: 1;
+  height: 14px;
+  background: var(--bg);
+  border-radius: 7px;
+  overflow: hidden;
+  min-width: 60px;
+}
+
+.score-row-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 7px;
+  transition: width 0.3s ease;
+}
+
+.score-row-value {
+  width: 40px;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.pledge-results {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pledge-result-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  font-size: 13px;
+}
+
+.pledge-result-item.achieved {
+  background: var(--success-light);
+  color: var(--success);
+}
+
+.pledge-result-item.failed {
+  background: var(--danger-light);
+  color: var(--danger);
+}
+
+.pledge-score {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.ai-review {
+  background: var(--accent-light);
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text);
 }
 
 /* === EVENT ENHANCEMENTS === */

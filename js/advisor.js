@@ -601,6 +601,19 @@ function updateModeDisplay() {
   }
 }
 
+// === Game End Review (Sprint 4) ===
+export async function callAdvisorForReview(prompt) {
+  if (currentBackend === 'anthropic' && apiKey) {
+    try {
+      return await callAI(prompt);
+    } catch (err) {
+      console.warn('[Advisor] Review API failed:', err);
+    }
+  }
+  // Mock fallback — return empty to trigger default review
+  return '';
+}
+
 // === Message UI ===
 export function addMessage(role, text) {
   if (!chatMessages) return;

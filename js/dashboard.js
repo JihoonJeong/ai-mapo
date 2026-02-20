@@ -9,6 +9,22 @@ export function initDashboard(state) {
   renderSummary(state);
   initTrendChart(state);
   initRankChart(state);
+  initDashTabs();
+}
+
+function initDashTabs() {
+  document.querySelectorAll('.dash-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.dash-tab').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.dash-view').forEach(v => v.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(`dash-${btn.dataset.dash}`)?.classList.add('active');
+
+      // Trigger Chart.js resize for newly visible chart
+      if (btn.dataset.dash === 'trend' && trendChart) trendChart.resize();
+      if (btn.dataset.dash === 'rank' && rankChart) rankChart.resize();
+    });
+  });
 }
 
 export function updateDashboard(state) {
