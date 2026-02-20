@@ -428,7 +428,7 @@ function getRecentHistory(turnWindow) {
 }
 
 // === Anthropic API Backend (§7.3) ===
-async function anthropicCall(messages) {
+async function anthropicCall(messages, maxTokens = 500) {
   if (!apiKey) throw new Error('API key required');
 
   const model = localStorage.getItem('ai-mapo-anthropic-model') || 'claude-sonnet-4-6';
@@ -445,7 +445,7 @@ async function anthropicCall(messages) {
     },
     body: JSON.stringify({
       model,
-      max_tokens: 500,
+      max_tokens: maxTokens,
       system: systemMsg?.content || SYSTEM_PROMPT,
       messages: otherMsgs,
     }),
@@ -461,7 +461,7 @@ async function anthropicCall(messages) {
 }
 
 // === OpenAI API Backend ===
-async function openaiCall(messages) {
+async function openaiCall(messages, maxTokens = 500) {
   if (!openaiKey) throw new Error('OpenAI API key required');
 
   const model = localStorage.getItem('ai-mapo-openai-model') || 'gpt-4o-mini';
@@ -474,7 +474,7 @@ async function openaiCall(messages) {
     },
     body: JSON.stringify({
       model,
-      max_tokens: 500,
+      max_tokens: maxTokens,
       messages,
     }),
   });
@@ -489,7 +489,7 @@ async function openaiCall(messages) {
 }
 
 // === Ollama Backend ===
-async function ollamaCall(messages) {
+async function ollamaCall(messages, maxTokens = 500) {
   const ollamaUrl = localStorage.getItem('ai-mapo-ollama-url') || 'http://localhost:11434';
   const ollamaModel = localStorage.getItem('ai-mapo-ollama-model') || 'llama3.1:8b';
 
@@ -512,6 +512,17 @@ async function ollamaCall(messages) {
   if (!response.ok) throw new Error(`Ollama error ${response.status}`);
   const data = await response.json();
   return data.message?.content || '';
+}
+
+// === Raw API call for autoplay (custom system prompt + messages) ===
+export async function callAIRaw(messages, maxTokens = 800) {
+  const backend = AI_BACKENDS[currentBackend];
+  if (!backend) throw new Error(`Unknown backend: ${currentBackend}`);
+  return await backend.call(messages, maxTokens);
+}
+
+export function getCurrentBackendName() {
+  return currentBackend;
 }
 
 // === Mock Backend ===

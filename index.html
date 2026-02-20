@@ -96,6 +96,17 @@
       <div id="tab-policy" class="tab-content"></div>
       <div id="tab-event" class="tab-content"></div>
       <div class="action-footer">
+        <div id="autoplay-controls" class="autoplay-controls">
+          <select id="autoplay-turns" class="autoplay-select">
+            <option value="4">4턴</option>
+            <option value="8">8턴</option>
+            <option value="12">12턴</option>
+            <option value="0">끝까지</option>
+          </select>
+          <button id="btn-autoplay" class="btn-autoplay">AI 자동</button>
+          <button id="btn-autoplay-stop" class="btn-autoplay-stop" style="display:none">중지</button>
+        </div>
+        <div id="autoplay-status" class="autoplay-status" style="display:none"></div>
         <button id="btn-end-turn" class="btn-end-turn">턴 종료</button>
       </div>
     </section>

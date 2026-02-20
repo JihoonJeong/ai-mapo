@@ -25,6 +25,12 @@ export function getAllocation() {
   return { ...allocation };
 }
 
+export function setAllocation(alloc, currentFreeBudget) {
+  allocation = { ...alloc };
+  if (currentFreeBudget !== undefined) freeBudget = currentFreeBudget;
+  renderBudget();
+}
+
 function renderBudget() {
   const container = document.getElementById('tab-budget');
   if (!container) return;

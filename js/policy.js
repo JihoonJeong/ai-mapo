@@ -52,6 +52,19 @@ export function getActivePolicies() {
   return activePolicies;
 }
 
+export function setPolicies(ids) {
+  pendingSelection = ids.filter(id => policyCatalog.find(p => p.id === id));
+  renderPolicyPanel();
+}
+
+export function cancelActivePolicy(id) {
+  cancelPolicy(id);
+}
+
+export function getPolicyCatalog() {
+  return policyCatalog;
+}
+
 function renderPolicyPanel() {
   const container = document.getElementById('tab-policy');
   if (!container) return;

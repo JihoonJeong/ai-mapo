@@ -10,10 +10,12 @@ import { initPolicy, getSelectedPolicies, updatePolicyState } from './policy.js'
 import { initEvents, renderNoEvent, renderEvent, getEventChoice, checkEventTriggers } from './event.js';
 import { showPledgeSelection, initPledgeBar, renderPledgeBar, calcFinalScore } from './pledge.js';
 import { tick } from './engine/simulation.js';
+import { initAutoplay } from './autoplay.js';
 
 // === Game State ===
 let gameState = null;
 let lastTurnActions = null;
+let autoplayActive = false;
 
 // === Phases ===
 const PHASE = {
@@ -123,6 +125,15 @@ async function startGame() {
   // End turn button
   document.getElementById('btn-end-turn')?.addEventListener('click', endTurn);
 
+  // Init autoplay
+  initAutoplay({
+    getState: () => gameState,
+    getPhase: () => currentPhase,
+    PHASE,
+    triggerEndTurn: () => endTurn(),
+    setAutoplayActive: (v) => { autoplayActive = v; },
+  });
+
   // Start first turn
   updateTurnDisplay();
   currentPhase = PHASE.PLAYER_PHASE;
@@ -143,9 +154,9 @@ function startTurn() {
   updateDashboard(gameState);
   renderPledgeBar(gameState.meta.pledges, gameState);
 
-  // 3. AI briefing
+  // 3. AI briefing (skip during autoplay — autoplay shows its own reasoning)
   updateAdvisorState(gameState);
-  if (gameState.meta.turn > 1) {
+  if (gameState.meta.turn > 1 && !autoplayActive) {
     generateBriefing(gameState);
   }
 

@@ -1181,6 +1181,70 @@ body {
 
 .modal-select:focus { border-color: var(--accent); }
 
+/* === AUTOPLAY === */
+.autoplay-controls {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.autoplay-select {
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 12px;
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.btn-autoplay {
+  flex: 1;
+  padding: 6px 12px;
+  background: var(--success);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-autoplay:hover { background: #15803d; }
+
+.btn-autoplay-stop {
+  flex: 1;
+  padding: 6px 12px;
+  background: var(--danger);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-autoplay-stop:hover { background: #b91c1c; }
+
+.autoplay-status {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 4px 0;
+}
+
+/* Disable action inputs during autoplay */
+.autoplay-active .tab-content {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.autoplay-active .btn-end-turn {
+  display: none;
+}
+
 /* === SCROLLBAR === */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }

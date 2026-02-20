@@ -202,6 +202,20 @@ export function renderNoEvent() {
   container.innerHTML = '<div class="no-event">이번 분기에는 특별한 이벤트가 없습니다.</div>';
 }
 
+export function setEventChoice(choiceId) {
+  selectedChoiceId = choiceId;
+  const container = document.getElementById('tab-event');
+  if (container) {
+    container.querySelectorAll('.event-choice').forEach(el => {
+      el.classList.toggle('selected', el.dataset.choiceId === choiceId);
+    });
+  }
+}
+
+export function getCurrentEvent() {
+  return currentEvent;
+}
+
 /**
  * 선택된 이벤트 결과 반환
  */
