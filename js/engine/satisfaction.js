@@ -7,7 +7,7 @@
  */
 
 // === Constants ===
-const DECAY = -0.3; // 자연 감쇠/턴 (적정 예산 투자로 상쇄 가능)
+const DECAY = -0.6; // 자연 감쇠/턴 — 균등 배분이 겨우 유지, 성장하려면 집중 투자 필요
 const ACCEL_SAT = 5.0; // 만족도 변동 가속 계수
 
 // 생애주기별 만족도 구성요소 가중치
@@ -84,6 +84,23 @@ export function updateSatisfaction(dong, state, adjacency, budgetEffects = {}, p
   const bizDensity = dong.businesses / Math.max(1, dong.population);
   const econDelta = (bizDensity / Math.max(0.01, avgBizDensity) - 1.0) * 2.0;
   factors.economy += clamp(econDelta, -3, 3);
+
+  // 패치 C: 초기값 대비 사업체 감소 → 경제 만족도 절대 페널티
+  if (dong._initBiz) {
+    const bizDecline = (dong._initBiz - dong.businesses) / dong._initBiz;
+    if (bizDecline > 0.05) {
+      factors.economy -= bizDecline * 15;
+    }
+  }
+
+  // 패치 C: 초기값 대비 인구 감소 → 복지/주거 만족도 절대 페널티
+  if (dong._initPop) {
+    const popDecline = (dong._initPop - dong.population) / dong._initPop;
+    if (popDecline > 0.03) {
+      factors.welfare -= popDecline * 10;
+      factors.housing -= popDecline * 5;
+    }
+  }
 
   // 임대료 압력 → 주거 만족도 하락
   if (dong.rentPressure > 0) {
