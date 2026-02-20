@@ -57,50 +57,84 @@ Ollama 설치 후 `ollama serve`로 시작, 원하는 모델 `ollama pull llama3
 
 ### 웹 버전 (브라우저)
 
+GitHub Pages에서 바로 플레이하거나, 로컬에서 실행:
+
 ```bash
-# 정적 파일이므로 아무 HTTP 서버로 서빙
+git clone https://github.com/JihoonJeong/ai-mapo.git
+cd ai-mapo
 python3 -m http.server 8080
-# 또는
-npx serve .
 ```
 
 `http://localhost:8080` 접속. AI 자문관 설정은 게임 내 모드 표시를 클릭.
 
 ### MCP 버전 (Claude Desktop)
 
-Claude Desktop 안에서 AI가 직접 자문관이 되어 채팅으로 게임을 진행합니다. 별도 API 키 불필요 (Claude 구독으로 동작).
+Claude Desktop 앱 안에서 채팅으로 게임을 진행합니다. Claude가 직접 자문관이 되어 전략 분석과 대화를 제공합니다. 별도 API 키 불필요 (Claude 구독으로 동작).
 
-#### 설치
+#### 사전 요구사항
+
+- [Claude Desktop](https://claude.ai/download) 설치 (macOS / Windows)
+- [Node.js](https://nodejs.org/) v18 이상 설치
+- Git
+
+#### 1단계: 저장소 클론 및 빌드
 
 ```bash
-# 1. 빌드
-cd ai-mapo-mcp
+git clone https://github.com/JihoonJeong/ai-mapo.git
+cd ai-mapo/ai-mapo-mcp
 npm install
 npm run build
 ```
 
-#### Claude Desktop 설정
+빌드가 성공하면 `dist/` 폴더에 서버 파일이 생성됩니다.
 
-`~/Library/Application Support/Claude/claude_desktop_config.json`에 추가:
+#### 2단계: 빌드 경로 확인
+
+다음 명령으로 설정에 넣을 절대 경로를 확인합니다:
+
+```bash
+echo "$(pwd)/dist/main.js"
+```
+
+출력 예시: `/Users/yourname/ai-mapo/ai-mapo-mcp/dist/main.js`
+
+#### 3단계: Claude Desktop 설정
+
+Claude Desktop의 MCP 서버 설정 파일을 편집합니다.
+
+**macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+**Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
+
+파일이 없으면 새로 만들고, 있으면 `mcpServers` 안에 `ai-mapo` 항목을 추가합니다:
 
 ```json
 {
   "mcpServers": {
     "ai-mapo": {
       "command": "node",
-      "args": ["/절대경로/ai-mapo/ai-mapo-mcp/dist/main.js", "--stdio"]
+      "args": ["/여기에-2단계에서-확인한-절대경로/dist/main.js", "--stdio"]
     }
   }
 }
 ```
 
-Claude Desktop 재시작 후, 새 대화에서:
+> 경로는 반드시 절대 경로로 입력하세요. `~`나 상대 경로는 동작하지 않습니다.
 
-> "마포구청장 게임 시작해줘"
+#### 4단계: Claude Desktop 재시작
+
+Claude Desktop을 완전히 종료(macOS: Cmd+Q)한 후 다시 열어야 설정이 적용됩니다.
+
+#### 5단계: 게임 시작
+
+새 대화를 열고 입력:
+
+> **마포구청장 게임 시작해줘**
+
+Claude가 게임을 초기화하고, 마포구 지도와 핵심 지표가 표시됩니다.
 
 #### 사용법
 
-게임이 시작되면 Claude가 마포구 현황을 브리핑합니다. 채팅으로 지시:
+게임이 시작되면 Claude가 마포구 현황을 브리핑합니다. 자연어로 지시하면 됩니다:
 
 | 하고 싶은 것 | 채팅 예시 |
 |-------------|----------|
@@ -110,7 +144,18 @@ Claude Desktop 재시작 후, 새 대화에서:
 | 전략 질문 | "인구 유출 막으려면 어떻게 해야 해?" |
 | 상태 확인 | "현재 전체 상태 보여줘" |
 
-iframe UI에는 SVG 맵 + 핵심 지표가 표시됩니다. 예산 조정, 정책 선택 등 조작은 채팅으로 합니다.
+화면 상단에 SVG 맵과 핵심 지표가 표시되고, 예산 조정이나 정책 선택 등의 조작은 모두 채팅으로 합니다.
+
+#### 문제 해결
+
+서버가 연결되지 않으면 터미널에서 직접 실행하여 에러를 확인합니다:
+
+```bash
+cd ai-mapo/ai-mapo-mcp
+node dist/main.js --stdio
+```
+
+정상이면 아무 출력 없이 대기합니다. 에러가 출력되면 Node.js 버전이나 빌드 상태를 확인하세요.
 
 #### 웹 vs MCP 차이
 
