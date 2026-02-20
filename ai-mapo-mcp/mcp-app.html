@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI 마포구청장</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f8fafc;
+      color: #1e293b;
+      overflow-y: auto;
+      min-height: 100vh;
+    }
+
+    /* Single-column vertical layout for narrow iframe */
+    .app-container {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 6px;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 10px;
+      background: #1e40af;
+      color: white;
+      border-radius: 6px;
+      font-size: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .header h1 { font-size: 14px; font-weight: 600; }
+    .turn-info { font-size: 11px; opacity: 0.9; }
+
+    /* Map: full width, fixed aspect ratio */
+    .map-panel {
+      background: white;
+      border-radius: 6px;
+      border: 1px solid #e2e8f0;
+      position: relative;
+      padding: 4px;
+    }
+    .map-panel svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .map-panel .dong { cursor: pointer; transition: fill 0.2s; }
+    .map-panel .dong:hover { opacity: 0.8; }
+    .map-panel .dong.selected { stroke: #f59e0b; stroke-width: 3; }
+
+    .level-1 { fill: #ef4444; }
+    .level-2 { fill: #f97316; }
+    .level-3 { fill: #eab308; }
+    .level-4 { fill: #22c55e; }
+    .level-5 { fill: #15803d; }
+
+    .legend {
+      display: flex;
+      gap: 6px;
+      font-size: 9px;
+      padding: 3px 6px;
+      justify-content: center;
+    }
+    .legend-item { display: flex; align-items: center; gap: 2px; }
+    .legend-color { width: 8px; height: 8px; border-radius: 2px; display: inline-block; }
+
+    /* Summary cards: 4 in a row */
+    .summary-cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
+    }
+    .summary-card {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 6px 8px;
+      text-align: center;
+    }
+    .summary-label { font-size: 10px; color: #64748b; }
+    .summary-value { font-size: 16px; font-weight: 700; color: #1e293b; }
+    .summary-delta { font-size: 10px; }
+    .delta-up { color: #16a34a; }
+    .delta-down { color: #dc2626; }
+
+    /* Budget tags */
+    .budget-section {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 6px 8px;
+    }
+    .budget-section-title { font-size: 10px; color: #64748b; margin-bottom: 4px; }
+    .budget-display {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+    .budget-tag {
+      font-size: 10px;
+      background: #f1f5f9;
+      padding: 2px 6px;
+      border-radius: 3px;
+      white-space: nowrap;
+    }
+
+    /* Dong list table */
+    .dong-list {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .dong-list table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+    }
+    .dong-list th {
+      text-align: left;
+      padding: 4px 6px;
+      background: #f1f5f9;
+      font-weight: 600;
+      font-size: 10px;
+      color: #475569;
+    }
+    .dong-list td {
+      padding: 3px 6px;
+      border-bottom: 1px solid #f8fafc;
+    }
+    .dong-list tr:hover { background: #f8fafc; }
+    .dong-list .sat-bar {
+      display: inline-block;
+      height: 6px;
+      border-radius: 3px;
+      background: #3b82f6;
+      vertical-align: middle;
+    }
+
+    /* Action bar: sticky bottom */
+    .action-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      background: white;
+      border-radius: 6px;
+      border: 1px solid #e2e8f0;
+      position: sticky;
+      bottom: 0;
+      z-index: 10;
+    }
+    .btn-end-turn {
+      background: #1e40af;
+      color: white;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 12px;
+      margin-left: auto;
+    }
+    .btn-end-turn:hover { background: #1d4ed8; }
+    .btn-end-turn:disabled { background: #94a3b8; cursor: not-allowed; }
+    .status-text { font-size: 11px; color: #64748b; }
+
+    .map-tooltip {
+      position: fixed;
+      background: rgba(0,0,0,0.85);
+      color: white;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      pointer-events: none;
+      z-index: 100;
+      display: none;
+    }
+
+    .game-over {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+    }
+    .game-over.visible { display: flex; }
+    .game-over-card {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      max-width: 400px;
+      text-align: center;
+    }
+    .game-over-card h2 { font-size: 18px; margin-bottom: 8px; }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <div class="header">
+      <h1>AI 마포구청장</h1>
+      <span class="turn-info" id="turn-info">준비 중...</span>
+    </div>
+
+    <div class="map-panel" id="map-panel"></div>
+
+    <div class="summary-cards" id="summary-cards"></div>
+
+    <div class="budget-section">
+      <div class="budget-section-title">예산 배분</div>
+      <div class="budget-display" id="budget-display"></div>
+    </div>
+
+    <div class="dong-list" id="dong-list"></div>
+
+    <div class="action-bar">
+      <span class="status-text" id="status-text"></span>
+      <button class="btn-end-turn" id="btn-end-turn">턴 종료</button>
+    </div>
+  </div>
+
+  <div class="map-tooltip" id="map-tooltip"></div>
+
+  <div class="game-over" id="game-over">
+    <div class="game-over-card">
+      <h2>임기 종료</h2>
+      <p id="game-over-text"></p>
+    </div>
+  </div>
+
+  <script type="module" src="/ui/app.ts"></script>
+</body>
+</html>

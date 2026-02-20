@@ -1,0 +1,26 @@
+{
+  "name": "ai-mapo-mcp",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "AI 마포구청장 - MCP App",
+  "scripts": {
+    "build:ui": "vite build",
+    "build:server": "tsc",
+    "build": "npm run build:ui && npm run build:server",
+    "dev": "tsx src/main.ts --stdio",
+    "start": "node dist/main.js --stdio",
+    "inspect": "npx @anthropic-ai/model-context-protocol-inspector node dist/main.js --stdio"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/ext-apps": "^1.0.1",
+    "@modelcontextprotocol/sdk": "^1.26.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^25.3.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1",
+    "vite-plugin-singlefile": "^2.3.0"
+  }
+}

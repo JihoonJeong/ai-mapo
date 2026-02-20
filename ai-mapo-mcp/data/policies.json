@@ -1,0 +1,481 @@
+{
+  "meta": {
+    "version": "1.0",
+    "date": "2026-02-20",
+    "author": "Luca",
+    "description": "MVP 정책 카탈로그 28개. 7개 예산 카테고리 × 4개.",
+    "totalPolicies": 28,
+    "designNotes": {
+      "costUnit": "억원/분기 (정책 활성 동안 매 턴 차감)",
+      "durationUnit": "턴 (0 = 영구 지속, 해제 가능)",
+      "delayUnit": "턴 (효과 발현까지 지연)",
+      "effectValues": "만족도 변화는 절대값(0~100 스케일), 비율 변화는 소수(0.01 = 1%p)",
+      "targetDong": "null = 구 전체, 문자열 = 특정 동 id, 배열 = 복수 동",
+      "perCategory": "싸고 빠른 것 1 / 중간 1 / 비싸고 느린 것 1 / 특정 동 타겟 1"
+    }
+  },
+  "policies": [
+
+    {
+      "id": "econ_startup_hub",
+      "name": "창업 지원 허브",
+      "category": "economy",
+      "cost": 40,
+      "targetDong": null,
+      "delay": 2,
+      "duration": 0,
+      "effects": {
+        "economy": { "newBizBonus": 0.005 },
+        "satisfaction": { "economy": 2 }
+      },
+      "description": "마포구 전역 공유오피스·창업 보육 프로그램. 분기당 신규 창업률 +0.5%p.",
+      "prerequisites": [],
+      "incompatible": []
+    },
+    {
+      "id": "econ_local_currency",
+      "name": "마포페이 지역화폐",
+      "category": "economy",
+      "cost": 25,
+      "targetDong": null,
+      "delay": 1,
+      "duration": 0,
+      "effects": {
+        "economy": { "localSpendBonus": 0.03 },
+        "satisfaction": { "economy": 1 }
+      },
+      "description": "지역화폐 10% 캐시백. 소상공인 매출 증가, 외부 프랜차이즈 유입 억제.",
+      "prerequisites": [],
+      "incompatible": []
+    },
+    {
+      "id": "econ_dmc_incentive",
+      "name": "DMC 기업 유치 인센티브",
+      "category": "economy",
+      "cost": 80,
+      "targetDong": "sangam",
+      "delay": 4,
+      "duration": 8,
+      "effects": {
+        "economy": { "newBizBonus": 0.015, "workerGrowth": 0.02 },
+        "population": { "youth": 0.003, "midAge": 0.002 },
+        "finance": { "localTaxBonus": 0.01 }
+      },
+      "description": "상암 DMC IT·미디어 기업 입주 시 3년간 임대료 50% 지원. 대기업 유치 효과.",
+      "prerequisites": [],
+      "incompatible": []
+    },
+    {
+      "id": "econ_traditional_market",
+      "name": "전통시장 현대화",
+      "category": "economy",
+      "cost": 35,
+      "targetDong": ["mangwon1", "seongsan1", "gongdeok"],
+      "delay": 3,
+      "duration": 6,
+      "effects": {
+        "economy": { "commerceCharacterBonus": 3 },
+        "satisfaction": { "economy": 2, "culture": 1 }
+      },
+      "description": "망원시장·월드컵시장·공덕시장 시설 개선. 온라인 주문, 주차장, 아케이드.",
+      "prerequisites": [],
+      "incompatible": []
+    },
+
+    {
+      "id": "trans_bus_expand",
+      "name": "마을버스 노선 확충",
+      "category": "transport",
+      "cost": 20,
+      "targetDong": null,
+      "delay": 2,
+      "duration": 0,
+      "effects": {
+        "satisfaction": { "transport": 3 }
+      },
+      "description": "성산·도화·염리 등 역세권 접근 불편 지역에 마을버스 노선 3개 추가.",
+      "prerequisites": [],
+      "incompatible": []
+    },
+    {
+      "id": "trans_bike_infra",
+      "name": "자전거 도로망 구축",
+      "category": "transport",
+      "cost": 45,
+      "targetDong": null,
+      "delay": 4,
+      "duration": 0,
+      "effects": {
+        "satisfaction": { "transport": 2, "environment": 2 },
+        "population": { "youth": 0.001 }
+      },
+      "description": "경의선숲길~한강공원 연결 자전거 전용도로. 따릉이 스테이션 30개소 추가.",
+      "prerequisites": [],
+      "incompatible": []
+    },
+    {
+      "id": "trans_parking_resident",
+      "name": "주민 우선 주차 확대",
+      "category": "transport",
+      "cost": 30,
+      "targetDong": ["seogyo", "hapjeong", "yeonnam"],
+      "delay": 2,
+      "duration": 0,
+      "effects": {
+        "satisfaction": { "transport": 4, "housing": 1 }
+      },
+      "description": "관광객 차량 유입이 심한 서교·합정·연남동 주민 우선 주차구역 200면 확보.",
+      "prerequisites": [],
+      "incompatible": []
+    },
+    {
+      "id": "trans_gongdeok_hub",
+      "name": "공덕 환승 동선 개선",
+      "category": "transport",
+      "cost": 60,
+      "targetDong": "gongdeok",
+      "delay": 5,
+      "duration": 8,
+      "effects": {
+        "satisfaction": { "transport": 6 },
+        "economy": { "newBizBonus": 0.003 },
+        "population": { "midAge": 0.002 }
+      },
+      "description": "공덕역 4개 노선 환승 통로 확장 + 에스컬레이터 추가. 하루 10만 이용객 편의 개선.",
+      "prerequisites": [],
+      "incompatible": []
+    },
+
+    {
+      "id": "cult_street_festival",
+      "name": "홍대 거리 축제",
+      "category": "culture",
+      "cost": 15,
+      "targetDong": "seogyo",
+      "delay": 1,
+      "duration": 1,
+      "effects": {
+        "economy": { "livingPopBonus": 0.05 },
+        "satisfaction": { "culture": 3 },
+        "economy_side": { "rentPressureDelta": 0.005 }
+      },
+      "description": "분기 1회 주말 축제. 관광객 증가 + 매출 상승. 단, 소음 민원과 임대료 압력 소폭 증가.",
+      "prerequisites": [],
+      "incompatible": []
+    },
+    {
+      "id": "cult_art_residency",
+      "name": "예술인 창작공간 지원",
+      "category": "culture",
+      "cost": 20,
+      "targetDong": ["seogyo", "hapjeong", "seogang"],
+      "delay": 2,
+      "duration": 0,
+      "effects": {
+        "economy": { "commerceCharacterBonus": 2 },
+        "satisfaction": { "culture": 2 },
+        "population": { "youth": 0.001 }
+      },
+      "description": "빈 상가 활용 예술인 입주 지원. 월세 80% 보조. 상권 특색 유지 효과.",
+      "prerequisites": [],
+      "incompatible": []
+    },
+    {
+      "id": "cult_culture_reserve",
+      "name": "문화비축기지 프로그램 확대",
+      "category": "culture",
+      "cost": 30,
+      "targetDong": "seongsan2",
+      "delay": 2,
+      "duration": 0,
+      "effects": {
+        "satisfaction": { "culture": 4 },
+        "economy": { "livingPopBonus": 0.02 }
+      },
+      "description": "성미산 문화비축기지 상설 전시·교육 프로그램. 월 방문객 2만→3만.",
+      "prerequisites": [],
+      "incompatible": []
+    },
+    {
+      "id": "cult_night_economy",
+      "name": "야간 관광 경제 활성화",
+      "category": "culture",
+      "cost": 25,
+      "targetDong": ["seogyo", "hapjeong", "yeonnam"],
+      "delay": 1,
+      "duration": 4,
+      "effects": {
+        "economy": { "livingPopBonus": 0.03 },
+        "satisfaction": { "culture": 2, "housing": -2 },
+        "finance": { "localTaxBonus": 0.005 }
+      },
+      "description": "야간 조명·포장마차·심야버스. 매출 증가하지만 주거 만족도 하락 트레이드오프.",
+      "prerequisites": [],
+      "incompatible": ["env_noise_control"]
+    },
+
+    {
+      "id": "env_noise_control",
+      "name": "관광지 소음 관리",
+      "category": "environment",
+      "cost": 15,
+      "targetDong": ["seogyo", "hapjeong", "yeonnam"],
+      "delay": 1,
+      "duration": 0,
+      "effects": {
+        "satisfaction": { "housing": 4, "environment": 2 },
+        "economy": { "livingPopBonus": -0.01 }
+      },
+      "description": "23시 이후 옥외 음향 제한 + 소음 측정 단속. 주민 만족도 상승, 야간 상권 소폭 위축.",
+      "prerequisites": [],
+      "incompatible": ["cult_night_economy"]
+    },
+    {
+      "id": "env_park_upgrade",
+      "name": "근린공원 리뉴얼",
+      "category": "environment",
+      "cost": 35,
+      "targetDong": null,
+      "delay": 3,
+      "duration": 6,
+      "effects": {
+        "satisfaction": { "environment": 4 },
+        "population": { "midAge": 0.001 }
+      },
+      "description": "16개 동 소규모 공원 25곳 벤치·조명·화장실 개선. 체감 녹지 품질 향상.",
+      "prerequisites": [],
+      "incompatible": []
+    },
+    {
+      "id": "env_waste_smart",
+      "name": "스마트 쓰레기 관리",
+      "category": "environment",
+      "cost": 20,
+      "targetDong": null,
+      "delay": 2,
+      "duration": 0,
+      "effects": {
+        "satisfaction": { "environment": 3 }
+      },
+      "description": "IoT 스마트 쓰레기통 200개 설치. 관광 밀집 지역 수거 빈도 2배. 거리 청결도 개선.",
+      "prerequisites": [],
+      "incompatible": []
+    },
+    {
+      "id": "env_urban_forest",
+      "name": "도심 숲 조성 (성미산~노고산)",
+      "category": "environment",
+      "cost": 55,
+      "targetDong": ["seongsan2", "seogang", "mangwon2"],
+      "delay": 6,
+      "duration": 8,
+      "effects": {
+        "satisfaction": { "environment": 6 },
+        "population": { "midAge": 0.002, "elderly": 0.001 }
+      },
+      "description": "성미산~노고산 그린벨트 산책로 연결. 대규모 녹지 투자, 장기 효과.",
+      "prerequisites": [],
+      "incompatible": []
+    },
+
+    {
+      "id": "edu_afterschool",
+      "name": "방과후 돌봄 확대",
+      "category": "education",
+      "cost": 25,
+      "targetDong": null,
+      "delay": 2,
+      "duration": 0,
+      "effects": {
+        "satisfaction": { "education": 3 },
+        "population": { "midAge": 0.002, "child": 0.002 }
+      },
+      "description": "초등학교 16곳 방과후 돌봄교실 8시까지 연장. 맞벌이 가정 정착 유도.",
+      "prerequisites": [],
+      "incompatible": []
+    },
+    {
+      "id": "edu_library_network",
+      "name": "작은도서관 네트워크",
+      "category": "education",
+      "cost": 15,
+      "targetDong": null,
+      "delay": 3,
+      "duration": 0,
+      "effects": {
+        "satisfaction": { "education": 2, "culture": 1 }
+      },
+      "description": "동별 작은도서관 1곳씩 신설·리뉴얼. 주민 커뮤니티 공간 겸용.",
+      "prerequisites": [],
+      "incompatible": []
+    },
+    {
+      "id": "edu_univ_collab",
+      "name": "대학 연계 평생학습",
+      "category": "education",
+      "cost": 20,
+      "targetDong": ["seogang", "daeheung", "sinsu"],
+      "delay": 2,
+      "duration": 0,
+      "effects": {
+        "satisfaction": { "education": 3 },
+        "economy": { "newBizBonus": 0.002 }
+      },
+      "description": "서강대·홍익대와 연계한 주민 평생학습·창업 교육. 분기 500명 수료.",
+      "prerequisites": [],
+      "incompatible": []
+    },
+    {
+      "id": "edu_daycare_expand",
+      "name": "국공립 어린이집 확충",
+      "category": "education",
+      "cost": 50,
+      "targetDong": null,
+      "delay": 6,
+      "duration": 8,
+      "effects": {
+        "satisfaction": { "education": 5 },
+        "population": { "child": 0.003, "midAge": 0.003 }
+      },
+      "description": "국공립 어린이집 10곳 신설. 대기 500명→100명. 가족 유입의 결정적 요인.",
+      "prerequisites": [],
+      "incompatible": []
+    },
+
+    {
+      "id": "welf_youth_housing",
+      "name": "청년 임대주택 공급",
+      "category": "welfare",
+      "cost": 80,
+      "targetDong": null,
+      "delay": 3,
+      "duration": 8,
+      "effects": {
+        "satisfaction": { "housing": 4 },
+        "population": { "youth": 0.005 }
+      },
+      "description": "역세권 청년주택 200호 공급. 시세 70% 수준. 대흥·공덕·합정역 인근.",
+      "prerequisites": [],
+      "incompatible": []
+    },
+    {
+      "id": "welf_elderly_care",
+      "name": "어르신 돌봄 서비스",
+      "category": "welfare",
+      "cost": 30,
+      "targetDong": ["dohwa", "mangwon1", "mangwon2"],
+      "delay": 1,
+      "duration": 0,
+      "effects": {
+        "satisfaction": { "welfare": 5 },
+        "population": { "elderly": 0.002 }
+      },
+      "description": "65+ 독거 어르신 방문 돌봄·건강관리. 도화·망원1·망원2동 고령화율 20% 대응.",
+      "prerequisites": [],
+      "incompatible": []
+    },
+    {
+      "id": "welf_rent_subsidy",
+      "name": "주거비 보조",
+      "category": "welfare",
+      "cost": 45,
+      "targetDong": null,
+      "delay": 1,
+      "duration": 0,
+      "effects": {
+        "satisfaction": { "housing": 3 },
+        "population": { "youth": 0.002 },
+        "economy": { "rentPressureDelta": -0.005 }
+      },
+      "description": "청년·신혼부부 월세 20만원 보조 (소득 하위 50%). 유출 방지 효과.",
+      "prerequisites": [],
+      "incompatible": []
+    },
+    {
+      "id": "welf_community_center",
+      "name": "주민자치센터 리뉴얼",
+      "category": "welfare",
+      "cost": 20,
+      "targetDong": null,
+      "delay": 3,
+      "duration": 6,
+      "effects": {
+        "satisfaction": { "welfare": 2, "culture": 1 }
+      },
+      "description": "노후 주민센터 8곳 리모델링. 카페·코워킹 공간 추가. 세대 간 교류 촉진.",
+      "prerequisites": [],
+      "incompatible": []
+    },
+
+    {
+      "id": "renew_yeonnam_coexist",
+      "name": "연남동 상생 협약",
+      "category": "renewal",
+      "cost": 15,
+      "targetDong": "yeonnam",
+      "delay": 2,
+      "duration": 0,
+      "effects": {
+        "economy": { "rentPressureDelta": -0.01, "commerceCharacterBonus": 2 },
+        "satisfaction": { "housing": 2, "economy": 1 }
+      },
+      "description": "건물주-임차인 상생 협약. 임대료 인상률 5% 이내 자율 합의. 젠트리피케이션 완화.",
+      "prerequisites": [],
+      "incompatible": []
+    },
+    {
+      "id": "renew_village_making",
+      "name": "마을만들기 사업",
+      "category": "renewal",
+      "cost": 20,
+      "targetDong": ["yeomni", "mangwon2"],
+      "delay": 4,
+      "duration": 8,
+      "effects": {
+        "satisfaction": { "housing": 3, "culture": 2, "welfare": 1 },
+        "economy": { "commerceCharacterBonus": 3 }
+      },
+      "description": "염리 소금길·성미산 마을 모델 확산. 주민 주도 공간 조성, 벽화·텃밭·공방.",
+      "prerequisites": [],
+      "incompatible": []
+    },
+    {
+      "id": "renew_old_housing",
+      "name": "노후 주택 리모델링 지원",
+      "category": "renewal",
+      "cost": 50,
+      "targetDong": ["dohwa", "yeomni", "sinsu"],
+      "delay": 4,
+      "duration": 8,
+      "effects": {
+        "satisfaction": { "housing": 5, "environment": 1 },
+        "population": { "midAge": 0.002, "youth": 0.001 }
+      },
+      "description": "30년 이상 노후 빌라 외관·단열·배관 개선 보조 (최대 3000만원). 재개발 없는 주거 개선.",
+      "prerequisites": [],
+      "incompatible": ["renew_redevelopment"]
+    },
+    {
+      "id": "renew_redevelopment",
+      "name": "재개발 구역 지정 추진",
+      "category": "renewal",
+      "cost": 10,
+      "targetDong": ["dohwa", "yeomni"],
+      "delay": 8,
+      "duration": 12,
+      "effects": {
+        "population": { "displacement": -0.05 },
+        "satisfaction": { "housing": -5 },
+        "economy": { "newBizBonus": -0.005 },
+        "delayed_completion": {
+          "population": { "midAge": 0.01 },
+          "satisfaction": { "housing": 10 },
+          "finance": { "localTaxBonus": 0.02 }
+        }
+      },
+      "description": "도화·염리동 재개발 구역 지정. 초기 주민 이탈·갈등. 완료 후(12턴) 대규모 인구 유입·세수 증가. 고위험 고수익.",
+      "prerequisites": [],
+      "incompatible": ["renew_old_housing"]
+    }
+  ]
+}
