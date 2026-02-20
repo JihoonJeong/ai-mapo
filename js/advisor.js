@@ -48,17 +48,34 @@ const QUICK_PROMPTS = {
   summary: '이번 분기 가장 주의해야 할 이슈 3개를 순서대로 정리하고, 각각에 대한 짧은 대응 제안을 해 주세요.',
 };
 
+// === Model Options ===
+const ANTHROPIC_MODELS = [
+  { id: 'claude-sonnet-4-6',          name: 'Sonnet 4.6',  desc: '빠르고 경제적' },
+  { id: 'claude-opus-4-6',            name: 'Opus 4.6',    desc: '최고 성능' },
+  { id: 'claude-haiku-4-5-20251001',  name: 'Haiku 4.5',   desc: '가장 빠름, 저렴' },
+];
+
+const OPENAI_MODELS = [
+  { id: 'gpt-4o',      name: 'GPT-4o',      desc: '최고 성능' },
+  { id: 'gpt-4o-mini', name: 'GPT-4o mini', desc: '빠르고 저렴' },
+  { id: 'gpt-4.1',     name: 'GPT-4.1',     desc: '최신 모델' },
+  { id: 'gpt-4.1-mini',name: 'GPT-4.1 mini',desc: '최신, 경제적' },
+];
+
 // === State ===
 let chatMessages = null;
 let chatHistory = []; // [{turn, role, content}]
-let currentBackend = 'mock'; // 'mock' | 'anthropic'
+let currentBackend = 'mock'; // 'mock' | 'anthropic' | 'openai' | 'ollama'
 let apiKey = '';
+let openaiKey = '';
 let currentState = null;
 
 // === AI Backends ===
 const AI_BACKENDS = {
-  mock: { name: 'Mock', call: mockCall },
-  anthropic: { name: 'Claude API', call: anthropicCall },
+  mock:      { name: 'Mock (기본)',    call: mockCall },
+  anthropic: { name: 'Claude API',     call: anthropicCall },
+  openai:    { name: 'OpenAI API',     call: openaiCall },
+  ollama:    { name: 'Ollama (로컬)',  call: ollamaCall },
 };
 
 // === Init ===
@@ -67,9 +84,13 @@ export function initAdvisor(state) {
   chatMessages = document.getElementById('chat-messages');
   chatHistory = [];
 
-  // Load saved API key
+  // Load saved settings
   apiKey = localStorage.getItem('ai-mapo-api-key') || '';
-  if (apiKey) {
+  openaiKey = localStorage.getItem('ai-mapo-openai-key') || '';
+  const savedBackend = localStorage.getItem('ai-mapo-backend') || '';
+  if (savedBackend && AI_BACKENDS[savedBackend]) {
+    currentBackend = savedBackend;
+  } else if (apiKey) {
     currentBackend = 'anthropic';
   }
 
@@ -118,7 +139,7 @@ export async function generateBriefing(state) {
   const turn = state.meta.turn;
   const context = buildAdvisorContext(state);
 
-  if (currentBackend === 'anthropic' && apiKey) {
+  if (currentBackend !== 'mock') {
     // Use AI for briefing
     const briefingPrompt = turn <= 1
       ? `구청장님이 취임했습니다. 마포구의 현 상태를 요약하고, 임기 4년의 핵심 과제를 제시하세요.\n\n${context}\n\n## 브리핑 형식\n1. 마포구 현황 한 줄 요약\n2. 가장 큰 기회 (수치 근거)\n3. 가장 큰 위험 (수치 근거)\n4. 선택한 공약 달성을 위한 첫 분기 제안\n\n전체 6문장 이내.`
@@ -223,7 +244,7 @@ async function sendChat() {
   addMessage('player', message);
   chatHistory.push({ turn: currentState.meta.turn, role: 'player', content: message });
 
-  if (currentBackend === 'anthropic' && apiKey) {
+  if (currentBackend !== 'mock') {
     addMessage('advisor', '...');
     try {
       const context = buildAdvisorContext(currentState);
@@ -261,7 +282,7 @@ function handleQuickAction(action) {
   addMessage('player', displayMsg[action] || action);
   chatHistory.push({ turn: currentState.meta.turn, role: 'player', content: prompt });
 
-  if (currentBackend === 'anthropic' && apiKey) {
+  if (currentBackend !== 'mock') {
     addMessage('advisor', '...');
     const context = buildAdvisorContext(currentState);
     callAI(`${context}\n\n${prompt}`).then(response => {
@@ -386,8 +407,9 @@ async function callAI(userMessage) {
   const backend = AI_BACKENDS[currentBackend];
   if (!backend) throw new Error(`Unknown backend: ${currentBackend}`);
 
-  // Build messages with history window (recent 4 turns)
-  const recentHistory = getRecentHistory(4);
+  // Build messages with history window (API: 4 turns, Ollama: 2 turns)
+  const historyWindow = currentBackend === 'ollama' ? 2 : 4;
+  const recentHistory = getRecentHistory(historyWindow);
   const messages = [
     { role: 'system', content: buildSystemMessage() },
     ...recentHistory.map(h => ({
@@ -409,6 +431,7 @@ function getRecentHistory(turnWindow) {
 async function anthropicCall(messages) {
   if (!apiKey) throw new Error('API key required');
 
+  const model = localStorage.getItem('ai-mapo-anthropic-model') || 'claude-sonnet-4-6';
   const systemMsg = messages.find(m => m.role === 'system');
   const otherMsgs = messages.filter(m => m.role !== 'system');
 
@@ -421,7 +444,7 @@ async function anthropicCall(messages) {
       'anthropic-dangerous-direct-browser-access': 'true',
     },
     body: JSON.stringify({
-      model: 'claude-sonnet-4-6',
+      model,
       max_tokens: 500,
       system: systemMsg?.content || SYSTEM_PROMPT,
       messages: otherMsgs,
@@ -435,6 +458,60 @@ async function anthropicCall(messages) {
 
   const data = await response.json();
   return data.content[0].text;
+}
+
+// === OpenAI API Backend ===
+async function openaiCall(messages) {
+  if (!openaiKey) throw new Error('OpenAI API key required');
+
+  const model = localStorage.getItem('ai-mapo-openai-model') || 'gpt-4o-mini';
+
+  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${openaiKey}`,
+    },
+    body: JSON.stringify({
+      model,
+      max_tokens: 500,
+      messages,
+    }),
+  });
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.error?.message || `OpenAI error ${response.status}`);
+  }
+
+  const data = await response.json();
+  return data.choices[0].message.content;
+}
+
+// === Ollama Backend ===
+async function ollamaCall(messages) {
+  const ollamaUrl = localStorage.getItem('ai-mapo-ollama-url') || 'http://localhost:11434';
+  const ollamaModel = localStorage.getItem('ai-mapo-ollama-model') || 'llama3.1:8b';
+
+  const systemMsg = messages.find(m => m.role === 'system');
+  const otherMsgs = messages.filter(m => m.role !== 'system');
+
+  const response = await fetch(`${ollamaUrl}/api/chat`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: ollamaModel,
+      messages: [
+        { role: 'system', content: systemMsg?.content || SYSTEM_PROMPT },
+        ...otherMsgs,
+      ],
+      stream: false,
+    }),
+  });
+
+  if (!response.ok) throw new Error(`Ollama error ${response.status}`);
+  const data = await response.json();
+  return data.message?.content || '';
 }
 
 // === Mock Backend ===
@@ -521,7 +598,7 @@ function generateMockResponse(message) {
 export async function generateEventAnalysis(event, state) {
   currentState = state;
 
-  if (currentBackend === 'anthropic' && apiKey) {
+  if (currentBackend !== 'mock') {
     const context = buildAdvisorContext(state);
     const choicesStr = event.choices.map((c, i) => {
       const letter = String.fromCharCode(65 + i);
@@ -547,32 +624,95 @@ export async function generateEventAnalysis(event, state) {
 }
 
 // === API Settings UI ===
+function buildModelOptions(models, selectedId) {
+  return models.map(m =>
+    `<option value="${m.id}" ${m.id === selectedId ? 'selected' : ''}>${m.name} — ${m.desc}</option>`
+  ).join('');
+}
+
 function showApiSettings() {
   const modal = document.getElementById('modal-overlay');
   const content = document.getElementById('modal-content');
 
+  const savedAnthropicModel = localStorage.getItem('ai-mapo-anthropic-model') || 'claude-sonnet-4-6';
+  const savedOpenaiModel = localStorage.getItem('ai-mapo-openai-model') || 'gpt-4o-mini';
+  const savedOllamaUrl = localStorage.getItem('ai-mapo-ollama-url') || 'http://localhost:11434';
+  const savedOllamaModel = localStorage.getItem('ai-mapo-ollama-model') || 'llama3.1:8b';
+
   content.innerHTML = `
     <div class="modal-title">AI 자문관 설정</div>
-    <div class="modal-subtitle">AI 엔진을 선택하고 API 키를 입력하세요</div>
+    <div class="modal-subtitle">AI 엔진을 선택하세요</div>
 
     <div class="api-setting-group">
       <label class="api-radio-label">
         <input type="radio" name="ai-backend" value="mock" ${currentBackend === 'mock' ? 'checked' : ''}>
-        <span>Mock (테스트용)</span>
-        <small>AI 없이 템플릿 기반 응답</small>
+        <span>Mock (기본)</span>
+        <small>AI 없이 규칙 기반 응답</small>
       </label>
       <label class="api-radio-label">
         <input type="radio" name="ai-backend" value="anthropic" ${currentBackend === 'anthropic' ? 'checked' : ''}>
-        <span>Claude API (Anthropic)</span>
-        <small>고품질 AI 분석 (API 키 필요)</small>
+        <span>Claude API</span>
+        <small>Anthropic</small>
+      </label>
+      <label class="api-radio-label">
+        <input type="radio" name="ai-backend" value="openai" ${currentBackend === 'openai' ? 'checked' : ''}>
+        <span>OpenAI API</span>
+        <small>OpenAI</small>
+      </label>
+      <label class="api-radio-label">
+        <input type="radio" name="ai-backend" value="ollama" ${currentBackend === 'ollama' ? 'checked' : ''}>
+        <span>Ollama (로컬)</span>
+        <small>무료, Ollama 설치 필요</small>
       </label>
     </div>
 
-    <div id="api-key-section" style="${currentBackend === 'anthropic' ? '' : 'display:none'}">
-      <input type="password" class="modal-input" id="api-key-input"
-             placeholder="sk-ant-api03-..." value="${apiKey}" style="margin-bottom:8px">
-      <div style="font-size:11px;color:var(--text-muted);margin-bottom:16px">
+    <div id="anthropic-section" class="api-backend-config" style="${currentBackend === 'anthropic' ? '' : 'display:none'}">
+      <div class="config-field">
+        <label class="config-field-label">API 키</label>
+        <input type="password" class="modal-input" id="api-key-input"
+               placeholder="sk-ant-api03-..." value="${apiKey}">
+      </div>
+      <div class="config-field">
+        <label class="config-field-label">모델</label>
+        <select class="modal-select" id="anthropic-model-select">
+          ${buildModelOptions(ANTHROPIC_MODELS, savedAnthropicModel)}
+        </select>
+      </div>
+      <div class="config-note">
         API 키는 브라우저 로컬 스토리지에만 저장됩니다. 서버로 전송되지 않습니다.
+      </div>
+    </div>
+
+    <div id="openai-section" class="api-backend-config" style="${currentBackend === 'openai' ? '' : 'display:none'}">
+      <div class="config-field">
+        <label class="config-field-label">API 키</label>
+        <input type="password" class="modal-input" id="openai-key-input"
+               placeholder="sk-..." value="${openaiKey}">
+      </div>
+      <div class="config-field">
+        <label class="config-field-label">모델</label>
+        <select class="modal-select" id="openai-model-select">
+          ${buildModelOptions(OPENAI_MODELS, savedOpenaiModel)}
+        </select>
+      </div>
+      <div class="config-note">
+        API 키는 브라우저 로컬 스토리지에만 저장됩니다. 서버로 전송되지 않습니다.
+      </div>
+    </div>
+
+    <div id="ollama-section" class="api-backend-config" style="${currentBackend === 'ollama' ? '' : 'display:none'}">
+      <div class="config-field">
+        <label class="config-field-label">URL</label>
+        <input type="text" class="modal-input" id="ollama-url-input"
+               placeholder="http://localhost:11434" value="${savedOllamaUrl}">
+      </div>
+      <div class="config-field">
+        <label class="config-field-label">모델</label>
+        <input type="text" class="modal-input" id="ollama-model-input"
+               placeholder="llama3.1:8b" value="${savedOllamaModel}">
+      </div>
+      <div class="config-note">
+        Ollama가 로컬에서 실행 중이어야 합니다. <code>ollama serve</code>로 시작하세요.
       </div>
     </div>
 
@@ -584,27 +724,59 @@ function showApiSettings() {
 
   modal.classList.add('active');
 
-  // Toggle API key section
+  // Toggle config sections based on selected backend
+  const sections = ['anthropic-section', 'openai-section', 'ollama-section'];
   content.querySelectorAll('input[name="ai-backend"]').forEach(radio => {
     radio.addEventListener('change', () => {
-      const section = document.getElementById('api-key-section');
-      section.style.display = radio.value === 'anthropic' ? '' : 'none';
+      sections.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = id.startsWith(radio.value) ? '' : 'none';
+      });
     });
   });
 
   document.getElementById('btn-api-save').addEventListener('click', () => {
     const selectedBackend = content.querySelector('input[name="ai-backend"]:checked')?.value || 'mock';
     const newKey = document.getElementById('api-key-input')?.value?.trim() || '';
+    const newOpenaiKey = document.getElementById('openai-key-input')?.value?.trim() || '';
+    const anthropicModel = document.getElementById('anthropic-model-select')?.value || 'claude-sonnet-4-6';
+    const openaiModel = document.getElementById('openai-model-select')?.value || 'gpt-4o-mini';
+    const ollamaUrl = document.getElementById('ollama-url-input')?.value?.trim() || 'http://localhost:11434';
+    const ollamaModel = document.getElementById('ollama-model-input')?.value?.trim() || 'llama3.1:8b';
 
-    currentBackend = selectedBackend;
+    // Validate: API key required for API backends
+    if (selectedBackend === 'anthropic' && !newKey) {
+      currentBackend = 'mock';
+    } else if (selectedBackend === 'openai' && !newOpenaiKey) {
+      currentBackend = 'mock';
+    } else {
+      currentBackend = selectedBackend;
+    }
+
+    // Save Anthropic settings
     apiKey = newKey;
-
     if (newKey) {
       localStorage.setItem('ai-mapo-api-key', newKey);
     } else {
       localStorage.removeItem('ai-mapo-api-key');
-      if (currentBackend === 'anthropic') currentBackend = 'mock';
     }
+    localStorage.setItem('ai-mapo-anthropic-model', anthropicModel);
+
+    // Save OpenAI settings
+    openaiKey = newOpenaiKey;
+    if (newOpenaiKey) {
+      localStorage.setItem('ai-mapo-openai-key', newOpenaiKey);
+    } else {
+      localStorage.removeItem('ai-mapo-openai-key');
+    }
+    localStorage.setItem('ai-mapo-openai-model', openaiModel);
+
+    // Save Ollama settings
+    localStorage.setItem('ai-mapo-ollama-url', ollamaUrl);
+    localStorage.setItem('ai-mapo-ollama-model', ollamaModel);
+
+    // Save selected backend
+    localStorage.setItem('ai-mapo-backend', currentBackend);
 
     updateModeDisplay();
     modal.classList.remove('active');
@@ -617,14 +789,24 @@ function showApiSettings() {
 
 function updateModeDisplay() {
   const el = document.getElementById('advisor-mode');
-  if (el) {
-    el.textContent = AI_BACKENDS[currentBackend]?.name || 'Mock';
+  if (!el) return;
+
+  let label = AI_BACKENDS[currentBackend]?.name || 'Mock';
+  if (currentBackend === 'anthropic') {
+    const model = localStorage.getItem('ai-mapo-anthropic-model') || 'claude-sonnet-4-6';
+    const m = ANTHROPIC_MODELS.find(x => x.id === model);
+    if (m) label = m.name;
+  } else if (currentBackend === 'openai') {
+    const model = localStorage.getItem('ai-mapo-openai-model') || 'gpt-4o-mini';
+    const m = OPENAI_MODELS.find(x => x.id === model);
+    if (m) label = m.name;
   }
+  el.textContent = label;
 }
 
 // === Game End Review (Sprint 4) ===
 export async function callAdvisorForReview(prompt) {
-  if (currentBackend === 'anthropic' && apiKey) {
+  if (currentBackend !== 'mock') {
     try {
       return await callAI(prompt);
     } catch (err) {

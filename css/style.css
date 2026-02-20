@@ -1137,6 +1137,50 @@ body {
 .api-radio-label span { font-weight: 500; }
 .api-radio-label small { color: var(--text-muted); font-size: 11px; margin-left: auto; }
 
+.api-backend-config {
+  padding: 0 4px;
+  margin-bottom: 16px;
+}
+
+.config-field {
+  margin-bottom: 10px;
+}
+
+.config-field-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.config-note {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.config-note code {
+  background: var(--bg);
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-size: 11px;
+}
+
+.modal-select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 13px;
+  background: var(--panel-bg);
+  color: var(--text);
+  outline: none;
+  cursor: pointer;
+}
+
+.modal-select:focus { border-color: var(--accent); }
+
 /* === SCROLLBAR === */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
