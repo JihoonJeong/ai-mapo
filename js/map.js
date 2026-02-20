@@ -8,6 +8,18 @@ let selectedDongId = null;
 let currentIndicator = 'satisfaction';
 let gameState = null;
 
+// Zoom & pan state
+let svgEl = null;
+let zoomLevel = 1;
+let panX = 0;
+let panY = 0;
+let isPanning = false;
+let panStartX = 0;
+let panStartY = 0;
+const ZOOM_MIN = 0.8;
+const ZOOM_MAX = 4.0;
+const ZOOM_STEP = 0.3;
+
 // Color scale (5 levels) — green(good) to red(bad)
 const COLOR_CLASSES = ['level-1', 'level-2', 'level-3', 'level-4', 'level-5'];
 
@@ -28,7 +40,9 @@ export async function initMap(containerEl, state) {
   const svgText = await resp.text();
   mapContainer.innerHTML = svgText;
 
-  // Bind events
+  svgEl = mapContainer.querySelector('svg');
+
+  // Bind dong events
   const paths = mapContainer.querySelectorAll('.dong');
   paths.forEach(path => {
     path.addEventListener('mouseenter', onDongHover);
@@ -36,6 +50,9 @@ export async function initMap(containerEl, state) {
     path.addEventListener('mouseleave', onDongLeave);
     path.addEventListener('click', onDongClick);
   });
+
+  // Zoom & pan
+  initZoomPan();
 
   // Indicator selector
   const select = document.getElementById('map-indicator');
@@ -49,6 +66,79 @@ export async function initMap(containerEl, state) {
   // Initial coloring
   updateMapColors(state.dongs, currentIndicator);
   renderLegend(currentIndicator);
+}
+
+// === Zoom & Pan ===
+function initZoomPan() {
+  if (!mapContainer || !svgEl) return;
+
+  // Add zoom controls
+  const controls = document.createElement('div');
+  controls.className = 'map-zoom-controls';
+  controls.innerHTML = `
+    <button class="map-zoom-btn" data-action="in" title="확대">+</button>
+    <button class="map-zoom-btn" data-action="out" title="축소">&minus;</button>
+    <button class="map-zoom-btn" data-action="reset" title="초기화">&#8634;</button>
+  `;
+  mapContainer.style.position = 'relative';
+  mapContainer.appendChild(controls);
+
+  controls.querySelectorAll('.map-zoom-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const action = btn.dataset.action;
+      if (action === 'in') setZoom(zoomLevel + ZOOM_STEP);
+      else if (action === 'out') setZoom(zoomLevel - ZOOM_STEP);
+      else if (action === 'reset') { zoomLevel = 1; panX = 0; panY = 0; applyTransform(); }
+    });
+  });
+
+  // Mouse wheel zoom
+  mapContainer.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? -ZOOM_STEP : ZOOM_STEP;
+    setZoom(zoomLevel + delta);
+  }, { passive: false });
+
+  // Mouse drag pan
+  mapContainer.addEventListener('mousedown', (e) => {
+    if (e.target.closest('.map-zoom-btn') || e.target.closest('.dong')) return;
+    isPanning = true;
+    panStartX = e.clientX - panX;
+    panStartY = e.clientY - panY;
+    mapContainer.style.cursor = 'grabbing';
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (!isPanning) return;
+    panX = e.clientX - panStartX;
+    panY = e.clientY - panStartY;
+    applyTransform();
+  });
+
+  window.addEventListener('mouseup', () => {
+    if (isPanning) {
+      isPanning = false;
+      mapContainer.style.cursor = '';
+    }
+  });
+
+  // Start with a comfortable zoom
+  zoomLevel = 1;
+  panX = 0;
+  panY = 0;
+  applyTransform();
+}
+
+function setZoom(level) {
+  zoomLevel = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, level));
+  applyTransform();
+}
+
+function applyTransform() {
+  if (!svgEl) return;
+  svgEl.style.transform = `translate(${panX}px, ${panY}px) scale(${zoomLevel})`;
+  svgEl.style.transformOrigin = 'center center';
 }
 
 export function updateMapColors(dongs, indicator) {
