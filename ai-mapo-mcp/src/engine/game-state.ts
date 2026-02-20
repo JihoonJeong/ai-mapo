@@ -102,6 +102,8 @@ export interface PolicyDef {
   targetDong: string | string[] | null;
   effects: Record<string, Record<string, number>>;
   description?: string;
+  prerequisites?: string[];
+  incompatible?: string[];
 }
 
 export interface ActivePolicy {
@@ -114,8 +116,12 @@ export interface ActivePolicy {
 export interface EventChoice {
   id: string;
   text: string;
+  name?: string;
+  description?: string;
+  cost?: number;
   effects?: Record<string, Record<string, number>>;
   duration?: number;
+  advisorComment?: string;
 }
 
 export interface GameEvent {
