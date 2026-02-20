@@ -6,9 +6,9 @@
  */
 
 // === Constants ===
-const NATURAL_RATE = -0.002; // 연간 자연감소율 (서울 평균)
-const ACCEL_MIGRATION = 2.0; // 이동 가속 계수 (4.0 → 2.0으로 하향)
-const MAX_CHANGE_RATE = 0.03; // 단일 턴 최대 변동 ±3%
+const NATURAL_RATE = -0.0015; // 연간 자연감소율 (서울 평균)
+const ACCEL_MIGRATION = 1.5; // 이동 가속 계수 (2.0 → 1.5로 하향)
+const MAX_CHANGE_RATE = 0.02; // 단일 턴 최대 변동 ±2%
 
 // 생애주기별 이동성 계수
 const AGE_MOBILITY = {
@@ -56,12 +56,13 @@ export function updatePopulation(dong, state, adjacency, policyEffects = {}) {
     }
   }
 
-  // 수용력 한계: 초기 인구 대비 과밀하면 유입 억제
-  // _initPop은 simulation.js에서 첫 턴에 설정
-  if (dong._initPop && pull > 0) {
+  // 수용력 한계: 대칭적 — 과밀 시 유입 억제, 과소 시 유출 억제
+  if (dong._initPop) {
     const growthRatio = pop / dong._initPop;
-    if (growthRatio > 1.1) { // 초기 대비 10% 이상 증가 시 억제
-      pull *= Math.max(0.05, 1.0 - (growthRatio - 1.1) * 2);
+    if (pull > 0 && growthRatio > 1.15) {
+      pull *= Math.max(0.1, 1.0 - (growthRatio - 1.15) * 2);
+    } else if (pull < 0 && growthRatio < 0.85) {
+      pull *= Math.max(0.1, 1.0 - (0.85 - growthRatio) * 2);
     }
   }
 
@@ -156,7 +157,8 @@ function calcMigrationPull(dong, state, adjacency) {
   const avgVitality = state.dongs.reduce((s, d) => s + d.commerceVitality, 0) / state.dongs.length;
 
   // (2) 주거 매력도: 주거 만족도 vs 구 평균 - 임대료 부담
-  const housingScore = normalize(dong.satisfactionFactors.housing, avgHousing, 15) - dong.rentPressure * 2;
+  const avgRent = state.dongs.reduce((s, d) => s + (d.rentPressure || 0), 0) / state.dongs.length;
+  const housingScore = normalize(dong.satisfactionFactors.housing, avgHousing, 15) - (dong.rentPressure - avgRent) * 1.5;
 
   // (3) 생활 인프라: 교통 + 상업 + 문화
   const infraScore = (
@@ -178,30 +180,22 @@ function calcMigrationPull(dong, state, adjacency) {
     + PULL_WEIGHTS.safety * safetyScore
     + PULL_WEIGHTS.education * eduScore;
 
-  // 외부 유입/유출 (설계서: 40-70 안정, >70 유입, <40 유출)
-  if (dong.satisfaction > 70) {
-    pull += (dong.satisfaction - 70) * 0.0005;
+  // 외부 유입/유출 (>58 유입, <40 유출, 40-58 중립)
+  if (dong.satisfaction > 58) {
+    pull += (dong.satisfaction - 58) * 0.001;
   } else if (dong.satisfaction < 40) {
-    pull -= (40 - dong.satisfaction) * 0.0008;
+    pull -= (40 - dong.satisfaction) * 0.001;
   }
-  // 40-70 구간: 중립 (자연감소만 작용)
+  // 40-58 구간: 중립 (자연감소만 작용)
 
-  // Push factors
-  // 임대료 유출
-  if (dong.rentPressure > 0) {
-    pull -= dong.rentPressure * 0.3;
-  }
+  // Push/Pull factors (대칭적 → 동간 재분배만, 순유출 없음)
+  // 임대료: 평균 대비 대칭적 push/pull
+  pull -= (dong.rentPressure - avgRent) * 0.3;
 
-  // 생활인구/상주인구 비율이 높으면 혼잡 불만
+  // 생활인구 혼잡: 평균 대비 대칭적 push/pull
   const livingPopRatio = (dong.livingPop?.weekdayDay || dong.population) / Math.max(1, dong.population);
-  if (livingPopRatio > 2.0) {
-    pull -= (livingPopRatio - 2.0) * 0.05;
-  }
-
-  // 만족도 < 40이면 유출 가속
-  if (dong.satisfaction < 40) {
-    pull -= (40 - dong.satisfaction) * 0.005;
-  }
+  const avgLivingPopRatio = state.dongs.reduce((s, d) => s + (d.livingPop?.weekdayDay || d.population) / Math.max(1, d.population), 0) / state.dongs.length;
+  pull -= (livingPopRatio / Math.max(0.1, avgLivingPopRatio) - 1.0) * 0.005;
 
   return clamp(pull, -0.03, 0.03);
 }

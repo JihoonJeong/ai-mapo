@@ -9,13 +9,14 @@
  */
 
 // === Constants ===
-const BASE_NEW_RATE = 0.02;    // 분기 2% 신규 창업
-const BASE_CLOSE_RATE = 0.018; // 분기 1.8% 자연 폐업
-const ACCEL_BIZ = 1.5;        // 사업체 변동 가속 계수 (순변동에 적용)
+const BASE_NEW_RATE = 0.022;   // 분기 2.2% 신규 창업
+const BASE_CLOSE_RATE = 0.016; // 분기 1.6% 자연 폐업 (순 +0.6% 기본 성장)
+const ACCEL_BIZ = 1.0;        // 사업체 변동 계수 (가속 제거)
 
 const RENT_THRESHOLD = 70;       // 상권활력이 70 넘으면 임대료 압력 시작
-const RENT_SENSITIVITY = 0.0003; // vitality 100 → 30*0.0003=0.009 → 0.9% 추가 폐업
-const FRANCHISE_RATE = 0.02;   // 상권특색 감소 속도
+const RENT_SENSITIVITY = 0.00015; // vitality 100 → 30*0.00015=0.0045 → 0.45% 추가 폐업
+const RENT_MAX = 0.012;          // 최대 임대료 압력 1.2% (was 2%)
+const FRANCHISE_RATE = 0.015;  // 상권특색 감소 속도 (완화)
 
 // 파급 유형별 전파율
 const SPILLOVER_RATES = {
@@ -50,7 +51,15 @@ export function updateEconomy(dong, state, adjacency, budgetAlloc = {}, policyEf
   // === 2. 신규 창업 (수요 변동은 완화 적용) ===
   // demand=1.0이면 기본 비율, !=1.0이면 차이의 50%만 반영
   const adjustedDemand = 1.0 + (demand - 1.0) * 0.5;
-  const newBiz = Math.round(biz * (BASE_NEW_RATE + newBizBonus) * adjustedDemand * policyBonus);
+
+  // 정책 보너스 체감: 사업체가 초기치를 초과하면 보너스 효율 감소
+  let effectiveNewBizBonus = newBizBonus;
+  if (newBizBonus > 0 && dong._initBiz && biz > dong._initBiz) {
+    const overGrowth = biz / dong._initBiz - 1.0;
+    effectiveNewBizBonus *= Math.max(0.2, 1.0 - overGrowth * 2);
+  }
+
+  const newBiz = Math.round(biz * (BASE_NEW_RATE + effectiveNewBizBonus) * adjustedDemand * policyBonus);
 
   // === 3. 폐업 (자연 비율) ===
   const rentPressure = dong.rentPressure || 0;
@@ -75,7 +84,7 @@ export function updateEconomy(dong, state, adjacency, budgetAlloc = {}, policyEf
   // 정책 효과: 임대료 압력 직접 조정
   const rentDelta = pe.economy?.rentPressureDelta || pe.economy_side?.rentPressureDelta || 0;
   if (rentDelta !== 0) {
-    dong.rentPressure = Math.round(clamp(dong.rentPressure + rentDelta, 0, 0.02) * 10000) / 10000;
+    dong.rentPressure = Math.round(clamp(dong.rentPressure + rentDelta, 0, RENT_MAX) * 10000) / 10000;
   }
 
   // === 7. 상권특색 감소 (프랜차이즈화) ===
@@ -165,7 +174,7 @@ function updateRentPressure(dong, adjacency, state) {
     }
   }
 
-  dong.rentPressure = Math.round(clamp(pressure, 0, 0.02) * 10000) / 10000; // max 2% additional
+  dong.rentPressure = Math.round(clamp(pressure, 0, RENT_MAX) * 10000) / 10000;
 }
 
 /**

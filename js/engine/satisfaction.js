@@ -7,7 +7,7 @@
  */
 
 // === Constants ===
-const DECAY = -0.5; // 자연 감쇠/턴
+const DECAY = -0.3; // 자연 감쇠/턴 (적정 예산 투자로 상쇄 가능)
 const ACCEL_SAT = 5.0; // 만족도 변동 가속 계수
 
 // 생애주기별 만족도 구성요소 가중치
@@ -87,7 +87,7 @@ export function updateSatisfaction(dong, state, adjacency, budgetEffects = {}, p
 
   // 임대료 압력 → 주거 만족도 하락
   if (dong.rentPressure > 0) {
-    factors.housing -= dong.rentPressure * 15;
+    factors.housing -= dong.rentPressure * 10;
   }
 
   // 생활인구 과밀 → 안전, 주거 만족도 하락

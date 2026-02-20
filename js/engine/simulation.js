@@ -235,9 +235,9 @@ function updateLivingPopulation(state) {
   for (const dong of state.dongs) {
     if (!dong.livingPop) continue;
 
-    // 낮 생활인구: 종사자 + 관광 연동
+    // 낮 생활인구: 종사자 + 관광 연동 (성장률 캡으로 지수적 폭발 방지)
     const workerRatio = dong.workers / Math.max(1, dong.population);
-    const vitalityFactor = 0.8 + dong.commerceVitality * 0.004;
+    const vitalityFactor = Math.min(1.02, 0.85 + dong.commerceVitality * 0.003);
     dong.livingPop.weekdayDay = Math.round(dong.livingPop.weekdayDay * vitalityFactor * 0.99 + dong.population * workerRatio * 0.01);
 
     // 밤 생활인구: 상주인구에 수렴
