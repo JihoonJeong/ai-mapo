@@ -3,6 +3,8 @@
  * advisor-prompt-v1.md 기반 구현
  */
 
+import { PLEDGES, calcProgress } from './pledge.js';
+
 // === System Prompt (Hard Shell — §1.1) ===
 const SYSTEM_PROMPT = `당신은 서울특별시 마포구의 도시계획 자문관입니다.
 
@@ -282,7 +284,7 @@ function handleQuickAction(action) {
 }
 
 // === Context Builder (§2.2) ===
-function buildAdvisorContext(state) {
+export function buildAdvisorContext(state) {
   const prev = state.history?.length > 0 ? state.history[state.history.length - 1] : null;
 
   const totalPop = state.dongs.reduce((s, d) => s + d.population, 0);
@@ -303,11 +305,15 @@ function buildAdvisorContext(state) {
   ctx += `재정자립도: ${state.finance.fiscalIndependence}%\n`;
   ctx += `자유예산: ${state.finance.freeBudget}억원\n`;
 
-  // Pledges
+  // Pledges with progress
   if (state.meta.pledges?.length > 0) {
-    ctx += `\n[공약]\n`;
-    for (const p of state.meta.pledges) {
-      ctx += `- ${p}\n`;
+    ctx += `\n[공약 진척도]\n`;
+    for (const id of state.meta.pledges) {
+      const pledge = PLEDGES.find(p => p.id === id);
+      const progress = Math.round(calcProgress(id, state));
+      const name = pledge?.name || id;
+      const status = progress >= 100 ? '달성' : progress >= 70 ? '순항' : progress >= 40 ? '보통' : '위험';
+      ctx += `- ${name}: ${progress}% (${status})\n`;
     }
   }
 
@@ -361,6 +367,21 @@ function buildAdvisorContext(state) {
 }
 
 // === AI Call Abstraction (§7.1) ===
+function buildSystemMessage() {
+  let sys = SYSTEM_PROMPT;
+  if (currentState?.meta?.playerName) {
+    sys += `\n\n구청장님 성함: ${currentState.meta.playerName}`;
+  }
+  if (currentState?.meta?.pledges?.length > 0) {
+    const pledgeNames = currentState.meta.pledges.map(id => {
+      const p = PLEDGES.find(pp => pp.id === id);
+      return p ? `${p.name} (${p.desc})` : id;
+    });
+    sys += `\n선택한 공약: ${pledgeNames.join(', ')}`;
+  }
+  return sys;
+}
+
 async function callAI(userMessage) {
   const backend = AI_BACKENDS[currentBackend];
   if (!backend) throw new Error(`Unknown backend: ${currentBackend}`);
@@ -368,7 +389,7 @@ async function callAI(userMessage) {
   // Build messages with history window (recent 4 turns)
   const recentHistory = getRecentHistory(4);
   const messages = [
-    { role: 'system', content: SYSTEM_PROMPT + (currentState.meta.playerName ? `\n\n구청장님 성함: ${currentState.meta.playerName}` : '') },
+    { role: 'system', content: buildSystemMessage() },
     ...recentHistory.map(h => ({
       role: h.role === 'advisor' ? 'assistant' : 'user',
       content: h.content,
@@ -400,7 +421,7 @@ async function anthropicCall(messages) {
       'anthropic-dangerous-direct-browser-access': 'true',
     },
     body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-6',
       max_tokens: 500,
       system: systemMsg?.content || SYSTEM_PROMPT,
       messages: otherMsgs,

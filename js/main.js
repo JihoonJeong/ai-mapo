@@ -307,11 +307,20 @@ async function generateGameReview(state, result) {
     ).join(', ');
     const kpiText = result.kpis.map(k => `${k.label}: ${k.score}/${k.max} (${k.detail})`).join(', ');
 
-    const prompt = `4년 임기가 끝났습니다. 성적표 요약:
-등급: ${result.grade} (${result.total}점)
+    const { buildAdvisorContext } = await import('./advisor.js');
+    const context = typeof buildAdvisorContext === 'function' ? buildAdvisorContext(state) : '';
+
+    const prompt = `구청장님의 4년 임기가 끝났습니다. 아래 결과를 바탕으로 총평을 작성하세요.
+
+${context}
+
+[최종 결과]
+등급: ${result.grade}
+총점: ${result.total}/130
 KPI: ${kpiText}
 공약: ${pledgeText}
-2~3문장으로 임기를 리뷰해주세요. 구체적인 지표를 언급하며 칭찬과 아쉬운 점을 균형있게.`;
+
+3~4문장으로 구청장님의 강점, 아쉬운 점, 그리고 "다음 임기에는..." 제안을 써 주세요.`;
 
     const review = await callAdvisorForReview(prompt);
     reviewEl.textContent = review || getDefaultReview(result);

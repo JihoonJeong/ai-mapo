@@ -106,7 +106,9 @@ export function renderPledgeBar(pledgeIds, state) {
   }).join('');
 }
 
-function calcProgress(pledgeId, state) {
+export { PLEDGES };
+
+export function calcProgress(pledgeId, state) {
   if (!initialState) return 0;
 
   const totalPop = state.dongs.reduce((s, d) => s + d.population, 0);
