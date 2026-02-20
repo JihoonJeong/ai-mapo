@@ -16,6 +16,8 @@ import { initAutoplay } from './autoplay.js';
 let gameState = null;
 let lastTurnActions = null;
 let autoplayActive = false;
+let turnLog = []; // per-turn action log for result export
+let gameStartTime = 0;
 
 // === Phases ===
 const PHASE = {
@@ -135,6 +137,8 @@ async function startGame() {
   });
 
   // Start first turn
+  turnLog = [];
+  gameStartTime = Date.now();
   updateTurnDisplay();
   currentPhase = PHASE.PLAYER_PHASE;
 }
@@ -209,6 +213,28 @@ function endTurn() {
       satisfaction: d.satisfaction,
       businesses: d.businesses,
     })),
+  });
+
+  // Log turn actions for result export
+  turnLog.push({
+    turn: gameState.meta.turn,
+    aiAction: {
+      budget: lastTurnActions.budget,
+      policies: {
+        activate: lastTurnActions.policies.map(p => p.id),
+        deactivate: [],
+      },
+      eventChoice: eventChoice?.choiceId || null,
+    },
+    stateSnapshot: {
+      totalPop: totalPop,
+      avgSat: avgSat,
+      fiscalIndependence: gameState.finance.fiscalIndependence,
+      freeBudget: gameState.finance.freeBudget,
+      activePolicies: (gameState.activePolicies || []).map(ap => ap.policy.id),
+    },
+    event: eventChoice ? { id: eventChoice.eventId, choiceId: eventChoice.choiceId } : null,
+    mode: autoplayActive ? 'auto' : 'manual',
   });
 
   // Advance turn
@@ -297,10 +323,18 @@ function showGameEnd() {
       <div class="ai-review" id="ai-review-content">리뷰 생성 중...</div>
     </div>
 
-    <button class="modal-btn" onclick="location.reload()">다시 플레이</button>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button class="modal-btn" id="btn-download-result" style="background:var(--success);flex:1">결과 JSON 다운로드</button>
+      <button class="modal-btn" onclick="location.reload()" style="flex:1">다시 플레이</button>
+    </div>
   `;
 
   modal.classList.add('active');
+
+  // Download result button
+  document.getElementById('btn-download-result')?.addEventListener('click', () => {
+    downloadResult(gameState, result);
+  });
 
   // Generate AI review asynchronously
   generateGameReview(gameState, result);
@@ -362,6 +396,41 @@ function getDefaultReview(result) {
   }
 
   return review;
+}
+
+// === Result Export ===
+function downloadResult(state, result) {
+  const durationMs = Date.now() - gameStartTime;
+  const autoTurns = turnLog.filter(t => t.mode === 'auto').length;
+  const manualTurns = turnLog.filter(t => t.mode === 'manual').length;
+
+  const exportData = {
+    runId: `browser-${new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19)}`,
+    source: 'browser',
+    provider: localStorage.getItem('ai-mapo-backend') || 'mock',
+    playerName: state.meta.playerName,
+    pledges: state.meta.pledges,
+    mode: autoTurns > 0 && manualTurns > 0 ? 'mixed' : autoTurns > 0 ? 'auto' : 'manual',
+    autoTurns,
+    manualTurns,
+    finalGrade: result.grade,
+    totalScore: result.total,
+    kpis: result.kpis,
+    kpiTotal: result.kpiTotal,
+    pledgeResults: result.pledgeResults,
+    pledgeTotal: result.pledgeTotal,
+    turnLog,
+    durationMs,
+  };
+
+  const json = JSON.stringify(exportData, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${exportData.runId}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 // === Boot ===
