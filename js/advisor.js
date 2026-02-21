@@ -56,10 +56,11 @@ const ANTHROPIC_MODELS = [
 ];
 
 const OPENAI_MODELS = [
-  { id: 'gpt-4o',      name: 'GPT-4o',      desc: '최고 성능' },
-  { id: 'gpt-4o-mini', name: 'GPT-4o mini', desc: '빠르고 저렴' },
-  { id: 'gpt-4.1',     name: 'GPT-4.1',     desc: '최신 모델' },
-  { id: 'gpt-4.1-mini',name: 'GPT-4.1 mini',desc: '최신, 경제적' },
+  { id: 'gpt-5-mini',  name: 'GPT-5 mini',  desc: '빠르고 경제적 (추천)' },
+  { id: 'gpt-5',       name: 'GPT-5',       desc: '최고 성능' },
+  { id: 'o4-mini',     name: 'o4-mini',     desc: '추론 특화, 빠름' },
+  { id: 'o3',          name: 'o3',          desc: '추론 특화, 고성능' },
+  { id: 'gpt-4o-mini', name: 'GPT-4o mini', desc: '구형, 저렴' },
 ];
 
 const GEMINI_MODELS = [
@@ -475,7 +476,7 @@ async function anthropicCall(messages, maxTokens = 500) {
 async function openaiCall(messages, maxTokens = 500) {
   if (!openaiKey) throw new Error('OpenAI API key required');
 
-  const model = localStorage.getItem('ai-mapo-openai-model') || 'gpt-4o-mini';
+  const model = localStorage.getItem('ai-mapo-openai-model') || 'gpt-5-mini';
 
   const response = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
@@ -698,7 +699,7 @@ function showApiSettings() {
   const content = document.getElementById('modal-content');
 
   const savedAnthropicModel = localStorage.getItem('ai-mapo-anthropic-model') || 'claude-sonnet-4-6';
-  const savedOpenaiModel = localStorage.getItem('ai-mapo-openai-model') || 'gpt-4o-mini';
+  const savedOpenaiModel = localStorage.getItem('ai-mapo-openai-model') || 'gpt-5-mini';
   const savedGeminiModel = localStorage.getItem('ai-mapo-gemini-model') || 'gemini-2.5-flash';
   const savedOllamaUrl = localStorage.getItem('ai-mapo-ollama-url') || 'http://localhost:11434';
   const savedOllamaModel = localStorage.getItem('ai-mapo-ollama-model') || 'exaone3.5:7.8b';
@@ -827,7 +828,7 @@ function showApiSettings() {
     const newOpenaiKey = document.getElementById('openai-key-input')?.value?.trim() || '';
     const newGeminiKey = document.getElementById('gemini-key-input')?.value?.trim() || '';
     const anthropicModel = document.getElementById('anthropic-model-select')?.value || 'claude-sonnet-4-6';
-    const openaiModel = document.getElementById('openai-model-select')?.value || 'gpt-4o-mini';
+    const openaiModel = document.getElementById('openai-model-select')?.value || 'gpt-5-mini';
     const geminiModel = document.getElementById('gemini-model-select')?.value || 'gemini-2.5-flash';
     const ollamaUrl = document.getElementById('ollama-url-input')?.value?.trim() || 'http://localhost:11434';
     const ollamaModel = document.getElementById('ollama-model-input')?.value?.trim() || 'exaone3.5:7.8b';
@@ -896,7 +897,7 @@ function updateModeDisplay() {
     const m = ANTHROPIC_MODELS.find(x => x.id === model);
     if (m) label = m.name;
   } else if (currentBackend === 'openai') {
-    const model = localStorage.getItem('ai-mapo-openai-model') || 'gpt-4o-mini';
+    const model = localStorage.getItem('ai-mapo-openai-model') || 'gpt-5-mini';
     const m = OPENAI_MODELS.find(x => x.id === model);
     if (m) label = m.name;
   } else if (currentBackend === 'gemini') {
