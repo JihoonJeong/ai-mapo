@@ -578,20 +578,31 @@ async function geminiCall(messages, maxTokens = 2048) {
 
   const data = await response.json();
 
-  // Handle Gemini thinking mode: parts may contain {thought:true} entries
-  // Actual response is in the last non-thought part
-  const parts = data.candidates?.[0]?.content?.parts || [];
+  // Debug: log raw Gemini response structure
+  const candidate = data.candidates?.[0];
+  const parts = candidate?.content?.parts || [];
+  console.log('[Gemini] parts count:', parts.length,
+    'keys:', parts.map(p => Object.keys(p).join(',')).join(' | '),
+    'finishReason:', candidate?.finishReason);
+
+  // Handle Gemini thinking mode: filter out {thought:true} parts
+  // For non-thinking models, all parts pass through
   const textParts = parts.filter(p => !p.thought && p.text);
   if (textParts.length > 0) {
     return textParts.map(p => p.text).join('');
   }
 
-  // Fallback: check finishReason for safety blocks
-  const finishReason = data.candidates?.[0]?.finishReason;
-  if (finishReason && finishReason !== 'STOP') {
-    console.warn('[Gemini] Non-STOP finishReason:', finishReason);
+  // Fallback: try ALL parts with text (ignore thought flag)
+  const allText = parts.filter(p => p.text).map(p => p.text).join('');
+  if (allText) {
+    console.warn('[Gemini] All text parts were thought=true, using anyway');
+    return allText;
   }
 
+  // No text at all
+  const finishReason = candidate?.finishReason;
+  console.warn('[Gemini] No text in response. finishReason:', finishReason,
+    'candidates:', data.candidates?.length, 'raw parts:', JSON.stringify(parts).substring(0, 200));
   return '';
 }
 
