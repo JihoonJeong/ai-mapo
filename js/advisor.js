@@ -62,12 +62,21 @@ const OPENAI_MODELS = [
   { id: 'gpt-4.1-mini',name: 'GPT-4.1 mini',desc: '최신, 경제적' },
 ];
 
+const GEMINI_MODELS = [
+  { id: 'gemini-2.5-flash',       name: 'Gemini 2.5 Flash',   desc: '빠르고 경제적' },
+  { id: 'gemini-2.5-pro',         name: 'Gemini 2.5 Pro',     desc: '고성능 추론' },
+  { id: 'gemini-3-flash-preview', name: 'Gemini 3 Flash',     desc: '최신, 빠름 (preview)' },
+  { id: 'gemini-3-pro-preview',   name: 'Gemini 3 Pro',       desc: '최신, 최고 성능 (preview)' },
+  { id: 'gemini-3.1-pro-preview', name: 'Gemini 3.1 Pro',     desc: '최신 (preview)', api: 'v1alpha' },
+];
+
 // === State ===
 let chatMessages = null;
 let chatHistory = []; // [{turn, role, content}]
-let currentBackend = 'mock'; // 'mock' | 'anthropic' | 'openai' | 'ollama'
+let currentBackend = 'mock'; // 'mock' | 'anthropic' | 'openai' | 'gemini' | 'ollama'
 let apiKey = '';
 let openaiKey = '';
+let geminiKey = '';
 let currentState = null;
 
 // === AI Backends ===
@@ -75,6 +84,7 @@ const AI_BACKENDS = {
   mock:      { name: 'Mock (기본)',    call: mockCall },
   anthropic: { name: 'Claude API',     call: anthropicCall },
   openai:    { name: 'OpenAI API',     call: openaiCall },
+  gemini:    { name: 'Gemini API',     call: geminiCall },
   ollama:    { name: 'Ollama (로컬)',  call: ollamaCall },
 };
 
@@ -87,6 +97,7 @@ export function initAdvisor(state) {
   // Load saved settings
   apiKey = localStorage.getItem('ai-mapo-api-key') || '';
   openaiKey = localStorage.getItem('ai-mapo-openai-key') || '';
+  geminiKey = localStorage.getItem('ai-mapo-gemini-key') || '';
   const savedBackend = localStorage.getItem('ai-mapo-backend') || '';
   if (savedBackend && AI_BACKENDS[savedBackend]) {
     currentBackend = savedBackend;
@@ -491,7 +502,7 @@ async function openaiCall(messages, maxTokens = 500) {
 // === Ollama Backend ===
 async function ollamaCall(messages, maxTokens = 500) {
   const ollamaUrl = localStorage.getItem('ai-mapo-ollama-url') || 'http://localhost:11434';
-  const ollamaModel = localStorage.getItem('ai-mapo-ollama-model') || 'llama3.1:8b';
+  const ollamaModel = localStorage.getItem('ai-mapo-ollama-model') || 'exaone3.5:7.8b';
 
   const systemMsg = messages.find(m => m.role === 'system');
   const otherMsgs = messages.filter(m => m.role !== 'system');
@@ -512,6 +523,47 @@ async function ollamaCall(messages, maxTokens = 500) {
   if (!response.ok) throw new Error(`Ollama error ${response.status}`);
   const data = await response.json();
   return data.message?.content || '';
+}
+
+// === Gemini API Backend ===
+async function geminiCall(messages, maxTokens = 500) {
+  if (!geminiKey) throw new Error('Gemini API key required');
+
+  const model = localStorage.getItem('ai-mapo-gemini-model') || 'gemini-2.5-flash';
+  const systemMsg = messages.find(m => m.role === 'system');
+  const otherMsgs = messages.filter(m => m.role !== 'system');
+
+  // Convert OpenAI-style messages to Gemini format
+  const contents = otherMsgs.map(m => ({
+    role: m.role === 'assistant' ? 'model' : 'user',
+    parts: [{ text: m.content }],
+  }));
+
+  const body = {
+    contents,
+    generationConfig: { maxOutputTokens: maxTokens },
+  };
+  if (systemMsg) {
+    body.systemInstruction = { parts: [{ text: systemMsg.content }] };
+  }
+
+  const apiVersion = GEMINI_MODELS.find(m => m.id === model)?.api || 'v1beta';
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/${apiVersion}/models/${model}:generateContent?key=${geminiKey}`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    },
+  );
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.error?.message || `Gemini error ${response.status}`);
+  }
+
+  const data = await response.json();
+  return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
 }
 
 // === Raw API call for autoplay (custom system prompt + messages) ===
@@ -647,8 +699,9 @@ function showApiSettings() {
 
   const savedAnthropicModel = localStorage.getItem('ai-mapo-anthropic-model') || 'claude-sonnet-4-6';
   const savedOpenaiModel = localStorage.getItem('ai-mapo-openai-model') || 'gpt-4o-mini';
+  const savedGeminiModel = localStorage.getItem('ai-mapo-gemini-model') || 'gemini-2.5-flash';
   const savedOllamaUrl = localStorage.getItem('ai-mapo-ollama-url') || 'http://localhost:11434';
-  const savedOllamaModel = localStorage.getItem('ai-mapo-ollama-model') || 'llama3.1:8b';
+  const savedOllamaModel = localStorage.getItem('ai-mapo-ollama-model') || 'exaone3.5:7.8b';
 
   content.innerHTML = `
     <div class="modal-title">AI 자문관 설정</div>
@@ -669,6 +722,11 @@ function showApiSettings() {
         <input type="radio" name="ai-backend" value="openai" ${currentBackend === 'openai' ? 'checked' : ''}>
         <span>OpenAI API</span>
         <small>OpenAI</small>
+      </label>
+      <label class="api-radio-label">
+        <input type="radio" name="ai-backend" value="gemini" ${currentBackend === 'gemini' ? 'checked' : ''}>
+        <span>Gemini API</span>
+        <small>Google</small>
       </label>
       <label class="api-radio-label">
         <input type="radio" name="ai-backend" value="ollama" ${currentBackend === 'ollama' ? 'checked' : ''}>
@@ -711,6 +769,23 @@ function showApiSettings() {
       </div>
     </div>
 
+    <div id="gemini-section" class="api-backend-config" style="${currentBackend === 'gemini' ? '' : 'display:none'}">
+      <div class="config-field">
+        <label class="config-field-label">API 키</label>
+        <input type="password" class="modal-input" id="gemini-key-input"
+               placeholder="AIza..." value="${geminiKey}">
+      </div>
+      <div class="config-field">
+        <label class="config-field-label">모델</label>
+        <select class="modal-select" id="gemini-model-select">
+          ${buildModelOptions(GEMINI_MODELS, savedGeminiModel)}
+        </select>
+      </div>
+      <div class="config-note">
+        API 키는 브라우저 로컬 스토리지에만 저장됩니다. 서버로 전송되지 않습니다.
+      </div>
+    </div>
+
     <div id="ollama-section" class="api-backend-config" style="${currentBackend === 'ollama' ? '' : 'display:none'}">
       <div class="config-field">
         <label class="config-field-label">URL</label>
@@ -720,7 +795,7 @@ function showApiSettings() {
       <div class="config-field">
         <label class="config-field-label">모델</label>
         <input type="text" class="modal-input" id="ollama-model-input"
-               placeholder="llama3.1:8b" value="${savedOllamaModel}">
+               placeholder="exaone3.5:7.8b" value="${savedOllamaModel}">
       </div>
       <div class="config-note">
         Ollama가 로컬에서 실행 중이어야 합니다. <code>ollama serve</code>로 시작하세요.
@@ -736,7 +811,7 @@ function showApiSettings() {
   modal.classList.add('active');
 
   // Toggle config sections based on selected backend
-  const sections = ['anthropic-section', 'openai-section', 'ollama-section'];
+  const sections = ['anthropic-section', 'openai-section', 'gemini-section', 'ollama-section'];
   content.querySelectorAll('input[name="ai-backend"]').forEach(radio => {
     radio.addEventListener('change', () => {
       sections.forEach(id => {
@@ -750,15 +825,19 @@ function showApiSettings() {
     const selectedBackend = content.querySelector('input[name="ai-backend"]:checked')?.value || 'mock';
     const newKey = document.getElementById('api-key-input')?.value?.trim() || '';
     const newOpenaiKey = document.getElementById('openai-key-input')?.value?.trim() || '';
+    const newGeminiKey = document.getElementById('gemini-key-input')?.value?.trim() || '';
     const anthropicModel = document.getElementById('anthropic-model-select')?.value || 'claude-sonnet-4-6';
     const openaiModel = document.getElementById('openai-model-select')?.value || 'gpt-4o-mini';
+    const geminiModel = document.getElementById('gemini-model-select')?.value || 'gemini-2.5-flash';
     const ollamaUrl = document.getElementById('ollama-url-input')?.value?.trim() || 'http://localhost:11434';
-    const ollamaModel = document.getElementById('ollama-model-input')?.value?.trim() || 'llama3.1:8b';
+    const ollamaModel = document.getElementById('ollama-model-input')?.value?.trim() || 'exaone3.5:7.8b';
 
     // Validate: API key required for API backends
     if (selectedBackend === 'anthropic' && !newKey) {
       currentBackend = 'mock';
     } else if (selectedBackend === 'openai' && !newOpenaiKey) {
+      currentBackend = 'mock';
+    } else if (selectedBackend === 'gemini' && !newGeminiKey) {
       currentBackend = 'mock';
     } else {
       currentBackend = selectedBackend;
@@ -781,6 +860,15 @@ function showApiSettings() {
       localStorage.removeItem('ai-mapo-openai-key');
     }
     localStorage.setItem('ai-mapo-openai-model', openaiModel);
+
+    // Save Gemini settings
+    geminiKey = newGeminiKey;
+    if (newGeminiKey) {
+      localStorage.setItem('ai-mapo-gemini-key', newGeminiKey);
+    } else {
+      localStorage.removeItem('ai-mapo-gemini-key');
+    }
+    localStorage.setItem('ai-mapo-gemini-model', geminiModel);
 
     // Save Ollama settings
     localStorage.setItem('ai-mapo-ollama-url', ollamaUrl);
@@ -810,6 +898,10 @@ function updateModeDisplay() {
   } else if (currentBackend === 'openai') {
     const model = localStorage.getItem('ai-mapo-openai-model') || 'gpt-4o-mini';
     const m = OPENAI_MODELS.find(x => x.id === model);
+    if (m) label = m.name;
+  } else if (currentBackend === 'gemini') {
+    const model = localStorage.getItem('ai-mapo-gemini-model') || 'gemini-2.5-flash';
+    const m = GEMINI_MODELS.find(x => x.id === model);
     if (m) label = m.name;
   }
   el.textContent = label;
