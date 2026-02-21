@@ -285,43 +285,98 @@ ${available}`;
   return prompt;
 }
 
-// === JSON Parser (3-level fallback, adapted from sim/sim-advisor.mjs) ===
+// === JSON Parser (5-level fallback, robust for Gemini/OpenAI/Anthropic) ===
 
 function parseAction(raw, state, event, policyCatalog) {
   if (!raw || raw.trim() === '') {
     return getDefaultAction();
   }
 
+  // Pre-process: strip thinking tags (Gemini 2.5 Flash)
+  let text = raw
+    .replace(/<think>[\s\S]*?<\/think>/gi, '')
+    .replace(/<thinking>[\s\S]*?<\/thinking>/gi, '')
+    .trim();
+
   let parsed = null;
 
   // Level 1: Direct JSON parse
   try {
-    parsed = JSON.parse(raw.trim());
-  } catch {
-    // Level 2: Extract from code block
-    const codeBlockMatch = raw.match(/```(?:json)?\s*\n?([\s\S]*?)\n?\s*```/);
+    parsed = JSON.parse(text);
+  } catch { /* fall through */ }
+
+  // Level 2: Extract from code block (```json ... ``` or ``` ... ```)
+  if (!parsed) {
+    const codeBlockMatch = text.match(/```(?:json)?\s*\n?([\s\S]*?)\n?\s*```/);
     if (codeBlockMatch) {
-      try { parsed = JSON.parse(codeBlockMatch[1].trim()); } catch { /* fall through */ }
+      try { parsed = JSON.parse(cleanJSON(codeBlockMatch[1].trim())); } catch { /* fall through */ }
     }
   }
 
-  // Level 3: Regex extraction
+  // Level 3: Find outermost JSON object by brace matching
   if (!parsed) {
-    parsed = regexExtract(raw);
+    parsed = extractJSONByBraces(text);
+  }
+
+  // Level 4: Regex extraction (field-by-field)
+  if (!parsed) {
+    parsed = regexExtract(text);
   }
 
   return validateAction(parsed, state, event, policyCatalog);
 }
 
+/** Clean common JSON issues: trailing commas, single-line comments */
+function cleanJSON(str) {
+  return str
+    .replace(/,\s*([}\]])/g, '$1')       // trailing commas
+    .replace(/\/\/[^\n]*/g, '');           // single-line comments
+}
+
+/** Find the outermost { ... } and parse it */
+function extractJSONByBraces(text) {
+  const start = text.indexOf('{');
+  if (start < 0) return null;
+
+  let depth = 0;
+  let inString = false;
+  let escape = false;
+
+  for (let i = start; i < text.length; i++) {
+    const ch = text[i];
+    if (escape) { escape = false; continue; }
+    if (ch === '\\' && inString) { escape = true; continue; }
+    if (ch === '"') { inString = !inString; continue; }
+    if (inString) continue;
+    if (ch === '{') depth++;
+    else if (ch === '}') {
+      depth--;
+      if (depth === 0) {
+        const jsonStr = text.substring(start, i + 1);
+        try { return JSON.parse(cleanJSON(jsonStr)); } catch { return null; }
+      }
+    }
+  }
+  return null;
+}
+
 function regexExtract(raw) {
   const result = { reasoning: '', budget: null, policies: { activate: [], deactivate: [] }, eventChoice: null };
 
-  const reasonMatch = raw.match(/"reasoning"\s*:\s*"([^"]+)"/);
-  if (reasonMatch) result.reasoning = reasonMatch[1];
+  // Reasoning: handle escaped quotes
+  const reasonMatch = raw.match(/"reasoning"\s*:\s*"((?:[^"\\]|\\.)*)"/);
+  if (reasonMatch) result.reasoning = reasonMatch[1].replace(/\\"/g, '"').replace(/\\n/g, ' ');
 
-  const budgetMatch = raw.match(/"budget"\s*:\s*\{([^}]+)\}/);
-  if (budgetMatch) {
-    try { result.budget = JSON.parse(`{${budgetMatch[1]}}`); } catch { /* default */ }
+  // Budget: find { ... } after "budget"
+  const budgetStart = raw.indexOf('"budget"');
+  if (budgetStart >= 0) {
+    const braceStart = raw.indexOf('{', budgetStart + 8);
+    if (braceStart >= 0) {
+      const braceEnd = raw.indexOf('}', braceStart);
+      if (braceEnd >= 0) {
+        try { result.budget = JSON.parse(cleanJSON(raw.substring(braceStart, braceEnd + 1))); } catch { /* default */ }
+      }
+    }
   }
 
   const activateMatch = raw.match(/"activate"\s*:\s*\[([^\]]*)\]/);
