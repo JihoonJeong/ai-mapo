@@ -49,7 +49,7 @@ async function anthropicCall(messages, config) {
     },
     body: JSON.stringify({
       model,
-      max_tokens: 800,
+      max_tokens: 2048,
       system: systemMsg?.content || '',
       messages: otherMsgs,
     }),

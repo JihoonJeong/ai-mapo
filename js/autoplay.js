@@ -5,7 +5,7 @@
  * sim/sim-advisor.mjs의 action 프롬프트 + JSON 파서를 브라우저용으로 적용.
  */
 
-import { callAIRaw, getCurrentBackendName, buildAdvisorContext, addMessage } from './advisor.js';
+import { callAIRaw, getCurrentBackendName, getCurrentModelId, buildAdvisorContext, addMessage } from './advisor.js';
 import { setAllocation } from './budget.js';
 import { setPolicies, cancelActivePolicy, getPolicyCatalog } from './policy.js';
 import { setEventChoice, getCurrentEvent } from './event.js';
@@ -72,6 +72,17 @@ function startAutoplay(numTurns) {
   if (autoplayState === 'running') return;
   if (!gameAccessor) return;
 
+  // Haiku warning — not suitable for autoplay (keeps default budget)
+  const modelId = getCurrentModelId();
+  if (modelId.includes('haiku')) {
+    const ok = confirm(
+      'Haiku 모델은 자동 플레이에 적합하지 않습니다.\n' +
+      '(예산·정책 변경 없이 균등 배분만 유지하는 경향이 있습니다)\n\n' +
+      '다른 모델로 변경하시거나, 그래도 진행하시겠습니까?'
+    );
+    if (!ok) return;
+  }
+
   const state = gameAccessor.getState();
   const currentTurn = state.meta.turn;
 
@@ -127,7 +138,7 @@ async function autoplayLoop() {
         { role: 'system', content: buildSystemMessage(state) },
         { role: 'user', content: prompt },
       ];
-      const raw = await callAIRaw(messages, 800);
+      const raw = await callAIRaw(messages, 2048);
       action = parseAction(raw, state, event, catalog);
     } catch (err) {
       console.warn('[Autoplay] AI call failed:', err);

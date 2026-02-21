@@ -577,6 +577,16 @@ export function getCurrentBackendName() {
   return currentBackend;
 }
 
+export function getCurrentModelId() {
+  switch (currentBackend) {
+    case 'anthropic': return localStorage.getItem('ai-mapo-anthropic-model') || 'claude-sonnet-4-6';
+    case 'openai':    return localStorage.getItem('ai-mapo-openai-model') || 'gpt-5-mini';
+    case 'gemini':    return localStorage.getItem('ai-mapo-gemini-model') || 'gemini-2.5-flash';
+    case 'ollama':    return localStorage.getItem('ai-mapo-ollama-model') || 'exaone3.5:7.8b';
+    default:          return 'mock';
+  }
+}
+
 // === Mock Backend ===
 async function mockCall(messages) {
   const userMsg = messages[messages.length - 1]?.content || '';
