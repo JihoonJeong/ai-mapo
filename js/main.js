@@ -10,7 +10,7 @@ import { initPolicy, getSelectedPolicies, updatePolicyState } from './policy.js'
 import { initEvents, renderNoEvent, renderEvent, getEventChoice, checkEventTriggers } from './event.js';
 import { showPledgeSelection, initPledgeBar, renderPledgeBar, calcFinalScore } from './pledge.js';
 import { tick } from './engine/simulation.js';
-import { initAutoplay } from './autoplay.js';
+import { initAutoplay, getLastAIReasoning } from './autoplay.js';
 
 // === Game State ===
 let gameState = null;
@@ -226,6 +226,7 @@ function endTurn() {
       },
       eventChoice: eventChoice?.choiceId || null,
     },
+    aiReasoning: autoplayActive ? getLastAIReasoning() : '',
     stateSnapshot: {
       totalPop: totalPop,
       avgSat: avgSat,

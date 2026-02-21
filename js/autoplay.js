@@ -16,6 +16,7 @@ let remainingTurns = 0;
 let turnsPlayed = 0;
 let totalTurns = 0;
 let gameAccessor = null; // { getState, getPhase, PHASE, triggerEndTurn, setAutoplayActive }
+let lastAIReasoning = ''; // shared with main.js for turnLog
 
 // === Action System Prompt (adapted from sim/sim-advisor.mjs) ===
 const ACTION_SYSTEM_PROMPT = `당신은 서울특별시 마포구의 AI 구청장입니다. 48개월(4년) 임기 동안 마포구를 운영합니다.
@@ -46,6 +47,10 @@ const DEFAULT_BUDGET = {
   economy: 15, transport: 15, culture: 10,
   environment: 15, education: 15, welfare: 15, renewal: 15,
 };
+
+export function getLastAIReasoning() {
+  return lastAIReasoning;
+}
 
 // === Init ===
 export function initAutoplay(accessor) {
@@ -132,18 +137,32 @@ async function autoplayLoop() {
 
     // 2. Get AI action
     let action;
+    const backendName = getCurrentBackendName();
     try {
-      const prompt = buildActionPrompt(state, event, catalog);
-      const messages = [
-        { role: 'system', content: buildSystemMessage(state) },
-        { role: 'user', content: prompt },
-      ];
-      const raw = await callAIRaw(messages, 2048);
-      action = parseAction(raw, state, event, catalog);
+      if (backendName === 'mock') {
+        // Mock backend can't generate JSON actions — use smart default
+        action = getMockAction(state, event, catalog);
+        console.log('[Autoplay] Mock backend → smart default action');
+      } else {
+        const prompt = buildActionPrompt(state, event, catalog);
+        const messages = [
+          { role: 'system', content: buildSystemMessage(state) },
+          { role: 'user', content: prompt },
+        ];
+        const raw = await callAIRaw(messages, 2048);
+        console.log('[Autoplay] AI raw response length:', raw?.length, 'first 200:', raw?.substring(0, 200));
+        action = parseAction(raw, state, event, catalog);
+        if (JSON.stringify(action.budget) === JSON.stringify(DEFAULT_BUDGET) && action.reasoning === '') {
+          console.warn('[Autoplay] AI returned but parsed to default — raw:', raw?.substring(0, 500));
+          addMessage('advisor', `[AI 자동] ⚠ AI 응답 파싱 실패 — 기본 예산으로 진행합니다.`);
+        }
+      }
     } catch (err) {
-      console.warn('[Autoplay] AI call failed:', err);
+      console.error('[Autoplay] AI call failed:', err);
+      addMessage('advisor', `[AI 자동] ⚠ AI 호출 실패 (${err.message}) — 기본 예산으로 진행합니다.`);
       action = getDefaultAction();
     }
+    lastAIReasoning = action.reasoning || '';
 
     // Check if stopped during AI call
     if (autoplayState !== 'running') break;
@@ -393,6 +412,51 @@ function getDefaultAction() {
     policies: { activate: [], deactivate: [] },
     eventChoice: null,
   };
+}
+
+/**
+ * Mock backend: heuristic-based action (no AI call)
+ * - Allocates budget based on lowest satisfaction areas
+ * - Picks affordable policies if slots available
+ * - Picks first event choice
+ */
+function getMockAction(state, event, catalog) {
+  const action = {
+    reasoning: '',
+    budget: { ...DEFAULT_BUDGET },
+    policies: { activate: [], deactivate: [] },
+    eventChoice: null,
+  };
+
+  // Heuristic budget: boost welfare + economy, reduce culture
+  const avgSat = Math.round(state.dongs.reduce((s, d) => s + d.satisfaction, 0) / state.dongs.length);
+  if (avgSat < 55) {
+    action.budget = { economy: 10, transport: 10, culture: 5, environment: 10, education: 10, welfare: 30, renewal: 25 };
+    action.reasoning = `평균 만족도 ${avgSat}점으로 낮아 복지·재생에 집중 투자합니다.`;
+  } else if (avgSat < 65) {
+    action.budget = { economy: 20, transport: 15, culture: 10, environment: 10, education: 10, welfare: 20, renewal: 15 };
+    action.reasoning = `만족도 ${avgSat}점 보통 수준. 경제·복지를 강화합니다.`;
+  } else {
+    action.budget = { economy: 25, transport: 15, culture: 10, environment: 10, education: 15, welfare: 10, renewal: 15 };
+    action.reasoning = `만족도 ${avgSat}점 양호. 경제 성장에 집중합니다.`;
+  }
+
+  // Try to activate affordable policies (if slots available)
+  const activePolicyIds = (state.activePolicies || []).map(ap => ap.policy.id);
+  const slotsAvailable = 3 - activePolicyIds.length;
+  if (slotsAvailable > 0 && catalog.length > 0) {
+    const affordable = catalog
+      .filter(p => !activePolicyIds.includes(p.id) && p.cost <= state.finance.freeBudget * 0.3)
+      .slice(0, slotsAvailable);
+    action.policies.activate = affordable.map(p => p.id);
+  }
+
+  // Event: pick first choice
+  if (event) {
+    action.eventChoice = event.choices[0]?.id || null;
+  }
+
+  return action;
 }
 
 // === UI ===
