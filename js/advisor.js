@@ -454,12 +454,12 @@ async function anthropicCall(messages, maxTokens = 500) {
       'anthropic-version': '2023-06-01',
       'anthropic-dangerous-direct-browser-access': 'true',
     },
-    body: JSON.stringify({
+    body: new Blob([JSON.stringify({
       model,
       max_tokens: maxTokens,
       system: systemMsg?.content || SYSTEM_PROMPT,
       messages: otherMsgs,
-    }),
+    })], { type: 'application/json' }),
   });
 
   if (!response.ok) {
@@ -483,11 +483,11 @@ async function openaiCall(messages, maxTokens = 500) {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${openaiKey}`,
     },
-    body: JSON.stringify({
+    body: new Blob([JSON.stringify({
       model,
       max_completion_tokens: Math.max(maxTokens, 4000),
       messages,
-    }),
+    })], { type: 'application/json' }),
   });
 
   if (!response.ok) {
@@ -510,14 +510,14 @@ async function ollamaCall(messages, maxTokens = 500) {
   const response = await fetch(`${ollamaUrl}/api/chat`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
+    body: new Blob([JSON.stringify({
       model: ollamaModel,
       messages: [
         { role: 'system', content: systemMsg?.content || SYSTEM_PROMPT },
         ...otherMsgs,
       ],
       stream: false,
-    }),
+    })], { type: 'application/json' }),
   });
 
   if (!response.ok) throw new Error(`Ollama error ${response.status}`);
@@ -553,7 +553,7 @@ async function geminiCall(messages, maxTokens = 2048) {
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
+      body: new Blob([JSON.stringify(body)], { type: 'application/json' }),
     },
   );
 
