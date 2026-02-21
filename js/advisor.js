@@ -79,6 +79,20 @@ let openaiKey = '';
 let geminiKey = '';
 let currentState = null;
 
+/**
+ * Strip non-printable/non-ASCII characters from API keys.
+ * Copy-paste from web pages can introduce invisible Unicode chars
+ * (zero-width space U+200B, BOM U+FEFF, etc.) which break fetch headers.
+ */
+function sanitizeKey(key) {
+  return key.replace(/[^\x20-\x7E]/g, '');
+}
+
+/** Encode JSON body as UTF-8 Uint8Array to avoid browser encoding issues with Korean text */
+function jsonBody(data) {
+  return new TextEncoder().encode(JSON.stringify(data));
+}
+
 // === AI Backends ===
 const AI_BACKENDS = {
   mock:      { name: 'Mock (기본)',    call: mockCall },
@@ -94,10 +108,10 @@ export function initAdvisor(state) {
   chatMessages = document.getElementById('chat-messages');
   chatHistory = [];
 
-  // Load saved settings
-  apiKey = localStorage.getItem('ai-mapo-api-key') || '';
-  openaiKey = localStorage.getItem('ai-mapo-openai-key') || '';
-  geminiKey = localStorage.getItem('ai-mapo-gemini-key') || '';
+  // Load saved settings (sanitize keys to strip invisible Unicode from copy-paste)
+  apiKey = sanitizeKey(localStorage.getItem('ai-mapo-api-key') || '');
+  openaiKey = sanitizeKey(localStorage.getItem('ai-mapo-openai-key') || '');
+  geminiKey = sanitizeKey(localStorage.getItem('ai-mapo-gemini-key') || '');
   const savedBackend = localStorage.getItem('ai-mapo-backend') || '';
   if (savedBackend && AI_BACKENDS[savedBackend]) {
     currentBackend = savedBackend;
@@ -454,12 +468,12 @@ async function anthropicCall(messages, maxTokens = 500) {
       'anthropic-version': '2023-06-01',
       'anthropic-dangerous-direct-browser-access': 'true',
     },
-    body: new Blob([JSON.stringify({
+    body: jsonBody({
       model,
       max_tokens: maxTokens,
       system: systemMsg?.content || SYSTEM_PROMPT,
       messages: otherMsgs,
-    })], { type: 'application/json' }),
+    }),
   });
 
   if (!response.ok) {
@@ -483,11 +497,11 @@ async function openaiCall(messages, maxTokens = 500) {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${openaiKey}`,
     },
-    body: new Blob([JSON.stringify({
+    body: jsonBody({
       model,
       max_completion_tokens: Math.max(maxTokens, 4000),
       messages,
-    })], { type: 'application/json' }),
+    }),
   });
 
   if (!response.ok) {
@@ -510,14 +524,14 @@ async function ollamaCall(messages, maxTokens = 500) {
   const response = await fetch(`${ollamaUrl}/api/chat`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: new Blob([JSON.stringify({
+    body: jsonBody({
       model: ollamaModel,
       messages: [
         { role: 'system', content: systemMsg?.content || SYSTEM_PROMPT },
         ...otherMsgs,
       ],
       stream: false,
-    })], { type: 'application/json' }),
+    }),
   });
 
   if (!response.ok) throw new Error(`Ollama error ${response.status}`);
@@ -553,7 +567,7 @@ async function geminiCall(messages, maxTokens = 2048) {
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: new Blob([JSON.stringify(body)], { type: 'application/json' }),
+      body: jsonBody(body),
     },
   );
 
@@ -833,9 +847,9 @@ function showApiSettings() {
 
   document.getElementById('btn-api-save').addEventListener('click', () => {
     const selectedBackend = content.querySelector('input[name="ai-backend"]:checked')?.value || 'mock';
-    const newKey = document.getElementById('api-key-input')?.value?.trim() || '';
-    const newOpenaiKey = document.getElementById('openai-key-input')?.value?.trim() || '';
-    const newGeminiKey = document.getElementById('gemini-key-input')?.value?.trim() || '';
+    const newKey = sanitizeKey(document.getElementById('api-key-input')?.value?.trim() || '');
+    const newOpenaiKey = sanitizeKey(document.getElementById('openai-key-input')?.value?.trim() || '');
+    const newGeminiKey = sanitizeKey(document.getElementById('gemini-key-input')?.value?.trim() || '');
     const anthropicModel = document.getElementById('anthropic-model-select')?.value || 'claude-sonnet-4-6';
     const openaiModel = document.getElementById('openai-model-select')?.value || 'gpt-5-mini';
     const geminiModel = document.getElementById('gemini-model-select')?.value || 'gemini-2.5-flash';
