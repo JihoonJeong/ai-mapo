@@ -10,7 +10,7 @@ const SYSTEM_PROMPT = `당신은 서울특별시 마포구의 도시계획 자�
 
 ## 역할
 - 구청장님의 정책 결정을 데이터 기반으로 보좌합니다.
-- 매 분기(턴) 핵심 변화를 브리핑하고, 질문에 분석으로 답합니다.
+- 매달(턴) 핵심 변화를 브리핑하고, 질문에 분석으로 답합니다.
 - 결정은 구청장님이 합니다. 당신은 분석과 선택지를 제공합니다.
 
 ## 마포구 개요
@@ -31,7 +31,7 @@ const SYSTEM_PROMPT = `당신은 서울특별시 마포구의 도시계획 자�
 
 ## 분석 프레임워크
 데이터를 볼 때 이 순서로 생각하세요:
-1. **변화**: 전 분기 대비 무엇이 달라졌는가?
+1. **변화**: 전월 대비 무엇이 달라졌는가?
 2. **원인**: 왜 달라졌는가? (정책 효과? 외부 요인? 이벤트?)
 3. **영향**: 이 변화가 다른 지표에 어떤 파급을 줄 것인가?
 4. **대응**: 구청장님에게 어떤 선택지가 있는가?
@@ -44,8 +44,8 @@ const SYSTEM_PROMPT = `당신은 서울특별시 마포구의 도시계획 자�
 // Quick button prompts (§4.2)
 const QUICK_PROMPTS = {
   compare: '16개 동의 현황을 비교 분석해 주세요. 만족도 기준 상위 3개·하위 3개 동을 짚고, 특히 주목할 동이 있으면 이유와 함께 설명하세요.',
-  predict: '현재 활성화된 정책과 예산 배분을 보고, 다음 분기에 예상되는 변화를 분석해 주세요. 특히 어떤 동이 가장 큰 영향을 받을지 예측하세요.',
-  summary: '이번 분기 가장 주의해야 할 이슈 3개를 순서대로 정리하고, 각각에 대한 짧은 대응 제안을 해 주세요.',
+  predict: '현재 활성화된 정책과 예산 배분을 보고, 다음 달에 예상되는 변화를 분석해 주세요. 특히 어떤 동이 가장 큰 영향을 받을지 예측하세요.',
+  summary: '이번 달 가장 주의해야 할 이슈 3개를 순서대로 정리하고, 각각에 대한 짧은 대응 제안을 해 주세요.',
 };
 
 // === Model Options ===
@@ -57,7 +57,6 @@ const ANTHROPIC_MODELS = [
 
 const OPENAI_MODELS = [
   { id: 'gpt-5-mini',  name: 'GPT-5 mini',  desc: '빠르고 경제적 (추천)' },
-  { id: 'gpt-5',       name: 'GPT-5',       desc: '최고 성능' },
   { id: 'o4-mini',     name: 'o4-mini',     desc: '추론 특화, 빠름' },
   { id: 'o3',          name: 'o3',          desc: '추론 특화, 고성능' },
   { id: 'gpt-4o-mini', name: 'GPT-4o mini', desc: '구형, 저렴' },
@@ -109,7 +108,7 @@ export function initAdvisor(state) {
   // Welcome message
   const totalPop = state.dongs.reduce((s, d) => s + d.population, 0);
   const totalBiz = state.dongs.reduce((s, d) => s + d.businesses, 0);
-  addMessage('advisor', `구청장님, 취임을 축하드립니다! 저는 마포구 도시계획 자문관입니다.\n\n마포구의 현황을 파악하고, 4년 임기 동안 최선의 결정을 내리실 수 있도록 데이터 기반 분석을 제공하겠습니다.\n\n현재 마포구 인구 ${totalPop.toLocaleString()}명, 사업체 ${totalBiz.toLocaleString()}개입니다. 첫 분기 예산 배분을 결정해 주세요.`);
+  addMessage('advisor', `구청장님, 취임을 축하드립니다! 저는 마포구 도시계획 자문관입니다.\n\n마포구의 현황을 파악하고, 4년 임기 동안 최선의 결정을 내리실 수 있도록 데이터 기반 분석을 제공하겠습니다.\n\n현재 마포구 인구 ${totalPop.toLocaleString()}명, 사업체 ${totalBiz.toLocaleString()}개입니다. 첫 달 예산 배분을 결정해 주세요.`);
 
   // Chat input
   const input = document.getElementById('chat-input');
@@ -154,8 +153,8 @@ export async function generateBriefing(state) {
   if (currentBackend !== 'mock') {
     // Use AI for briefing
     const briefingPrompt = turn <= 1
-      ? `구청장님이 취임했습니다. 마포구의 현 상태를 요약하고, 임기 4년의 핵심 과제를 제시하세요.\n\n${context}\n\n## 브리핑 형식\n1. 마포구 현황 한 줄 요약\n2. 가장 큰 기회 (수치 근거)\n3. 가장 큰 위험 (수치 근거)\n4. 선택한 공약 달성을 위한 첫 분기 제안\n\n전체 6문장 이내.`
-      : `아래 데이터를 바탕으로 이번 분기 브리핑을 작성하세요.\n\n${context}\n\n## 브리핑 형식\n1. **핵심 요약** (1~2문장): 이번 분기 가장 중요한 변화.\n2. **긴급 이슈** (1개): 가장 시급한 문제. 수치 근거 포함.\n3. **기회 요인** (1개): 활용할 수 있는 긍정적 변화. 수치 근거 포함.\n4. **공약 관련** (해당되면): 공약 진척에 영향을 주는 변화.\n\n전체 5문장 이내. 간결하게.`;
+      ? `구청장님이 취임했습니다. 마포구의 현 상태를 요약하고, 임기 4년의 핵심 과제를 제시하세요.\n\n${context}\n\n## 브리핑 형식\n1. 마포구 현황 한 줄 요약\n2. 가장 큰 기회 (수치 근거)\n3. 가장 큰 위험 (수치 근거)\n4. 선택한 공약 달성을 위한 첫 달 제안\n\n전체 6문장 이내.`
+      : `아래 데이터를 바탕으로 이번 달 브리핑을 작성하세요.\n\n${context}\n\n## 브리핑 형식\n1. **핵심 요약** (1~2문장): 이번 달 가장 중요한 변화.\n2. **긴급 이슈** (1개): 가장 시급한 문제. 수치 근거 포함.\n3. **기회 요인** (1개): 활용할 수 있는 긍정적 변화. 수치 근거 포함.\n4. **공약 관련** (해당되면): 공약 진척에 영향을 주는 변화.\n\n전체 5문장 이내. 간결하게.`;
 
     addMessage('advisor', '(브리핑 생성 중...)');
     try {
@@ -180,7 +179,7 @@ export async function generateBriefing(state) {
 function generateMockBriefing(state) {
   const turn = state.meta.turn;
   const year = state.meta.year;
-  const quarter = state.meta.quarter;
+  const month = state.meta.month;
   const prev = state.history?.length > 0 ? state.history[state.history.length - 1] : null;
 
   const totalPop = state.dongs.reduce((s, d) => s + d.population, 0);
@@ -194,7 +193,7 @@ function generateMockBriefing(state) {
   const lowestSat = sortedBySat[0];
   const highestSat = sortedBySat[sortedBySat.length - 1];
 
-  let briefing = `구청장님, ${year}년 ${quarter}분기 브리핑입니다.\n\n`;
+  let briefing = `구청장님, ${year}년 ${month}월 브리핑입니다.\n\n`;
 
   if (popDelta !== 0) {
     briefing += `인구 ${totalPop.toLocaleString()}명 (${popDelta >= 0 ? '+' : ''}${popDelta.toLocaleString()})\n`;
@@ -328,7 +327,7 @@ export function buildAdvisorContext(state) {
   const satDelta = prev ? avgSat - prev.avgSatisfaction : 0;
 
   let ctx = `[현재 상황]\n`;
-  ctx += `턴: ${state.meta.turn}/48 (${state.meta.year}년 ${state.meta.quarter}분기)\n`;
+  ctx += `턴: ${state.meta.turn}/48 (${state.meta.year}년 ${state.meta.month}월)\n`;
   ctx += `임기 경과: ${Math.round(state.meta.turn / 48 * 100)}%\n\n`;
 
   ctx += `[구 전체 요약]\n`;
@@ -486,7 +485,7 @@ async function openaiCall(messages, maxTokens = 500) {
     },
     body: JSON.stringify({
       model,
-      max_tokens: maxTokens,
+      max_completion_tokens: Math.max(maxTokens, 4000),
       messages,
     }),
   });
@@ -527,7 +526,7 @@ async function ollamaCall(messages, maxTokens = 500) {
 }
 
 // === Gemini API Backend ===
-async function geminiCall(messages, maxTokens = 500) {
+async function geminiCall(messages, maxTokens = 2048) {
   if (!geminiKey) throw new Error('Gemini API key required');
 
   const model = localStorage.getItem('ai-mapo-gemini-model') || 'gemini-2.5-flash';
@@ -650,7 +649,7 @@ function generateMockResponse(message) {
 
     if (issues.length === 0) issues.push('현재 긴급한 이슈는 없습니다. 안정적 운영 중입니다.');
 
-    return `구청장님, 이번 분기 주요 이슈입니다.\n\n${issues.map((s, i) => `${i + 1}. ${s}`).join('\n')}`;
+    return `구청장님, 이번 달 주요 이슈입니다.\n\n${issues.map((s, i) => `${i + 1}. ${s}`).join('\n')}`;
   }
 
   // Default response

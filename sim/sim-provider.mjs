@@ -15,6 +15,7 @@ export function createProvider(type, config = {}) {
   switch (type) {
     case 'anthropic': return (msgs) => anthropicCall(msgs, config);
     case 'openai':    return (msgs) => openaiCall(msgs, config);
+    case 'gemini':    return (msgs) => geminiCall(msgs, config);
     case 'ollama':    return (msgs) => ollamaCall(msgs, config);
     case 'mock':      return (msgs) => mockCall(msgs);
     default: throw new Error(`Unknown provider: ${type}`);
@@ -24,8 +25,9 @@ export function createProvider(type, config = {}) {
 /** Default models per provider */
 export const DEFAULT_MODELS = {
   anthropic: 'claude-sonnet-4-6',
-  openai: 'gpt-4o-mini',
-  ollama: 'llama3.1:8b',
+  openai: 'gpt-5-mini',
+  gemini: 'gemini-3-flash-preview',
+  ollama: 'exaone3.5:7.8b',
   mock: 'mock',
 };
 
@@ -74,33 +76,40 @@ async function openaiCall(messages, config) {
   if (!apiKey) throw new Error('OPENAI_API_KEY required');
 
   const model = config.model || DEFAULT_MODELS.openai;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 120000);
 
-  const response = await fetch('https://api.openai.com/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({
-      model,
-      max_tokens: 800,
-      messages,
-    }),
-  });
+  try {
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model,
+        max_completion_tokens: 8000,
+        messages,
+      }),
+      signal: controller.signal,
+    });
 
-  if (!response.ok) {
-    const err = await response.json().catch(() => ({}));
-    throw new Error(err.error?.message || `OpenAI error ${response.status}`);
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error(err.error?.message || `OpenAI error ${response.status}`);
+    }
+
+    const data = await response.json();
+    return {
+      content: data.choices[0].message.content,
+      usage: {
+        input: data.usage?.prompt_tokens || 0,
+        output: data.usage?.completion_tokens || 0,
+      },
+    };
+  } finally {
+    clearTimeout(timeout);
   }
-
-  const data = await response.json();
-  return {
-    content: data.choices[0].message.content,
-    usage: {
-      input: data.usage?.prompt_tokens || 0,
-      output: data.usage?.completion_tokens || 0,
-    },
-  };
 }
 
 // === Ollama ===
@@ -131,6 +140,50 @@ async function ollamaCall(messages, config) {
     usage: {
       input: data.prompt_eval_count || 0,
       output: data.eval_count || 0,
+    },
+  };
+}
+
+// === Gemini ===
+async function geminiCall(messages, config) {
+  const apiKey = config.apiKey || process.env.GEMINI_API_KEY;
+  if (!apiKey) throw new Error('GEMINI_API_KEY required');
+
+  const model = config.model || DEFAULT_MODELS.gemini;
+  const apiVersion = model.includes('3.1') ? 'v1alpha' : 'v1beta';
+
+  const systemMsg = messages.find(m => m.role === 'system');
+  const otherMsgs = messages.filter(m => m.role !== 'system');
+
+  const contents = otherMsgs.map(m => ({
+    role: m.role === 'assistant' ? 'model' : 'user',
+    parts: [{ text: m.content }],
+  }));
+
+  const body = { contents, generationConfig: { maxOutputTokens: 2048 } };
+  if (systemMsg) {
+    body.systemInstruction = { parts: [{ text: systemMsg.content }] };
+  }
+
+  const url = `https://generativelanguage.googleapis.com/${apiVersion}/models/${model}:generateContent?key=${apiKey}`;
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.error?.message || `Gemini error ${response.status}`);
+  }
+
+  const data = await response.json();
+  const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  return {
+    content: text,
+    usage: {
+      input: data.usageMetadata?.promptTokenCount || 0,
+      output: data.usageMetadata?.candidatesTokenCount || 0,
     },
   };
 }

@@ -192,7 +192,7 @@ dongs.sort((a, b) => b.population - a.population);
 
 // --- Finance (gu-level) ---
 const financeData = {
-  totalBudget: 2188,       // 억원/분기 (8750/4)
+  totalBudget: 2188,       // 억원/턴
   mandatorySpend: 1094,    // 50%
   freeBudget: 1094,        // 50%
   allocation: {

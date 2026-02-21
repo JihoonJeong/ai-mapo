@@ -6,10 +6,10 @@
  */
 
 // === System Prompt (Headless 전용) ===
-const SYSTEM_PROMPT = `당신은 서울특별시 마포구의 AI 구청장입니다. 48분기(12년) 임기 동안 마포구를 운영합니다.
+const SYSTEM_PROMPT = `당신은 서울특별시 마포구의 AI 구청장입니다. 48개월(4년) 임기 동안 마포구를 운영합니다.
 
 ## 역할
-- 매 분기 예산 배분, 정책 선택, 이벤트 대응을 직접 결정합니다.
+- 매달 예산 배분, 정책 선택, 이벤트 대응을 직접 결정합니다.
 - 모든 결정은 지정된 JSON 형식으로 응답해야 합니다.
 
 ## 마포구 개요
@@ -19,7 +19,7 @@ const SYSTEM_PROMPT = `당신은 서울특별시 마포구의 AI 구청장입니
 - 핵심 딜레마: 관광 활성화 ↔ 주민 삶의 질, 개발 ↔ 보존, 성장 ↔ 형평
 
 ## 판단 프레임워크
-1. **변화**: 전 분기 대비 무엇이 달라졌는가?
+1. **변화**: 전월 대비 무엇이 달라졌는가?
 2. **원인**: 왜 달라졌는가? (정책 효과? 외부 요인?)
 3. **영향**: 이 변화가 다른 지표에 어떤 파급을 줄 것인가?
 4. **대응**: 어떤 행동이 최선인가?
@@ -63,14 +63,24 @@ export class SimAdvisor {
     ];
 
     let raw = '';
-    try {
-      const result = await this.provider(messages);
-      raw = result.content;
-      this.totalUsage.input += result.usage?.input || 0;
-      this.totalUsage.output += result.usage?.output || 0;
-    } catch (err) {
-      console.warn(`[SimAdvisor] API call failed: ${err.message}`);
-      raw = '';
+    const MAX_RETRIES = 3;
+    for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+      try {
+        if (attempt > 0) {
+          const delay = Math.min(1000 * Math.pow(2, attempt), 8000);
+          await new Promise(r => setTimeout(r, delay));
+        }
+        const result = await this.provider(messages);
+        raw = result.content;
+        this.totalUsage.input += result.usage?.input || 0;
+        this.totalUsage.output += result.usage?.output || 0;
+        break;
+      } catch (err) {
+        console.warn(`[SimAdvisor] API call failed: ${err.message}`);
+        if (attempt === MAX_RETRIES) {
+          raw = '';
+        }
+      }
     }
 
     const action = parseAction(raw, state, event, policyCatalog);
@@ -103,7 +113,7 @@ export class SimAdvisor {
     const totalPop = state.dongs.reduce((s, d) => s + d.population, 0);
     const avgSat = Math.round(state.dongs.reduce((s, d) => s + d.satisfaction, 0) / state.dongs.length);
 
-    const prompt = `당신은 마포구청장으로 취임합니다. 4년(48분기) 임기 동안 달성할 공약 ${count}개를 선택하세요.
+    const prompt = `당신은 마포구청장으로 취임합니다. 4년(48개월) 임기 동안 달성할 공약 ${count}개를 선택하세요.
 
 [마포구 현황]
 총인구: ${totalPop.toLocaleString()}명
@@ -191,22 +201,29 @@ ${pledgeList}
       prompt += `[긴급 이벤트]\n${event.name}: ${event.description}\n영향 동: ${(event.affectedDongs || []).join(', ')}\n선택지:\n${choicesStr}\n\n`;
     }
 
-    prompt += `이번 분기 행동을 결정하세요. 아래 JSON 형식으로만 응답하세요:
+    prompt += `이번 달 행동을 결정하세요. 아래 JSON 형식으로만 응답하세요:
 
 {
-  "reasoning": "이번 분기 판단 근거 (2~3문장)",
+  "reasoning": "이번 달 판단 근거 — 현재 지표 분석 + 전략적 이유",
   "budget": {
-    "economy": 15, "transport": 15, "culture": 10,
-    "environment": 15, "education": 15, "welfare": 15, "renewal": 15
+    "economy": <0~40>, "transport": <0~40>, "culture": <0~40>,
+    "environment": <0~40>, "education": <0~40>, "welfare": <0~40>, "renewal": <0~40>
   },
   "policies": {
-    "activate": [],
-    "deactivate": []
-  }${event ? `,\n  "eventChoice": "${event.choices[0]?.id || ''}"` : ''}
+    "activate": ["정책ID"],
+    "deactivate": ["정책ID"]
+  }${event ? `,\n  "eventChoice": "선택지ID"` : ''}
 }
 
+전략 가이드:
+- 균등 배분(모두 14%)은 최악의 전략입니다. 2~3개 분야에 집중 투자(20~35%)하고 나머지는 줄이세요.
+- 만족도가 낮은 요소에 관련 예산을 집중하면 효과적입니다.
+- 정책을 적극 활용하세요! 3개 슬롯을 채우면 큰 차이가 납니다.
+- 인구 감소 시: welfare/housing 관련 예산 강화. 경제 침체 시: economy/renewal 예산 강화.
+
 규칙:
-- budget 7개 항목 합계 = 100
+- budget 7개 항목 합계 = 반드시 100
+- 각 항목 최소 5, 최대 40
 - 활성 정책 최대 3개 (현재 ${activePolicyIds.length}개: ${activePolicyIds.join(', ') || '없음'})
 - activate: 새로 활성화할 정책 ID (비용과 슬롯 고려)
 - deactivate: 해제할 기존 정책 ID${event ? `\n- eventChoice: 이벤트 선택지 ID (${event.choices.map(c => c.id).join(' / ')})` : ''}
@@ -230,7 +247,7 @@ function buildContext(state, pledges) {
   const satDelta = prev ? avgSat - prev.avgSatisfaction : 0;
 
   let ctx = `[현재 상황]\n`;
-  ctx += `턴: ${state.meta.turn}/48 (${state.meta.year}년 ${state.meta.quarter}분기)\n`;
+  ctx += `턴: ${state.meta.turn}/48 (${state.meta.year}년 ${state.meta.month}월)\n`;
   ctx += `임기 경과: ${Math.round(state.meta.turn / 48 * 100)}%\n\n`;
 
   ctx += `[구 전체 요약]\n`;

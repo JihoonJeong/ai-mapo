@@ -9,12 +9,12 @@
  */
 
 // === Constants ===
-const BASE_NEW_RATE = 0.022;   // 분기 2.2% 신규 창업
-const BASE_CLOSE_RATE = 0.016; // 분기 1.6% 자연 폐업 (순 +0.6% 기본 성장)
+const BASE_NEW_RATE = 0.022;   // 턴당 2.2% 신규 창업
+const BASE_CLOSE_RATE = 0.015; // 턴당 1.5% 자연 폐업 (순 +0.7% 기본 성장)
 const ACCEL_BIZ = 1.0;        // 사업체 변동 계수 (가속 제거)
 
 const RENT_THRESHOLD = 70;       // 상권활력이 70 넘으면 임대료 압력 시작
-const RENT_SENSITIVITY = 0.00015; // vitality 100 → 30*0.00015=0.0045 → 0.45% 추가 폐업
+const RENT_SENSITIVITY = 0.00012; // vitality 100 → 30*0.00012=0.0036 → 0.36% 추가 폐업
 const RENT_MAX = 0.012;          // 최대 임대료 압력 1.2% (was 2%)
 const FRANCHISE_RATE = 0.015;  // 상권특색 감소 속도 (완화)
 
@@ -42,7 +42,7 @@ export function updateEconomy(dong, state, adjacency, budgetAlloc = {}, policyEf
 
   // 정책 보너스: 경제·일자리 예산 배분에 따른 사업체 유치 효과
   const econBudgetPct = budgetAlloc.economy || 15;
-  const policyBonus = 1.0 + (econBudgetPct - 15) * 0.01; // 기본 15%에서 ±1%당 1% 보너스
+  const policyBonus = 1.0 + (econBudgetPct - 15) * 0.02; // 기본 15%에서 ±1%당 2% 보너스
 
   // 정책 효과: 신규 창업률 보너스
   const pe = getPolicyEffect(dong.id, policyEffects);

@@ -7,7 +7,7 @@
  */
 
 // === Constants ===
-const DECAY = -0.6; // 자연 감쇠/턴 — 균등 배분이 겨우 유지, 성장하려면 집중 투자 필요
+const DECAY = -0.55; // 자연 감쇠/턴 — 균등 배분으로는 부족, 집중 투자+정책으로 성장 가능
 const ACCEL_SAT = 5.0; // 만족도 변동 가속 계수
 
 // 생애주기별 만족도 구성요소 가중치
@@ -55,9 +55,9 @@ export function updateSatisfaction(dong, state, adjacency, budgetEffects = {}, p
     if (!mapping) continue;
 
     // effect = 투자/적정 비율 (1.0 = 적정, >1 = 초과투자, <1 = 부족)
-    // 적정 투자 시 감쇠를 상쇄하는 +0.5 효과, 초과 시 추가 개선 (체감감소)
-    const baseEffect = 0.5 * effect; // 적정 시 0.5 (감쇠 상쇄)
-    const bonusEffect = effect > 1.0 ? (effect - 1.0) * ACCEL_SAT * 0.3 : 0;
+    // 적정 투자 시 감쇠를 상쇄하는 효과, 초과 시 추가 개선 (체감감소)
+    const baseEffect = 0.50 * effect; // 적정 시 0.50 (집중+정책 투자로 회복 가능)
+    const bonusEffect = effect > 1.0 ? (effect - 1.0) * ACCEL_SAT * 0.5 : 0;
     const delta = baseEffect + bonusEffect;
 
     for (const [satComponent, weight] of Object.entries(mapping)) {
@@ -72,8 +72,8 @@ export function updateSatisfaction(dong, state, adjacency, budgetEffects = {}, p
   if (pe.satisfaction) {
     for (const [comp, val] of Object.entries(pe.satisfaction)) {
       if (factors[comp] !== undefined) {
-        // 정책 효과는 분기당 적용 (절대값 × 0.25로 분기 스케일)
-        factors[comp] += val * 0.25;
+        // 정책 효과는 턴당 적용 (절대값 × 0.5로 스케일)
+        factors[comp] += val * 0.5;
       }
     }
   }
@@ -89,7 +89,7 @@ export function updateSatisfaction(dong, state, adjacency, budgetEffects = {}, p
   if (dong._initBiz) {
     const bizDecline = (dong._initBiz - dong.businesses) / dong._initBiz;
     if (bizDecline > 0.05) {
-      factors.economy -= bizDecline * 15;
+      factors.economy -= bizDecline * 10;
     }
   }
 
@@ -97,8 +97,8 @@ export function updateSatisfaction(dong, state, adjacency, budgetEffects = {}, p
   if (dong._initPop) {
     const popDecline = (dong._initPop - dong.population) / dong._initPop;
     if (popDecline > 0.03) {
-      factors.welfare -= popDecline * 10;
-      factors.housing -= popDecline * 5;
+      factors.welfare -= popDecline * 8;
+      factors.housing -= popDecline * 4;
     }
   }
 

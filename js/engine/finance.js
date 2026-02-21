@@ -11,7 +11,7 @@
 const ACCEL_FINANCE = 2.0; // 재정 변동 가속 계수
 const MANDATORY_RATIO = 0.50; // 의무지출 비율
 
-// 기본 세입 (분기, 억원)
+// 기본 세입 (턴당, 억원)
 const BASE_REVENUE = {
   localTax: 613,
   grantFromCity: 700,
@@ -21,9 +21,8 @@ const BASE_REVENUE = {
 
 const BASE_POP = 357232; // 초기 인구
 const BASE_BIZ = 55516;  // 초기 사업체
-const TAX_DECLINE_RATE = -0.005; // 분기 0.5% 자연 감소 추세 (연 150억 → 분기 37.5억 / 613 ≈ 6%)
-// 실제: 150억/년 ÷ 4 = 37.5억/분기 → 37.5/613 ≈ 0.06 → 가속 ×2 = 0.012/분기
-// 설계서에서 좀 더 보수적으로 0.5%/분기 사용
+const TAX_DECLINE_RATE = -0.004; // 턴당 0.4% 자연 감소 추세
+// 원래 -0.5%였으나 48턴에서 세수 악순환이 너무 심해 완화
 
 // 예산 효율 체감감소 (카테고리별 적정 비율)
 const OPTIMAL_PCT = {

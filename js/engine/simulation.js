@@ -52,10 +52,8 @@ export function tick(gameState, playerActions) {
   const adjacency = adjacencyData || {};
   const budgetAlloc = playerActions?.budget || state.finance.allocation;
 
-  console.log(`[Engine] Tick for turn ${state.meta.turn}`, {
-    budget: budgetAlloc,
-    policies: playerActions?.policies?.length || 0,
-  });
+  // Debug log disabled for headless batch runs
+  // console.log(`[Engine] Tick for turn ${state.meta.turn}`);
 
   // === 1. 예산 효과 계산 ===
   const budgetEffects = calcBudgetEffects(budgetAlloc, state.finance.freeBudget);

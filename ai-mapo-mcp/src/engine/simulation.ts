@@ -31,9 +31,9 @@ const PULL_WEIGHTS = { jobs: 0.30, housing: 0.25, infra: 0.20, safety: 0.15, edu
 
 // Economy
 const BASE_NEW_RATE = 0.022;
-const BASE_CLOSE_RATE = 0.016;
+const BASE_CLOSE_RATE = 0.015;
 const RENT_THRESHOLD = 70;
-const RENT_SENSITIVITY = 0.00015;
+const RENT_SENSITIVITY = 0.00012;
 const RENT_MAX = 0.012;
 const FRANCHISE_RATE = 0.015;
 const SPILLOVER_RENT = 0.3;
@@ -44,13 +44,13 @@ const MANDATORY_RATIO = 0.50;
 const BASE_REVENUE = { localTax: 613, grantFromCity: 700, subsidy: 750, otherIncome: 125 };
 const BASE_POP = 357232;
 const BASE_BIZ = 55516;
-const TAX_DECLINE_RATE = -0.005;
+const TAX_DECLINE_RATE = -0.004;
 const OPTIMAL_PCT: Record<string, number> = {
   economy: 15, transport: 15, culture: 10, environment: 10, education: 15, welfare: 20, renewal: 15,
 };
 
 // Satisfaction
-const DECAY = -0.6; // 균등 배분이 겨우 유지, 성장하려면 집중 투자 필요
+const DECAY = -0.55; // 균등 배분으로는 부족, 집중 투자+정책으로 성장 가능
 const ACCEL_SAT = 5.0;
 const BUDGET_TO_SATISFACTION: Record<string, Record<string, number>> = {
   economy: { economy: 0.8, culture: 0.1, transport: 0.1 },
@@ -230,7 +230,7 @@ function updateEconomy(dong: Dong, state: GameState, adjacency: AdjacencyMap, bu
 
   const demand = calcDemandFactor(dong, state, adjacency);
   const econBudgetPct = budgetAlloc.economy || 15;
-  const policyBonus = 1.0 + (econBudgetPct - 15) * 0.01;
+  const policyBonus = 1.0 + (econBudgetPct - 15) * 0.02;
   const pe = getPolicyEffect(dong.id, policyEffects);
   const newBizBonus = pe.economy?.newBizBonus || 0;
   const adjustedDemand = 1.0 + (demand - 1.0) * 0.5;
@@ -423,8 +423,8 @@ function calcMigrationPull(dong: Dong, state: GameState, adjacency: AdjacencyMap
     + PULL_WEIGHTS.safety * safetyScore
     + PULL_WEIGHTS.education * eduScore;
 
-  if (dong.satisfaction > 58) pull += (dong.satisfaction - 58) * 0.001;
-  else if (dong.satisfaction < 40) pull -= (40 - dong.satisfaction) * 0.001;
+  if (dong.satisfaction > 55) pull += (dong.satisfaction - 55) * 0.0015;
+  else if (dong.satisfaction < 40) pull -= (40 - dong.satisfaction) * 0.0015;
 
   pull -= (dong.rentPressure - avgRent) * 0.3;
   const livingPopRatio = (dong.livingPop?.weekdayDay || dong.population) / Math.max(1, dong.population);
@@ -484,8 +484,8 @@ function updateSatisfaction(dong: Dong, state: GameState, adjacency: AdjacencyMa
   for (const [budgetCat, effect] of Object.entries(budgetEffects)) {
     const mapping = BUDGET_TO_SATISFACTION[budgetCat];
     if (!mapping) continue;
-    const baseEffect = 0.5 * effect;
-    const bonusEffect = effect > 1.0 ? (effect - 1.0) * ACCEL_SAT * 0.3 : 0;
+    const baseEffect = 0.50 * effect;
+    const bonusEffect = effect > 1.0 ? (effect - 1.0) * ACCEL_SAT * 0.5 : 0;
     const delta = baseEffect + bonusEffect;
     for (const [satComponent, weight] of Object.entries(mapping)) {
       if (factors[satComponent] !== undefined) factors[satComponent] += delta * weight;
@@ -496,7 +496,7 @@ function updateSatisfaction(dong: Dong, state: GameState, adjacency: AdjacencyMa
   const pe = getPolicyEffect(dong.id, policyEffects);
   if (pe.satisfaction) {
     for (const [comp, val] of Object.entries(pe.satisfaction)) {
-      if (factors[comp] !== undefined) factors[comp] += val * 0.25;
+      if (factors[comp] !== undefined) factors[comp] += val * 0.5;
     }
   }
 
@@ -510,7 +510,7 @@ function updateSatisfaction(dong: Dong, state: GameState, adjacency: AdjacencyMa
   if (dong._initBiz) {
     const bizDecline = (dong._initBiz - dong.businesses) / dong._initBiz;
     if (bizDecline > 0.05) {
-      factors.economy -= bizDecline * 15;
+      factors.economy -= bizDecline * 10;
     }
   }
 
@@ -518,8 +518,8 @@ function updateSatisfaction(dong: Dong, state: GameState, adjacency: AdjacencyMa
   if (dong._initPop) {
     const popDecline = (dong._initPop - dong.population) / dong._initPop;
     if (popDecline > 0.03) {
-      factors.welfare -= popDecline * 10;
-      factors.housing -= popDecline * 5;
+      factors.welfare -= popDecline * 8;
+      factors.housing -= popDecline * 4;
     }
   }
 

@@ -52,7 +52,7 @@ function createGameState(initData) {
     meta: {
       turn: 1,
       year: 2026,
-      quarter: 1,
+      month: 1,
       playerName: '',
       pledges: [],
     },
@@ -239,8 +239,8 @@ function endTurn() {
 
   // Advance turn
   gameState.meta.turn++;
-  gameState.meta.quarter = ((gameState.meta.turn - 1) % 4) + 1;
-  gameState.meta.year = 2026 + Math.floor((gameState.meta.turn - 1) / 4);
+  gameState.meta.month = ((gameState.meta.turn - 1) % 12) + 1;
+  gameState.meta.year = 2026 + Math.floor((gameState.meta.turn - 1) / 12);
 
   // Check game end
   if (gameState.meta.turn > 48) {
@@ -255,10 +255,10 @@ function endTurn() {
 function updateTurnDisplay() {
   const turn = gameState.meta.turn;
   const year = gameState.meta.year;
-  const quarter = gameState.meta.quarter;
+  const month = gameState.meta.month;
 
   document.getElementById('turn-label').textContent = `턴 ${turn}/48`;
-  document.getElementById('turn-date').textContent = `${year}년 ${quarter}분기`;
+  document.getElementById('turn-date').textContent = `${year}년 ${month}월`;
 }
 
 // === Game End ===

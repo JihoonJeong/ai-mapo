@@ -156,7 +156,7 @@ export interface HistoryEntry {
 export interface GameMeta {
   turn: number;
   year: number;
-  quarter: number;
+  month: number;
   playerName: string;
   pledges: string[];
 }
@@ -225,7 +225,7 @@ export async function loadEvents(): Promise<GameEvent[]> {
 export async function createGameState(): Promise<GameState> {
   const initData = await loadInitData();
   return {
-    meta: { turn: 1, year: 2026, quarter: 1, playerName: 'Player', pledges: [] },
+    meta: { turn: 1, year: 2026, month: 1, playerName: 'Player', pledges: [] },
     dongs: initData.dongs.map(d => ({ ...d })),
     finance: { ...initData.finance },
     industryBreakdown: initData.industryBreakdown,

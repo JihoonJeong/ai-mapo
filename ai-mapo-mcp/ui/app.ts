@@ -13,7 +13,7 @@ import { updateDashboard } from './dashboard.js';
 import mapSvgRaw from './mapo_map.svg?raw';
 
 interface GameState {
-  meta: { turn: number; year: number; quarter: number };
+  meta: { turn: number; year: number; month: number };
   dongs: Array<{
     id: string;
     name: string;
@@ -116,13 +116,12 @@ async function refreshState() {
 function parseAndUpdateState(text: string) {
   // Extract turn info
   const turnMatch = text.match(/(\d+)\/48턴/);
-  const yearMatch = text.match(/(\d{4})년\s+(\d)분기/);
+  const yearMatch = text.match(/(\d{4})년\s+(\d{1,2})월/);
   if (turnMatch && yearMatch) {
     const turn = parseInt(turnMatch[1]);
     const year = parseInt(yearMatch[1]);
-    const quarter = parseInt(yearMatch[2]);
-    const quarterLabel = ['1분기', '2분기', '3분기', '4분기'][quarter - 1];
-    turnInfoEl.textContent = `${year}년 ${quarterLabel} (${turn}/48턴)`;
+    const month = parseInt(yearMatch[2]);
+    turnInfoEl.textContent = `${year}년 ${month}월 (${turn}/48턴)`;
   }
 
   // Extract summary numbers

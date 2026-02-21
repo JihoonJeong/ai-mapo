@@ -199,7 +199,7 @@ export function renderNoEvent() {
   if (!container) return;
   currentEvent = null;
   selectedChoiceId = null;
-  container.innerHTML = '<div class="no-event">이번 분기에는 특별한 이벤트가 없습니다.</div>';
+  container.innerHTML = '<div class="no-event">이번 달에는 특별한 이벤트가 없습니다.</div>';
 }
 
 export function setEventChoice(choiceId) {

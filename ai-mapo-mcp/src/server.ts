@@ -164,11 +164,11 @@ function calcFinalScore(state: GameState, initState: GameState): {
   const satStdDev = Math.sqrt(satValues.reduce((s, v) => s + (v - satMean) ** 2, 0) / satValues.length);
 
   const kpis = [
-    { id: 'population', label: '인구 변화', max: 15, score: linearScore(popChangeRate, -2, 0, 5, [0, 3, 15], 15), detail: `${popChangeRate >= 0 ? '+' : ''}${popChangeRate.toFixed(1)}%` },
-    { id: 'economy', label: '경제 성장', max: 10, score: linearScore(econGrowth, -3, 0, 5, [0, 5, 10], 10), detail: `${econGrowth >= 0 ? '+' : ''}${econGrowth.toFixed(1)}%` },
-    { id: 'tax', label: '세수 증감', max: 10, score: linearScore(taxChange, -5, 0, 10, [0, 5, 10], 10), detail: `${taxChange >= 0 ? '+' : ''}${taxChange.toFixed(1)}%` },
-    { id: 'fiscal', label: '재정 건전성', max: 10, score: linearScore(fiscalDelta, -3, 0, 3, [0, 5, 10], 10), detail: `${fiscalDelta >= 0 ? '+' : ''}${fiscalDelta.toFixed(1)}%p` },
-    { id: 'satisfaction', label: '주민 만족도', max: 15, score: linearScore(avgSat, 50, 60, 70, [0, 8, 15], 15), detail: `평균 ${avgSat.toFixed(0)}` },
+    { id: 'population', label: '인구 변화', max: 15, score: linearScore(popChangeRate, -12, -2, 5, [-5, 0, 15], 15), detail: `${popChangeRate >= 0 ? '+' : ''}${popChangeRate.toFixed(1)}%` },
+    { id: 'economy', label: '경제 성장', max: 5, score: linearScore(econGrowth, -3, 0, 10, [0, 2, 5], 5), detail: `${econGrowth >= 0 ? '+' : ''}${econGrowth.toFixed(1)}%` },
+    { id: 'tax', label: '세수 증감', max: 5, score: linearScore(taxChange, -5, 0, 10, [0, 2, 5], 5), detail: `${taxChange >= 0 ? '+' : ''}${taxChange.toFixed(1)}%` },
+    { id: 'fiscal', label: '재정 건전성', max: 10, score: linearScore(fiscalDelta, -3, 0, 7, [0, 5, 10], 10), detail: `${fiscalDelta >= 0 ? '+' : ''}${fiscalDelta.toFixed(1)}%p` },
+    { id: 'satisfaction', label: '주민 만족도', max: 12, score: linearScore(avgSat, 42, 52, 72, [0, 8, 12], 12), detail: `평균 ${avgSat.toFixed(0)}` },
     { id: 'balance', label: '균형 발전', max: 10, score: satStdDev < 10 ? 10 : satStdDev < 15 ? 5 : satStdDev > 20 ? 0 : Math.round(5 * (20 - satStdDev) / 5), detail: `σ = ${satStdDev.toFixed(1)}` },
   ];
 
@@ -195,10 +195,8 @@ function formatStateForAI(state: GameState): string {
   const totalBiz = state.dongs.reduce((s, d) => s + d.businesses, 0);
   const avgSat = Math.round(state.dongs.reduce((s, d) => s + d.satisfaction, 0) / state.dongs.length);
   const year = state.meta.year;
-  const quarter = state.meta.quarter;
+  const month = state.meta.month;
   const turn = state.meta.turn;
-
-  const quarterLabel = ['1분기', '2분기', '3분기', '4분기'][quarter - 1];
 
   // Population delta from initial
   const initPop = initialState ? initialState.dongs.reduce((s, d) => s + d.population, 0) : totalPop;
@@ -212,7 +210,7 @@ function formatStateForAI(state: GameState): string {
   // Active policies
   const policyCost = state.activePolicies.reduce((s, ap) => s + ap.policy.cost, 0);
 
-  let text = `## ${year}년 ${quarterLabel} (${turn}/48턴)
+  let text = `## ${year}년 ${month}월 (${turn}/48턴)
 
 ### 핵심 지표
 - 총인구: ${totalPop.toLocaleString()}명 (${Number(popDelta) >= 0 ? '+' : ''}${popDelta}%)
@@ -238,7 +236,7 @@ function formatStateForAI(state: GameState): string {
       if (ap.remainDelay > 0) statusParts.push(`대기 ${ap.remainDelay}턴`);
       else if (ap.policy.duration > 0) statusParts.push(`잔여 ${ap.remainDuration}턴`);
       else statusParts.push('효과 적용중');
-      text += `\n- ${ap.policy.name} (${ap.policy.cost}억/분기, ${statusParts.join(', ')})`;
+      text += `\n- ${ap.policy.name} (${ap.policy.cost}억/월, ${statusParts.join(', ')})`;
     }
   }
 
@@ -443,7 +441,7 @@ export function createServer(): McpServer {
       title: '마포구청장 게임 시작',
       description: `마포구청장 도시 경영 시뮬레이션을 시작합니다.
 당신은 마포구 도시계획 자문관 역할입니다. 구청장(사용자)에게 데이터 기반 분석과 전략 조언을 제공하세요.
-게임은 48턴(12년)으로 구성되며, 매 턴 예산 배분과 정책을 통해 마포구를 발전시킵니다.
+게임은 48턴(4년)으로 구성되며, 매 턴 예산 배분과 정책을 통해 마포구를 발전시킵니다.
 
 **2단계 시작:**
 1. pledges 없이 호출 → 공약 후보 8개 반환 (구청장에게 1~4개 선택 요청)
@@ -522,7 +520,7 @@ ${selectedPledges}
 ${stateText}
 
 ### 게임 안내
-- 48턴(12년) 동안 마포구를 운영합니다
+- 48턴(4년) 동안 마포구를 운영합니다
 - 매 턴: 예산 배분(7개 분야) → 턴 종료 → 시뮬레이션 결과
 - UI에서 예산 조정 후 "턴 종료"를 누르거나, 저에게 전략을 물어보세요
 - 공약 달성과 핵심 KPI로 최종 성적이 결정됩니다
@@ -599,8 +597,8 @@ ${stateText}
 
       // Advance turn counter
       gameState.meta.turn++;
-      gameState.meta.quarter = ((gameState.meta.turn - 1) % 4) + 1;
-      gameState.meta.year = 2026 + Math.floor((gameState.meta.turn - 1) / 4);
+      gameState.meta.month = ((gameState.meta.turn - 1) % 12) + 1;
+      gameState.meta.year = 2026 + Math.floor((gameState.meta.turn - 1) / 12);
 
       // Update pledge progress on state (for AI context)
       if (gameState.meta.pledges?.length > 0 && initialState) {
@@ -636,7 +634,7 @@ ${stateText}
           }
 
           endText += `\n---\n총점: KPI ${result.kpiTotal} + 공약 ${result.pledgeTotal} = **${result.total}점 (${result.grade}등급)**`;
-          endText += `\n\n12년간의 마포구 운영을 종합 분석해주세요.`;
+          endText += `\n\n4년간의 마포구 운영을 종합 분석해주세요.`;
         }
 
         return {
@@ -744,7 +742,7 @@ ${stateText}
 
       let text = `## 정책 카탈로그\n\n`;
       text += `현재 자유예산: ${gameState.finance.freeBudget}억원\n`;
-      text += `활성 정책 비용: ${gameState.activePolicies.reduce((s, ap) => s + ap.policy.cost, 0)}억원/분기\n\n`;
+      text += `활성 정책 비용: ${gameState.activePolicies.reduce((s, ap) => s + ap.policy.cost, 0)}억원/월\n\n`;
 
       for (const [cat, policies] of Object.entries(grouped)) {
         text += `### ${categoryNames[cat] || cat}\n\n`;
@@ -756,7 +754,7 @@ ${stateText}
           const incompatStr = p.incompatible?.length ? ` | 상충: ${p.incompatible.join(', ')}` : '';
 
           text += `- **${p.name}**${status} (id: \`${p.id}\`)\n`;
-          text += `  비용: ${p.cost}억/분기 | 딜레이: ${p.delay}턴 | 지속: ${p.duration === 0 ? '영구' : p.duration + '턴'} | 대상: ${target}${incompatStr}\n`;
+          text += `  비용: ${p.cost}억/월 | 딜레이: ${p.delay}턴 | 지속: ${p.duration === 0 ? '영구' : p.duration + '턴'} | 대상: ${target}${incompatStr}\n`;
           text += `  ${p.description || ''}\n\n`;
         }
       }
@@ -837,7 +835,7 @@ get_policy_catalog으로 정책 목록을 확인한 후 policyId를 지정하세
       const durationText = policy.duration === 0 ? '영구 지속 (해제 가능)' : `${policy.duration}턴 지속`;
 
       let text = `## 정책 활성화: ${policy.name}\n\n`;
-      text += `- 비용: ${policy.cost}억원/분기\n`;
+      text += `- 비용: ${policy.cost}억원/월\n`;
       text += `- ${delayText}\n`;
       text += `- ${durationText}\n`;
       text += `- 잔여 자유예산: ${gameState.finance.freeBudget}억원\n\n`;
@@ -850,7 +848,7 @@ get_policy_catalog으로 정책 목록을 확인한 후 policyId를 지정하세
         if (ap.remainDelay > 0) statusParts.push(`대기 ${ap.remainDelay}턴`);
         else if (ap.policy.duration > 0) statusParts.push(`잔여 ${ap.remainDuration}턴`);
         else statusParts.push('영구');
-        text += `- ${ap.policy.name} (${ap.policy.cost}억/분기, ${statusParts.join(', ')})\n`;
+        text += `- ${ap.policy.name} (${ap.policy.cost}억/월, ${statusParts.join(', ')})\n`;
       }
 
       return { content: [{ type: 'text' as const, text }] };
@@ -894,13 +892,13 @@ get_policy_catalog으로 정책 목록을 확인한 후 policyId를 지정하세
       gameState.finance.freeBudget = freeBudgetBeforePolicies - newPolicyCost;
 
       let text = `## 정책 해제: ${removed.policy.name}\n\n`;
-      text += `- 절감 비용: ${removed.policy.cost}억원/분기\n`;
+      text += `- 절감 비용: ${removed.policy.cost}억원/월\n`;
       text += `- 잔여 자유예산: ${gameState.finance.freeBudget}억원\n\n`;
 
       if (gameState.activePolicies.length > 0) {
         text += `### 남은 활성 정책 (${gameState.activePolicies.length}/3)\n`;
         for (const ap of gameState.activePolicies) {
-          text += `- ${ap.policy.name} (${ap.policy.cost}억/분기)\n`;
+          text += `- ${ap.policy.name} (${ap.policy.cost}억/월)\n`;
         }
       } else {
         text += `활성 정책이 없습니다. get_policy_catalog으로 정책을 확인하세요.\n`;

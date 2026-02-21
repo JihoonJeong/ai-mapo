@@ -41,7 +41,7 @@ export function updatePopulation(dong, state, adjacency, policyEffects = {}) {
   if (pop <= 0) return dong;
 
   // (A) 자연 변동
-  const natural = Math.round(pop * NATURAL_RATE * 0.25); // 분기 단위
+  const natural = Math.round(pop * NATURAL_RATE * 0.25); // 턴 단위
 
   // (B) 전입/전출
   let pull = calcMigrationPull(dong, state, adjacency);
@@ -51,7 +51,7 @@ export function updatePopulation(dong, state, adjacency, policyEffects = {}) {
   if (pe.population) {
     for (const [age, bonus] of Object.entries(pe.population)) {
       if (age === 'displacement') continue; // 강제이주는 별도 처리
-      // 직접 pull에 반영 (분기 스케일)
+      // 직접 pull에 반영 (턴 스케일)
       pull += bonus * 0.25;
     }
   }
@@ -108,7 +108,7 @@ export function updatePopulation(dong, state, adjacency, policyEffects = {}) {
 
   // 정책 효과: 강제이주 (재개발 등)
   if (pe.population?.displacement && pe.population.displacement < 0) {
-    const displacePct = pe.population.displacement * 0.25; // 분기 스케일
+    const displacePct = pe.population.displacement * 0.25; // 턴 스케일
     const displaced = Math.round(dong.population * Math.abs(displacePct));
     for (const age of Object.keys(dong.populationByAge)) {
       const ratio = dong.populationByAge[age] / Math.max(1, dong.population);
@@ -180,13 +180,13 @@ function calcMigrationPull(dong, state, adjacency) {
     + PULL_WEIGHTS.safety * safetyScore
     + PULL_WEIGHTS.education * eduScore;
 
-  // 외부 유입/유출 (>58 유입, <40 유출, 40-58 중립)
-  if (dong.satisfaction > 58) {
-    pull += (dong.satisfaction - 58) * 0.001;
+  // 외부 유입/유출 (>55 유입, <40 유출, 40-55 중립)
+  if (dong.satisfaction > 55) {
+    pull += (dong.satisfaction - 55) * 0.0015;
   } else if (dong.satisfaction < 40) {
-    pull -= (40 - dong.satisfaction) * 0.001;
+    pull -= (40 - dong.satisfaction) * 0.0015;
   }
-  // 40-58 구간: 중립 (자연감소만 작용)
+  // 40-55 구간: 중립 (자연감소만 작용)
 
   // Push/Pull factors (대칭적 → 동간 재분배만, 순유출 없음)
   // 임대료: 평균 대비 대칭적 push/pull
