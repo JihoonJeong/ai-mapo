@@ -149,12 +149,22 @@ async function autoplayLoop() {
           { role: 'system', content: buildSystemMessage(state) },
           { role: 'user', content: prompt },
         ];
-        const raw = await callAIRaw(messages, 2048);
+
+        // Try up to 2 times (initial + 1 retry on empty response)
+        let raw = '';
+        for (let attempt = 0; attempt < 2; attempt++) {
+          raw = await callAIRaw(messages, 2048);
+          if (raw && raw.trim().length > 0) break;
+          if (attempt === 0) {
+            console.warn('[Autoplay] Empty response, retrying...');
+            await sleep(1000);
+          }
+        }
+
         console.log('[Autoplay] AI raw response length:', raw?.length, 'first 200:', raw?.substring(0, 200));
         action = parseAction(raw, state, event, catalog);
         if (JSON.stringify(action.budget) === JSON.stringify(DEFAULT_BUDGET) && action.reasoning === '') {
           console.warn('[Autoplay] AI returned but parsed to default — raw:', raw?.substring(0, 500));
-          addMessage('advisor', `[AI 자동] ⚠ AI 응답 파싱 실패 — 기본 예산으로 진행합니다.`);
         }
       }
     } catch (err) {

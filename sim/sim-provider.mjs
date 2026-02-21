@@ -178,7 +178,10 @@ async function geminiCall(messages, config) {
   }
 
   const data = await response.json();
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  // Handle thinking mode: filter out thought parts, join remaining text
+  const parts = data.candidates?.[0]?.content?.parts || [];
+  const textParts = parts.filter(p => !p.thought && p.text);
+  const text = textParts.length > 0 ? textParts.map(p => p.text).join('') : '';
   return {
     content: text,
     usage: {

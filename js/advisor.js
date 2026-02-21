@@ -577,7 +577,22 @@ async function geminiCall(messages, maxTokens = 2048) {
   }
 
   const data = await response.json();
-  return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+
+  // Handle Gemini thinking mode: parts may contain {thought:true} entries
+  // Actual response is in the last non-thought part
+  const parts = data.candidates?.[0]?.content?.parts || [];
+  const textParts = parts.filter(p => !p.thought && p.text);
+  if (textParts.length > 0) {
+    return textParts.map(p => p.text).join('');
+  }
+
+  // Fallback: check finishReason for safety blocks
+  const finishReason = data.candidates?.[0]?.finishReason;
+  if (finishReason && finishReason !== 'STOP') {
+    console.warn('[Gemini] Non-STOP finishReason:', finishReason);
+  }
+
+  return '';
 }
 
 // === Raw API call for autoplay (custom system prompt + messages) ===
