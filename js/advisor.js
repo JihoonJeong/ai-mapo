@@ -88,9 +88,9 @@ function sanitizeKey(key) {
   return key.replace(/[^\x20-\x7E]/g, '');
 }
 
-/** Encode JSON body as UTF-8 Uint8Array to avoid browser encoding issues with Korean text */
+/** JSON body helper — plain string works when headers are sanitized */
 function jsonBody(data) {
-  return new TextEncoder().encode(JSON.stringify(data));
+  return JSON.stringify(data);
 }
 
 // === AI Backends ===
@@ -577,32 +577,21 @@ async function geminiCall(messages, maxTokens = 2048) {
   }
 
   const data = await response.json();
+  const parts = data.candidates?.[0]?.content?.parts || [];
 
-  // Debug: log raw Gemini response structure
-  const candidate = data.candidates?.[0];
-  const parts = candidate?.content?.parts || [];
-  console.log('[Gemini] parts count:', parts.length,
-    'keys:', parts.map(p => Object.keys(p).join(',')).join(' | '),
-    'finishReason:', candidate?.finishReason);
-
-  // Handle Gemini thinking mode: filter out {thought:true} parts
-  // For non-thinking models, all parts pass through
-  const textParts = parts.filter(p => !p.thought && p.text);
-  if (textParts.length > 0) {
-    return textParts.map(p => p.text).join('');
+  // Collect all text from non-thought parts first, then fall back to all parts
+  const nonThought = parts.filter(p => !p.thought && p.text);
+  if (nonThought.length > 0) {
+    return nonThought.map(p => p.text).join('');
   }
 
-  // Fallback: try ALL parts with text (ignore thought flag)
+  // Fallback: use any part with text (thinking models may only have thought parts)
   const allText = parts.filter(p => p.text).map(p => p.text).join('');
-  if (allText) {
-    console.warn('[Gemini] All text parts were thought=true, using anyway');
-    return allText;
-  }
+  if (allText) return allText;
 
-  // No text at all
-  const finishReason = candidate?.finishReason;
-  console.warn('[Gemini] No text in response. finishReason:', finishReason,
-    'candidates:', data.candidates?.length, 'raw parts:', JSON.stringify(parts).substring(0, 200));
+  // No text at all — log for debugging
+  console.warn('[Gemini] Empty response. finishReason:', data.candidates?.[0]?.finishReason,
+    'parts:', JSON.stringify(parts).substring(0, 200));
   return '';
 }
 
