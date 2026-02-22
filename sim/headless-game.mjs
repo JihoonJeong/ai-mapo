@@ -55,14 +55,14 @@ function createRng(seed) {
 
 // === Pledges (pledge.js 순수 로직 재구현) ===
 const PLEDGES = [
-  { id: 'population_rebound', name: '인구 반등', desc: '48턴 후 총인구 >= 초기값', difficulty: 3 },
-  { id: 'youth_settlement', name: '청년 정착', desc: '청년(20-34) 비율 2%p 상승', difficulty: 2 },
+  { id: 'population_rebound', name: '인구 반등', desc: '인구 감소율 5% 이내 억제', difficulty: 3 },
+  { id: 'youth_settlement', name: '청년 정착', desc: '청년(20-34) 비율 1%p 상승', difficulty: 2 },
   { id: 'tourism_coexist', name: '관광 상생', desc: '서교·합정·연남 만족도 >= 65 AND 상권활력 >= 60', difficulty: 3 },
-  { id: 'elderly_care', name: '고령 돌봄', desc: '65+ 만족도 구 평균 >= 70', difficulty: 2 },
-  { id: 'fiscal_health', name: '재정 건전', desc: '재정자립도 30% 달성', difficulty: 3 },
-  { id: 'commerce_diversity', name: '상권 다양성', desc: '상권특색 구 평균 >= 75', difficulty: 2 },
-  { id: 'transport_improve', name: '교통 개선', desc: '교통 만족도 구 평균 >= 70', difficulty: 1 },
-  { id: 'green_mapo', name: '녹색 마포', desc: '환경 만족도 구 평균 >= 70', difficulty: 1 },
+  { id: 'elderly_care', name: '고령 돌봄', desc: '65+ 만족도 구 평균 >= 60', difficulty: 2 },
+  { id: 'fiscal_health', name: '재정 건전', desc: '재정자립도 35% 달성', difficulty: 3 },
+  { id: 'commerce_diversity', name: '상권 다양성', desc: '상권특색 구 평균 >= 80', difficulty: 2 },
+  { id: 'transport_improve', name: '교통 개선', desc: '교통 만족도 구 평균 >= 65', difficulty: 1 },
+  { id: 'green_mapo', name: '녹색 마포', desc: '환경 만족도 구 평균 >= 65', difficulty: 1 },
 ];
 
 function calcProgress(pledgeId, state, initialState) {
@@ -72,13 +72,15 @@ function calcProgress(pledgeId, state, initialState) {
   const initialPop = initialState.dongs.reduce((s, d) => s + d.population, 0);
 
   switch (pledgeId) {
-    case 'population_rebound':
-      return (totalPop / initialPop) * 100;
+    case 'population_rebound': {
+      const ratio = totalPop / initialPop;
+      return Math.min(100, (ratio / 0.95) * 100);
+    }
 
     case 'youth_settlement': {
       const currentYouth = state.dongs.reduce((s, d) => s + d.populationByAge.youth, 0) / totalPop * 100;
       const initialYouth = initialState.dongs.reduce((s, d) => s + d.populationByAge.youth, 0) / initialPop * 100;
-      return Math.min(100, ((currentYouth - initialYouth) / 2.0) * 100);
+      return Math.min(100, ((currentYouth - initialYouth) / 1.0) * 100);
     }
 
     case 'tourism_coexist': {
@@ -95,25 +97,25 @@ function calcProgress(pledgeId, state, initialState) {
         const elderlyPct = d.populationByAge.elderly / d.population;
         return s + d.satisfactionFactors.welfare * elderlyPct;
       }, 0) / state.dongs.reduce((s, d) => s + d.populationByAge.elderly / d.population, 0);
-      return Math.min(100, (avgElderlySat / 70) * 100);
+      return Math.min(100, (avgElderlySat / 60) * 100);
     }
 
     case 'fiscal_health':
-      return Math.min(100, (state.finance.fiscalIndependence / 30) * 100);
+      return Math.min(100, (state.finance.fiscalIndependence / 35) * 100);
 
     case 'commerce_diversity': {
       const avg = state.dongs.reduce((s, d) => s + d.commerceCharacter, 0) / state.dongs.length;
-      return Math.min(100, (avg / 75) * 100);
+      return Math.min(100, (avg / 80) * 100);
     }
 
     case 'transport_improve': {
       const avg = state.dongs.reduce((s, d) => s + d.satisfactionFactors.transport, 0) / state.dongs.length;
-      return Math.min(100, (avg / 70) * 100);
+      return Math.min(100, (avg / 65) * 100);
     }
 
     case 'green_mapo': {
       const avg = state.dongs.reduce((s, d) => s + (d.satisfactionFactors.environment || d.satisfactionFactors.safety), 0) / state.dongs.length;
-      return Math.min(100, (avg / 70) * 100);
+      return Math.min(100, (avg / 65) * 100);
     }
 
     default: return 0;
