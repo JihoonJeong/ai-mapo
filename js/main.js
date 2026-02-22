@@ -362,7 +362,7 @@ ${context}
 
 [최종 결과]
 등급: ${result.grade}
-총점: ${result.total}/130
+총점: ${result.total}/100
 KPI: ${kpiText}
 공약: ${pledgeText}
 

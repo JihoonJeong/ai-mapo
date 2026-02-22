@@ -171,8 +171,9 @@ export function checkAchieved(pledgeId, state) {
 }
 
 /**
- * 최종 점수 계산 — numerical-design-v1.md §8.3
- * 6개 KPI (70점 만점) + 공약 리스크-리워드 (최대 +60)
+ * 최종 점수 계산
+ * 4개 KPI (60점 만점) + 공약 리스크-리워드 (달성 +10, 미달 -5, 최대 4개)
+ * 만점 = KPI 60 + 공약 40 = 100 (S등급)
  * @returns {{ total, grade, kpis: { label, score, max, detail }[], pledgeResults }}
  */
 export function calcFinalScore(state) {
@@ -181,16 +182,6 @@ export function calcFinalScore(state) {
   const initialPop = initialState.dongs.reduce((s, d) => s + d.population, 0);
   const totalPop = state.dongs.reduce((s, d) => s + d.population, 0);
   const popChangeRate = ((totalPop - initialPop) / initialPop) * 100;
-
-  const initialBiz = initialState.dongs.reduce((s, d) => s + d.businesses, 0);
-  const totalBiz = state.dongs.reduce((s, d) => s + d.businesses, 0);
-  const initialWorkers = initialState.dongs.reduce((s, d) => s + d.workers, 0);
-  const totalWorkers = state.dongs.reduce((s, d) => s + d.workers, 0);
-  const econGrowth = ((totalBiz - initialBiz) / initialBiz * 100 + (totalWorkers - initialWorkers) / initialWorkers * 100) / 2;
-
-  const initialTax = initialState.finance.revenue?.localTax || 613;
-  const currentTax = state.finance.revenue?.localTax || 613;
-  const taxChange = ((currentTax - initialTax) / initialTax) * 100;
 
   const initialFiscal = initialState.finance.fiscalIndependence || 28;
   const currentFiscal = state.finance.fiscalIndependence || 28;
@@ -202,8 +193,7 @@ export function calcFinalScore(state) {
   const satMean = satValues.reduce((s, v) => s + v, 0) / satValues.length;
   const satStdDev = Math.sqrt(satValues.reduce((s, v) => s + (v - satMean) ** 2, 0) / satValues.length);
 
-  // KPI scoring with linear interpolation
-  // Design doc thresholds are anchor points; we extend linearly to max
+  // 4개 KPI (총 60점)
   const kpis = [
     {
       id: 'population', label: '인구 변화', max: 15,
@@ -211,33 +201,23 @@ export function calcFinalScore(state) {
       detail: `${popChangeRate >= 0 ? '+' : ''}${popChangeRate.toFixed(1)}%`,
     },
     {
-      id: 'economy', label: '경제 성장', max: 10,
-      score: linearScore(econGrowth, 0, 20, 40, [0, 4, 10], 10),
-      detail: `${econGrowth >= 0 ? '+' : ''}${econGrowth.toFixed(1)}%`,
+      id: 'economy_fiscal', label: '경제·재정', max: 15,
+      score: linearScore(fiscalDelta, 0, 7, 14, [0, 6, 15], 15),
+      detail: `재정자립도 ${fiscalDelta >= 0 ? '+' : ''}${fiscalDelta.toFixed(1)}%p`,
     },
     {
-      id: 'tax', label: '세수 증감', max: 5,
-      score: linearScore(taxChange, 0, 15, 30, [0, 2, 5], 5),
-      detail: `${taxChange >= 0 ? '+' : ''}${taxChange.toFixed(1)}%`,
-    },
-    {
-      id: 'fiscal', label: '재정 건전성', max: 10,
-      score: linearScore(fiscalDelta, -1, 5, 12, [0, 4, 10], 10),
-      detail: `${fiscalDelta >= 0 ? '+' : ''}${fiscalDelta.toFixed(1)}%p`,
-    },
-    {
-      id: 'satisfaction', label: '주민 만족도', max: 15,
-      score: linearScore(avgSat, 42, 55, 72, [0, 8, 15], 15),
+      id: 'satisfaction', label: '주민 만족도', max: 20,
+      score: linearScore(avgSat, 42, 55, 72, [0, 10, 20], 20),
       detail: `평균 ${avgSat.toFixed(0)}`,
     },
     {
-      id: 'balance', label: '균형 발전', max: 7,
-      score: satStdDev <= 3 ? 7 : satStdDev <= 5 ? 5 : satStdDev <= 8 ? 3 : satStdDev <= 12 ? 1 : 0,
+      id: 'balance', label: '균형 발전', max: 10,
+      score: satStdDev <= 3 ? 10 : satStdDev <= 5 ? 7 : satStdDev <= 8 ? 4 : satStdDev <= 12 ? 1 : 0,
       detail: `σ = ${satStdDev.toFixed(1)}`,
     },
   ];
 
-  // Pledge risk-reward
+  // 공약: 달성 +10, 미달 -5
   const pledges = state.meta.pledges || [];
   const pledgeResults = pledges.map(id => {
     const pledge = PLEDGES.find(p => p.id === id);
@@ -245,7 +225,7 @@ export function calcFinalScore(state) {
     const progress = calcProgress(id, state);
     return {
       id, name: pledge?.name || id, achieved, progress: Math.round(progress),
-      score: achieved ? 15 : -20,
+      score: achieved ? 10 : -5,
     };
   });
 
@@ -253,7 +233,7 @@ export function calcFinalScore(state) {
   const pledgeTotal = pledgeResults.reduce((s, p) => s + p.score, 0);
   const total = kpiTotal + pledgeTotal;
 
-  const grade = total >= 100 ? 'S' : total >= 80 ? 'A' : total >= 60 ? 'B' : total >= 40 ? 'C' : total >= 20 ? 'D' : 'F';
+  const grade = total >= 85 ? 'S' : total >= 70 ? 'A' : total >= 55 ? 'B' : total >= 40 ? 'C' : total >= 25 ? 'D' : 'F';
 
   return { total, grade, kpis, pledgeResults, kpiTotal, pledgeTotal };
 }

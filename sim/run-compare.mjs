@@ -115,8 +115,8 @@ async function main() {
       // Quick summary
       const pop = result.kpis.find(k => k.id === 'population');
       const sat = result.kpis.find(k => k.id === 'satisfaction');
-      const econ = result.kpis.find(k => k.id === 'economy');
-      console.log(`  → ${result.finalGrade} (${result.totalScore}점) | 인구${pop.detail} 만족${sat.detail} 경제${econ.detail}`);
+      const ef = result.kpis.find(k => k.id === 'economy_fiscal');
+      console.log(`  → ${result.finalGrade} (${result.totalScore}점) | 인구${pop.detail} 만족${sat.detail} ${ef.detail}`);
 
       // Check if budget varied across turns
       const budgets = result.turnLog.map(t => JSON.stringify(t.aiAction.budget));
@@ -139,9 +139,9 @@ async function main() {
     console.log('');
 
     // Header
-    const header = ['모델', '등급', '점수', 'KPI', '공약', '인구', '경제', '세수', '재정', '만족', '균형', '예산변화', '정책'];
+    const header = ['모델', '등급', '점수', 'KPI', '공약', '인구', '경제·재정', '만족', '균형', '예산변화', '정책'];
     console.log(header.join('\t'));
-    console.log('-'.repeat(130));
+    console.log('-'.repeat(110));
 
     for (const r of results) {
       const kpiMap = {};
@@ -160,9 +160,7 @@ async function main() {
         String(r.kpiTotal).padStart(2),
         String(r.pledgeTotal).padStart(3),
         kpiMap.population?.detail || '',
-        kpiMap.economy?.detail || '',
-        kpiMap.tax?.detail || '',
-        kpiMap.fiscal?.detail || '',
+        kpiMap.economy_fiscal?.detail || '',
         kpiMap.satisfaction?.detail || '',
         kpiMap.balance?.detail || '',
         uniqueBudgets > 1 ? `${uniqueBudgets}가지` : '균등',

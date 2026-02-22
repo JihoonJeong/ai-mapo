@@ -138,16 +138,6 @@ function calcFinalScore(state, initialState) {
   const totalPop = state.dongs.reduce((s, d) => s + d.population, 0);
   const popChangeRate = ((totalPop - initialPop) / initialPop) * 100;
 
-  const initialBiz = initialState.dongs.reduce((s, d) => s + d.businesses, 0);
-  const totalBiz = state.dongs.reduce((s, d) => s + d.businesses, 0);
-  const initialWorkers = initialState.dongs.reduce((s, d) => s + d.workers, 0);
-  const totalWorkers = state.dongs.reduce((s, d) => s + d.workers, 0);
-  const econGrowth = ((totalBiz - initialBiz) / initialBiz * 100 + (totalWorkers - initialWorkers) / initialWorkers * 100) / 2;
-
-  const initialTax = initialState.finance.revenue?.localTax || 613;
-  const currentTax = state.finance.revenue?.localTax || 613;
-  const taxChange = ((currentTax - initialTax) / initialTax) * 100;
-
   const initialFiscal = initialState.finance.fiscalIndependence || 28;
   const currentFiscal = state.finance.fiscalIndependence || 28;
   const fiscalDelta = currentFiscal - initialFiscal;
@@ -158,13 +148,12 @@ function calcFinalScore(state, initialState) {
   const satMean = satValues.reduce((s, v) => s + v, 0) / satValues.length;
   const satStdDev = Math.sqrt(satValues.reduce((s, v) => s + (v - satMean) ** 2, 0) / satValues.length);
 
+  // 4개 KPI (총 60점)
   const kpis = [
     { id: 'population', label: '인구 변화', max: 15, score: linearScore(popChangeRate, -12, -7, -2, [0, 5, 12], 15), detail: `${popChangeRate >= 0 ? '+' : ''}${popChangeRate.toFixed(1)}%` },
-    { id: 'economy', label: '경제 성장', max: 10, score: linearScore(econGrowth, 0, 20, 40, [0, 4, 10], 10), detail: `${econGrowth >= 0 ? '+' : ''}${econGrowth.toFixed(1)}%` },
-    { id: 'tax', label: '세수 증감', max: 5, score: linearScore(taxChange, 0, 15, 30, [0, 2, 5], 5), detail: `${taxChange >= 0 ? '+' : ''}${taxChange.toFixed(1)}%` },
-    { id: 'fiscal', label: '재정 건전성', max: 10, score: linearScore(fiscalDelta, -1, 5, 12, [0, 4, 10], 10), detail: `${fiscalDelta >= 0 ? '+' : ''}${fiscalDelta.toFixed(1)}%p` },
-    { id: 'satisfaction', label: '주민 만족도', max: 15, score: linearScore(avgSat, 42, 55, 72, [0, 8, 15], 15), detail: `평균 ${avgSat.toFixed(0)}` },
-    { id: 'balance', label: '균형 발전', max: 7, score: satStdDev <= 3 ? 7 : satStdDev <= 5 ? 5 : satStdDev <= 8 ? 3 : satStdDev <= 12 ? 1 : 0, detail: `σ = ${satStdDev.toFixed(1)}` },
+    { id: 'economy_fiscal', label: '경제·재정', max: 15, score: linearScore(fiscalDelta, 0, 7, 14, [0, 6, 15], 15), detail: `재정자립도 ${fiscalDelta >= 0 ? '+' : ''}${fiscalDelta.toFixed(1)}%p` },
+    { id: 'satisfaction', label: '주민 만족도', max: 20, score: linearScore(avgSat, 42, 55, 72, [0, 10, 20], 20), detail: `평균 ${avgSat.toFixed(0)}` },
+    { id: 'balance', label: '균형 발전', max: 10, score: satStdDev <= 3 ? 10 : satStdDev <= 5 ? 7 : satStdDev <= 8 ? 4 : satStdDev <= 12 ? 1 : 0, detail: `σ = ${satStdDev.toFixed(1)}` },
   ];
 
   const pledgeIds = state.meta.pledges || [];
@@ -172,13 +161,13 @@ function calcFinalScore(state, initialState) {
     const pledge = PLEDGES.find(p => p.id === id);
     const progress = calcProgress(id, state, initialState);
     const achieved = progress >= 100;
-    return { id, name: pledge?.name || id, achieved, progress: Math.round(progress), score: achieved ? 15 : -20 };
+    return { id, name: pledge?.name || id, achieved, progress: Math.round(progress), score: achieved ? 10 : -5 };
   });
 
   const kpiTotal = kpis.reduce((s, k) => s + k.score, 0);
   const pledgeTotal = pledgeResults.reduce((s, p) => s + p.score, 0);
   const total = kpiTotal + pledgeTotal;
-  const grade = total >= 100 ? 'S' : total >= 80 ? 'A' : total >= 60 ? 'B' : total >= 40 ? 'C' : total >= 20 ? 'D' : 'F';
+  const grade = total >= 85 ? 'S' : total >= 70 ? 'A' : total >= 55 ? 'B' : total >= 40 ? 'C' : total >= 25 ? 'D' : 'F';
 
   return { total, grade, kpis, pledgeResults, kpiTotal, pledgeTotal };
 }
