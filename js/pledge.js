@@ -167,10 +167,10 @@ export function calcProgress(pledgeId, state) {
 }
 
 /**
- * 공약 달성 여부 판정 (progress >= 100)
+ * 공약 달성 여부 판정 (progress >= 99.5 — 부동소수점 오차 허용)
  */
 export function checkAchieved(pledgeId, state) {
-  return calcProgress(pledgeId, state) >= 100;
+  return calcProgress(pledgeId, state) >= 99.5;
 }
 
 /**

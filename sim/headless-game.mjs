@@ -162,7 +162,7 @@ function calcFinalScore(state, initialState) {
   const pledgeResults = pledgeIds.map(id => {
     const pledge = PLEDGES.find(p => p.id === id);
     const progress = calcProgress(id, state, initialState);
-    const achieved = progress >= 100;
+    const achieved = progress >= 99.5;
     return { id, name: pledge?.name || id, achieved, progress: Math.round(progress), score: achieved ? 10 : -5 };
   });
 
