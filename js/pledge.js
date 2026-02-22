@@ -207,32 +207,32 @@ export function calcFinalScore(state) {
   const kpis = [
     {
       id: 'population', label: '인구 변화', max: 15,
-      score: linearScore(popChangeRate, -12, -2, 5, [-5, 0, 15], 15),
+      score: linearScore(popChangeRate, -12, -7, -2, [0, 5, 12], 15),
       detail: `${popChangeRate >= 0 ? '+' : ''}${popChangeRate.toFixed(1)}%`,
     },
     {
-      id: 'economy', label: '경제 성장', max: 5,
-      score: linearScore(econGrowth, -3, 0, 10, [0, 2, 5], 5),
+      id: 'economy', label: '경제 성장', max: 10,
+      score: linearScore(econGrowth, 0, 20, 40, [0, 4, 10], 10),
       detail: `${econGrowth >= 0 ? '+' : ''}${econGrowth.toFixed(1)}%`,
     },
     {
       id: 'tax', label: '세수 증감', max: 5,
-      score: linearScore(taxChange, -5, 0, 10, [0, 2, 5], 5),
+      score: linearScore(taxChange, 0, 15, 30, [0, 2, 5], 5),
       detail: `${taxChange >= 0 ? '+' : ''}${taxChange.toFixed(1)}%`,
     },
     {
       id: 'fiscal', label: '재정 건전성', max: 10,
-      score: linearScore(fiscalDelta, -3, 0, 7, [0, 5, 10], 10),
+      score: linearScore(fiscalDelta, -1, 5, 12, [0, 4, 10], 10),
       detail: `${fiscalDelta >= 0 ? '+' : ''}${fiscalDelta.toFixed(1)}%p`,
     },
     {
-      id: 'satisfaction', label: '주민 만족도', max: 12,
-      score: linearScore(avgSat, 42, 52, 72, [0, 8, 12], 12),
+      id: 'satisfaction', label: '주민 만족도', max: 15,
+      score: linearScore(avgSat, 42, 55, 72, [0, 8, 15], 15),
       detail: `평균 ${avgSat.toFixed(0)}`,
     },
     {
-      id: 'balance', label: '균형 발전', max: 10,
-      score: satStdDev < 10 ? 10 : satStdDev < 15 ? 5 : satStdDev > 20 ? 0 : Math.round(5 * (20 - satStdDev) / 5),
+      id: 'balance', label: '균형 발전', max: 7,
+      score: satStdDev <= 3 ? 7 : satStdDev <= 5 ? 5 : satStdDev <= 8 ? 3 : satStdDev <= 12 ? 1 : 0,
       detail: `σ = ${satStdDev.toFixed(1)}`,
     },
   ];
