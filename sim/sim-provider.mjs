@@ -160,7 +160,14 @@ async function geminiCall(messages, config) {
     parts: [{ text: m.content }],
   }));
 
-  const body = { contents, generationConfig: { maxOutputTokens: 2048 } };
+  // Gemini 2.5 thinking models: thinking tokens share maxOutputTokens budget.
+  const isThinkingModel = model.includes('2.5');
+  const genConfig = { maxOutputTokens: isThinkingModel ? 8192 : 2048 };
+  if (isThinkingModel) {
+    genConfig.thinkingConfig = { thinkingBudget: 2048 };
+  }
+
+  const body = { contents, generationConfig: genConfig };
   if (systemMsg) {
     body.systemInstruction = { parts: [{ text: systemMsg.content }] };
   }

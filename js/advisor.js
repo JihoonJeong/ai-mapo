@@ -553,9 +553,17 @@ async function geminiCall(messages, maxTokens = 2048) {
     parts: [{ text: m.content }],
   }));
 
+  // Gemini 2.5 thinking models: thinking tokens share maxOutputTokens budget.
+  // Set higher limit + thinkingBudget to prevent thinking from consuming all tokens.
+  const isThinkingModel = model.includes('2.5');
+  const genConfig = { maxOutputTokens: isThinkingModel ? 8192 : maxTokens };
+  if (isThinkingModel) {
+    genConfig.thinkingConfig = { thinkingBudget: 2048 };
+  }
+
   const body = {
     contents,
-    generationConfig: { maxOutputTokens: maxTokens },
+    generationConfig: genConfig,
   };
   if (systemMsg) {
     body.systemInstruction = { parts: [{ text: systemMsg.content }] };
