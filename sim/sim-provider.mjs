@@ -178,10 +178,13 @@ async function geminiCall(messages, config) {
   }
 
   const data = await response.json();
-  // Handle thinking mode: filter out thought parts, join remaining text
+  // Thinking models (3.x): prefer non-thought text parts
+  // Fallback: first part's text (works for 2.5 Flash where all parts may be thought-tagged)
   const parts = data.candidates?.[0]?.content?.parts || [];
   const textParts = parts.filter(p => !p.thought && p.text);
-  const text = textParts.length > 0 ? textParts.map(p => p.text).join('') : '';
+  const text = textParts.length > 0
+    ? textParts.map(p => p.text).join('')
+    : (parts[0]?.text || '');
   return {
     content: text,
     usage: {

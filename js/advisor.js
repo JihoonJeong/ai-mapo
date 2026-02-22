@@ -579,20 +579,19 @@ async function geminiCall(messages, maxTokens = 2048) {
   const data = await response.json();
   const parts = data.candidates?.[0]?.content?.parts || [];
 
-  // Collect all text from non-thought parts first, then fall back to all parts
-  const nonThought = parts.filter(p => !p.thought && p.text);
-  if (nonThought.length > 0) {
-    return nonThought.map(p => p.text).join('');
+  // Thinking models (3.x): prefer non-thought text parts
+  const textParts = parts.filter(p => !p.thought && p.text);
+  if (textParts.length > 0) {
+    return textParts.map(p => p.text).join('');
   }
 
-  // Fallback: use any part with text (thinking models may only have thought parts)
-  const allText = parts.filter(p => p.text).map(p => p.text).join('');
-  if (allText) return allText;
-
-  // No text at all — log for debugging
-  console.warn('[Gemini] Empty response. finishReason:', data.candidates?.[0]?.finishReason,
-    'parts:', JSON.stringify(parts).substring(0, 200));
-  return '';
+  // Fallback: use first part's text directly (original handler, works for 2.5 Flash)
+  const fallback = parts[0]?.text || '';
+  if (!fallback) {
+    console.warn('[Gemini] Empty response. finishReason:', data.candidates?.[0]?.finishReason,
+      'parts count:', parts.length, 'keys:', parts.length > 0 ? Object.keys(parts[0]).join(',') : 'none');
+  }
+  return fallback;
 }
 
 // === Raw API call for autoplay (custom system prompt + messages) ===

@@ -161,11 +161,12 @@ async function autoplayLoop() {
           }
         }
 
-        console.log('[Autoplay] AI raw response length:', raw?.length, 'first 300:', raw?.substring(0, 300));
+        console.log('[Autoplay] AI raw response length:', raw?.length, 'first 500:', raw?.substring(0, 500));
         action = parseAction(raw, state, event, catalog);
         if (JSON.stringify(action.budget) === JSON.stringify(DEFAULT_BUDGET) && action.reasoning === '') {
           console.warn('[Autoplay] Parsed to default — raw:', raw?.substring(0, 500));
-          addMessage('advisor', `[AI 자동] ⚠ AI 응답 파싱 실패 — 기본 예산으로 진행합니다.`);
+          const snippet = raw ? raw.substring(0, 80).replace(/\n/g, ' ') : '(empty)';
+          addMessage('advisor', `[AI 자동] ⚠ AI 응답 파싱 실패 — 기본 예산으로 진행합니다. [len=${raw?.length || 0}: ${snippet}]`);
         }
       }
     } catch (err) {
