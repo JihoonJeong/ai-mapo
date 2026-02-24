@@ -183,12 +183,21 @@ function startTurn() {
 
 function endTurn() {
   if (currentPhase !== PHASE.PLAYER_PHASE) return;
+
+  // Validate budget total before proceeding
+  const budgetAlloc = getAllocation();
+  const budgetTotal = Object.values(budgetAlloc).reduce((s, v) => s + v, 0);
+  if (budgetTotal > 100) {
+    alert(`예산 합계가 ${budgetTotal}%입니다. 100% 이하로 조정해주세요.`);
+    return;
+  }
+
   currentPhase = PHASE.TURN_END;
 
   // Collect player actions
   const eventChoice = getEventChoice();
   lastTurnActions = {
-    budget: getAllocation(),
+    budget: budgetAlloc,
     policies: getSelectedPolicies(),
     eventChoice: eventChoice,
   };

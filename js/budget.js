@@ -61,10 +61,16 @@ function renderBudget() {
     </div>
   `;
 
-  // Bind slider events
+  // Bind slider events — clamp so total never exceeds 100%
   container.querySelectorAll('.budget-slider').forEach(slider => {
     slider.addEventListener('input', (e) => {
-      allocation[e.target.dataset.cat] = parseInt(e.target.value);
+      const cat = e.target.dataset.cat;
+      const desired = parseInt(e.target.value);
+      const othersSum = Object.entries(allocation)
+        .filter(([k]) => k !== cat)
+        .reduce((s, [, v]) => s + v, 0);
+      const maxAllowed = Math.min(40, 100 - othersSum);
+      allocation[cat] = Math.min(desired, Math.max(0, maxAllowed));
       renderBudget();
     });
   });
